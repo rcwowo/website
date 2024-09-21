@@ -29,14 +29,14 @@ export async function parseAuthors(authors: string[]) {
       const author = await getEntry('authors', slug)
       return {
         name: author?.data?.name || slug,
-        avatar: author?.data?.avatar || '/static/logo.png',
+        avatar: author?.data?.avatar || '/static/missing-author-picture.png',
         isRegistered: !!author,
       }
     } catch (error) {
       console.error(`Error fetching author with slug ${slug}:`, error)
       return {
         name: slug,
-        avatar: '/static/logo.png',
+        avatar: '/static/missing-author-picture.png',
         isRegistered: false,
       }
     }
