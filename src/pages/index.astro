@@ -29,13 +29,11 @@ const {
   youtube,
   twitch,
   instagram,
-  website,
   mail,
 } = author[0].data
 
 // Create links to display from my author entry
 const socialLinks: SocialLink[] = [
-  website && { href: website, label: 'Website' },
   github && { href: github, label: 'GitHub' },
   twitter && { href: twitter, label: 'Twitter' },
   linkedin && { href: linkedin, label: 'LinkedIn' },
