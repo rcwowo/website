@@ -12,6 +12,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Bun lockfile
+bun.lockb
 
 # environment variables
 .env
