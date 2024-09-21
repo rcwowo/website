@@ -13,25 +13,22 @@ export type Link = {
 }
 
 export const SITE: Site = {
-  TITLE: 'astro-erudite',
+  TITLE: 'Lt. Wilson',
   DESCRIPTION:
-    'astro-erudite is a opinionated, no-frills blogging template—built with Astro, Tailwind, and shadcn/ui.',
-  EMAIL: 'jason@enscribe.dev',
-  NUM_POSTS_ON_HOMEPAGE: 2,
-  POSTS_PER_PAGE: 3,
-  SITEURL: 'https://astro-erudite.vercel.app',
+    'Personal website of a guy that edits videos and occasionally dabbles in coding projects.',
+  EMAIL: 'contact@ltwilson.tv',
+  NUM_POSTS_ON_HOMEPAGE: 3,
+  POSTS_PER_PAGE: 8,
+  SITEURL: 'https://ltwilson.tv',
 }
 
 export const NAV_LINKS: Link[] = [
+  { href: 'https://streamelements.com/theltwilson/tip', label: 'donate' },
   { href: '/blog', label: 'blog' },
-  { href: '/authors', label: 'authors' },
-  { href: '/about', label: 'about' },
   { href: '/tags', label: 'tags' },
 ]
 
-export const SOCIAL_LINKS: Link[] = [
-  { href: 'https://github.com/jktrn', label: 'GitHub' },
-  { href: 'https://twitter.com/enscry', label: 'Twitter' },
-  { href: 'jason@enscribe.dev', label: 'Email' },
+export const FOOTER_LINKS: Link[] = [
+  { href: 'contact@ltwilson.tv', label: 'Email' },
   { href: '/rss.xml', label: 'RSS' },
 ]
