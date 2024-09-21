@@ -30,6 +30,7 @@ export async function parseAuthors(authors: string[]) {
       return {
         name: author?.data?.name || slug,
         avatar: author?.data?.avatar || '/static/missing-author-picture.png',
+        slug: slug,
         isRegistered: !!author,
       }
     } catch (error) {
