@@ -2,73 +2,73 @@
 import BlogCard from '@/components/BlogCard.astro'
 import Container from '@/components/Container.astro'
 import Link from '@/components/Link.astro'
+import SocialIcons from '@/components/SocialIcons.astro'
 import { buttonVariants } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
+import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
+import type { Link as SocialLink } from '@/consts'
 
+// Get blog posts to display
 const blog = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE)
+
+// Get my author entry
+const author = (await getCollection('authors'))
+  .filter((person) => person.slug === "rileywilson")
+
+// Set consts based on my author entry
+const {
+  github,
+  twitter,
+  linkedin,
+  youtube,
+  twitch,
+  instagram,
+  website,
+  mail,
+} = author[0].data
+
+// Create links to display from my author entry
+const socialLinks: SocialLink[] = [
+  website && { href: website, label: 'Website' },
+  github && { href: github, label: 'GitHub' },
+  twitter && { href: twitter, label: 'Twitter' },
+  linkedin && { href: linkedin, label: 'LinkedIn' },
+  youtube && { href: youtube, label: 'YouTube' },
+  twitch && { href: twitch, label: 'Twitch' },
+  instagram && { href: instagram, label: 'Instagram' },
+  mail && { href: mail, label: 'Email' },
+].filter(Boolean) as SocialLink[]
+
 ---
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
   <Container class="flex flex-col gap-y-6">
     <section>
-      <Card>
+      <Card className="overflow-hidden">
+        <Image 
+          src={"/static/index-banner.png"}
+          alt={"What the sigma"}
+          width={1200}
+          height={300}
+        />
         <CardHeader>
-          <CardTitle className="text-3xl">er·u·dite</CardTitle>
-          <CardDescription
-            >/ˈer(y)əˌdīt/ &bull; <span class="font-semibold">adjective</span
-            ></CardDescription
-          >
+          <CardTitle>
+            👋 Hey there!
+          </CardTitle>
+          <CardDescription>
+            My name is Riley Wilson, and I edit videos and occasionally make coding projects.
+            This silly little website is intended to be a place to store my thoughts, and share
+            what I'm currently working on.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <p class="mb-2 text-sm text-muted-foreground">
-            astro-erudite is an opinionated, no-frills static blogging template
-            built with <Link
-              href="https://astro.build"
-              class="text-foreground"
-              external
-              underline>Astro</Link
-            >, <Link
-              href="https://tailwindcss.com"
-              class="text-foreground"
-              external
-              underline>Tailwind</Link
-            >, and <Link
-              href="https://ui.shadcn.com"
-              class="text-foreground"
-              external
-              underline>shadcn/ui</Link
-            >. Extraordinarily loosely based on the <Link
-              href="https://astro-micro.vercel.app/"
-              class="text-foreground"
-              external
-              underline>Astro Micro</Link
-            > theme.
-          </p>
-          <p class="text-sm text-muted-foreground">
-            To use this template, check out the <Link
-              href="https://github.com/jktrn/astro-erudite"
-              class="text-foreground"
-              underline
-              external>GitHub</Link
-            > repository. To learn more about why this template exists, read this
-            blog post: <Link
-              href="/blog/the-state-of-static-blogs"
-              class="text-foreground"
-              underline>The State of Static Blogs in 2024</Link
-            >.
-          </p>
+          <SocialIcons links={socialLinks} />
         </CardContent>
       </Card>
     </section>
@@ -85,15 +85,15 @@ const blog = (await getCollection('blog'))
       </ul>
       <div class="flex justify-center">
         <Link
-          href="/blog"
-          class={buttonVariants({ variant: 'ghost' }) + ' group'}
+        href="/blog"
+        class={buttonVariants({ variant: 'ghost' }) + ' group'}
         >
-          See all posts <span
-            class="ml-1.5 transition-transform group-hover:translate-x-1"
-            >&rarr;</span
-          >
-        </Link>
-      </div>
-    </section>
+        See all posts <span
+        class="ml-1.5 transition-transform group-hover:translate-x-1"
+        >&rarr;</span
+        >
+      </Link>
+    </div>
+  </section>
   </Container>
 </Layout>
