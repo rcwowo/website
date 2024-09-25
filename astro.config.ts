@@ -20,7 +20,7 @@ import icon from 'astro-icon'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://astro-erudite.vercel.app',
+  site: 'https://ltwilson.tv',
   integrations: [
     tailwind({
       applyBaseStyles: false,
