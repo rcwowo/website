@@ -48,4 +48,17 @@ const authors = defineCollection({
   }),
 })
 
-export const collections = { blog, authors }
+const projects = defineCollection({
+  type: 'content',
+  schema: ({ image }) =>
+    z.object({
+      name: z.string(),
+      image: image().refine((img) => img.width === 128 && img.height === 128, {
+        message: 'The image must be exactly 128 × 128px for consistency.',
+      }),
+      link: z.string().url(),
+      github_repo: z.string().optional(),
+    }),
+})
+
+export const collections = { blog, authors, projects }

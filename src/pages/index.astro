@@ -1,12 +1,13 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
+import ProjectCard from '@/components/ProjectCard.astro'
 import Container from '@/components/Container.astro'
 import Link from '@/components/Link.astro'
 import SocialIcons from '@/components/SocialIcons.astro'
+import Layout from '@/layouts/Layout.astro'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import { SITE } from '@/consts'
-import Layout from '@/layouts/Layout.astro'
 import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
 import type { Link as SocialLink } from '@/consts'
@@ -20,6 +21,9 @@ const blog = (await getCollection('blog'))
 // Get my author entry
 const author = (await getCollection('authors'))
   .filter((person) => person.slug === "rileywilson")
+
+// Get projects
+const projects = (await getCollection('projects'))
 
 // Set consts based on my author entry
 const {
@@ -47,6 +51,7 @@ const socialLinks: SocialLink[] = [
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
   <Container class="flex flex-col gap-y-6">
+    <!-- About Container  -->
     <section>
       <Card className="overflow-hidden">
         <Image 
@@ -70,6 +75,15 @@ const socialLinks: SocialLink[] = [
         </CardContent>
       </Card>
     </section>
+    <!-- Featured Projects  -->
+    <section>
+        <h2 class="mb-4 text-2xl font-bold">My projects</h2>
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </div>
+    </section>
+    <!-- Blog Posts  -->
     <section class="flex flex-col gap-y-4">
       <h2 class="text-2xl font-bold">Latest posts</h2>
       <ul class="not-prose flex flex-col gap-y-4">
@@ -92,6 +106,6 @@ const socialLinks: SocialLink[] = [
         >
       </Link>
     </div>
-  </section>
+    </section>
   </Container>
 </Layout>
