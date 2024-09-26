@@ -7,22 +7,15 @@ image: './thumbnail.png'
 authors: ['rileywilson']
 ---
 
-A couple years ago, I upgraded my microphone from a FIFINE T669, to one of Elgato's esteemed Wave:3 microphones.
-At the time, I simply just wanted a better way to manage audio and the ability to hear myself when using headphones.
-Elgato's microphone provided a solution to both of these problems, with their Wave Link software.
-Their software allows you to create virtual audio devices so that you can easily manage different types of audio sources,
-like a browser, music, games, or the rest of the system. All with the added benefit of having direct integration into the Stream Deck.
+A couple years ago, I upgraded my microphone from a FIFINE T669, to one of Elgato's esteemed Wave:3 microphones. At the time, I simply just wanted a better way to manage audio and the ability to hear myself when using headphones. Elgato's microphone provided a solution to both of these problems, with their Wave Link software. Their software allows you to create virtual audio devices so that you can easily manage different types of audio sources, like a browser, music, games, or the rest of the system. All with the added benefit of having direct integration into the Stream Deck.
 
-Now, while I have my own gripes with Elgato's software - especially as of late.
-Don't even get me started with how awful the Stream Deck has become with their new website to download plugins,
-but it's pretty powerful software... ***when it works***.
+Now, while I have my own gripes with Elgato's software - especially as of late. Don't even get me started with how awful the Stream Deck has become with their new website to download plugins,but it's pretty powerful software... ***when it works***.
 
 But I had a small gripe that I wanted to address.
 
 ## Controlling audio.
 
-There are a few different ways that I could manage audio with my microphone. I could either have their software open and make adjustments when needed.
-Or, I could map buttons on my Stream Deck to control different inputs or outputs.
+There are a few different ways that I could manage audio with my microphone. I could either have their software open and make adjustments when needed. Or, I could map buttons on my Stream Deck to control different inputs or outputs.
 
 |Wave Link Interface|Stream Deck Buttons|
 |---|---|
@@ -37,31 +30,21 @@ And while the Stream Deck is still my primary way of controlling audio, there is
 
 ## My gripes with everything.
 
-In November of 2022, Elgato had released a new product called the “Stream Deck+” which was essentially an 8 button Stream Deck,
-but as a bonus, it included 4 knobs/dials that could be assigned to all sorts of different tasks.
-They could control your brush size and hardness in Photoshop, control the brightness of Elgato's other lighting products,
-or in my case, control the volumes of inputs or outputs in Wave Link.
+In November of 2022, Elgato had released a new product called the “Stream Deck+” which was essentially an 8 button Stream Deck, but as a bonus, it included 4 knobs/dials that could be assigned to all sorts of different tasks. They could control your brush size and hardness in Photoshop, control the brightness of Elgato's other lighting products,or in my case, control the volumes of inputs or outputs in Wave Link.
 
 **The problem was, that it costs $200.**
 
-I'm a broke guy in the middle of nowhere, just out of high school with a few college credits to his name.
-I could not afford to spend $200 on it, despite how much easier it would make controlling audio.
+I'm a broke guy in the middle of nowhere, just out of high school with a few college credits to his name. I could not afford to spend $200 on it, despite how much easier it would make controlling audio.
 
-That, and it still had the issue of not having an on-screen overlay for when the volume changes for an input or output.
-So you'd still have to look down at the device to see what the audio level is, and adjust accordingly until you've hit the volume level you like.
-This is especially infuriating when controlling the volume of the output, which is the equivalent of changing your computer's volume.
+That, and it still had the issue of not having an on-screen overlay for when the volume changes for an input or output. So you'd still have to look down at the device to see what the audio level is, and adjust accordingly until you've hit the volume level you like. This is especially infuriating when controlling the volume of the output, which is the equivalent of changing your computer's volume.
 
 So, I took matters into my own hands.
 
 ## So what's the idea?
 
-To preface, I have a [Keychron V1 mechanical keyboard](https://www.keychron.com/products/keychron-v1-qmk-via-custom-mechanical-keyboard?variant=40026442530905)
-that comes with a dial, and more importantly, QMK. If you don't know what QMK is, it essentially allows you to globally reprogram your keyboard
-without having to have a piece of software eating up resources (*cough cough Razer Synapse…*) running in the background.
+To preface, I have a [Keychron V1 mechanical keyboard](https://www.keychron.com/products/keychron-v1-qmk-via-custom-mechanical-keyboard?variant=40026442530905) that comes with a dial, and more importantly, QMK. If you don't know what QMK is, it essentially allows you to globally reprogram your keyboard without having to have a piece of software eating up resources (*cough cough Razer Synapse…*) running in the background.
 
-Here's the plan. I would have a small Python script that would listen to when the keys `F13` `F14` or `F15` are pressed,
-and then either adjust the volume or toggle the mute of the output device. Using a tool called [VIA](https://usevia.app) to help reprogram the
-dial on my keyboard so that moving or clicking the dial would show up as hitting one of these keys.
+Here's the plan. I would have a small Python script that would listen to when the keys `F13` `F14` or `F15` are pressed, and then either adjust the volume or toggle the mute of the output device. Using a tool called [VIA](https://usevia.app) to help reprogram the dial on my keyboard so that moving or clicking the dial would show up as hitting one of these keys.
 
 ```md
 ℹ️ There are keyboards out there that have F13-F24 keys, but they are rare and most software doesn't utilize them, anyway.
@@ -75,33 +58,21 @@ The next thing that I needed to figure out, was how to communicate with the Wave
 
 My first instinct was to check Elgato's website for any developer resources. Maybe they had an SDK or API that I could hook into.
 
-***Nope***. Their website only has documentation on how to create a Stream Deck plugin with the Stream Deck's SDK.
-There was no mention of Wave Link anywhere on their documentation website.
-So I decided to turn to the community to see if there was an unofficial way of communicating with Elgato's software.
+***Nope***. Their website only has documentation on how to create a Stream Deck plugin with the Stream Deck's SDK. There was no mention of Wave Link anywhere on their documentation website. So I decided to turn to the community to see if there was an unofficial way of communicating with Elgato's software.
 
-As it turns out, sort of. In a [Reddit thread](https://www.reddit.com/r/elgato/comments/lv1pzx/wave_link_sdk/) that I discovered,
-someone mentioned that Wave Link keeps an open WebSocket port. They also mentioned a small project on GitHub called the [“ElgatoWaveLinkSDK”](https://github.com/Professor-Melvin/ElgatoWaveLinkSDK)
-but it was abandoned, with the latest commit being in September of 2022. That, and the fact the project was in C#, a programming language that I do not know.
+As it turns out, sort of. In a [Reddit thread](https://www.reddit.com/r/elgato/comments/lv1pzx/wave_link_sdk/) that I discovered, someone mentioned that Wave Link keeps an open WebSocket port. They also mentioned a small project on GitHub called the [“ElgatoWaveLinkSDK”](https://github.com/Professor-Melvin/ElgatoWaveLinkSDK) but it was abandoned, with the latest commit being in September of 2022. That, and the fact the project was in C#, a programming language that I do not know.
 
 So I had to take matters into my own hands. So my first instinct was to check and see if there was a way to debug Stream Deck plugins. And sure enough, there is!
 
-As it turns out, at least in Windows, you can add a key to the registry editor in Windows to enable a web interface to debug Stream Deck plugins!
-You can see the instructions on how to enable it for yourself [here](https://imgur.com/a/6eTOaO5). Once you have it enabled,
-you simply navigate to [localhost:23654](http://localhost:23654) and you will see a blinding white page with each plugin you have installed listed.
+As it turns out, at least in Windows, you can add a key to the registry editor in Windows to enable a web interface to debug Stream Deck plugins! You can see the instructions on how to enable it for yourself [here](https://imgur.com/a/6eTOaO5). Once you have it enabled, you simply navigate to [localhost:23654](http://localhost:23654) and you will see a blinding white page with each plugin you have installed listed.
 
 ![A view of page with the header “Inspectable pages” and 5 clickable options labelled “com.elgato.wavelink”, “com.elgato.tutorial”, “com.elgato.clocks”, “com.elgato.obsstudio”, and “qrc:/html/preload_dummy.html”. The mouse cursor is hovering the “com.elgato.wavelink” option.](./assets/streamdeck-debug-page.png)
 
-From here, we simply click on the one labelled `com.elgato.wavelink` and you will see a new page load with developer tools that look identical to Chrome's developer tools.
-Even if you're using Firefox, like me! Then we'll navigate over to the network tab, and hit `Ctrl + R` to reload the page and start recording network activity.
-Once we have the long list of things being loaded by the page, we are looking for WebSockets. So, near the top of the developers tools, next to where the “filter” search box is,
-we're going to tick the “WS” button - which stands for WebSocket.
+From here, we simply click on the one labelled `com.elgato.wavelink` and you will see a new page load with developer tools that look identical to Chrome's developer tools. Even if you're using Firefox, like me! Then we'll navigate over to the network tab, and hit `Ctrl + R` to reload the page and start recording network activity. Once we have the long list of things being loaded by the page, we are looking for WebSockets. So, near the top of the developers tools, next to where the “filter” search box is, we're going to tick the “WS” button - which stands for WebSocket.
 
-**Boom**. We have two WebSocket connections it establishes. One is to a WebSocket on port `28196` - which after inspecting looks like it handles
-changing the icon on each key of the Stream Deck. The other is on port `1824` - bingo.
+**Boom**. We have two WebSocket connections it establishes. One is to a WebSocket on port `28196` - which after inspecting looks like it handles changing the icon on each key of the Stream Deck. The other is on port `1824` - bingo.
 
-The WebSocket was sending out data every time the audio levels changed in real time, whenever the volume would change,
-or when basically any piece of information would change. And if you press a button on the Stream Deck, like one that would increase volume,
-you can see what data it sends to the WebSocket to change the volume.
+The WebSocket was sending out data every time the audio levels changed in real time, whenever the volume would change, or when basically any piece of information would change. And if you press a button on the Stream Deck, like one that would increase volume, you can see what data it sends to the WebSocket to change the volume.
 
 ![Developer tools on the network tab, with a JSON encoded message uploaded to the websocket.](./assets/streamdeck-debug-json.png)
 
@@ -109,28 +80,19 @@ Now all that I needed to do, was make the script.
 
 ## The boring coding part.
 
-So here's the rundown. This script needs to connect to the WebSocket, and listen to the messages it receives.
-Through this, we can keep track of whatever the current volume is, or if the output is muted.
-Then, we have a global hotkey for the keys we previously remapped on the dial to `F13` `F14` and `F15` so that when one of these buttons is pressed,
-it will increase the volume by a predetermined step, or decrease the volume, or toggle mute.
+So here's the rundown. This script needs to connect to the WebSocket, and listen to the messages it receives. Through this, we can keep track of whatever the current volume is, or if the output is muted. Then, we have a global hotkey for the keys we previously remapped on the dial to `F13` `F14` and `F15` so that when one of these buttons is pressed, it will increase the volume by a predetermined step, or decrease the volume, or toggle mute.
 
 Which in and of itself, isn't incredibly difficult to do. It's simply a game of sending the correct information, and correctly interpreting the information we get back.
 
-After much trial and error and having to use `pynput` to properly handle global hotkeys, I finally got the basic functionality working.
-If I turned the dial clockwise, it would increase the volume. If I turned the volume counter-clockwise, it would decrease the volume.
-And if I clicked the dial in, it would toggle mute.
+After much trial and error and having to use `pynput` to properly handle global hotkeys, I finally got the basic functionality working. If I turned the dial clockwise, it would increase the volume. If I turned the volume counter-clockwise, it would decrease the volume.And if I clicked the dial in, it would toggle mute.
 
 So yeah, that solved one problem. But what about that overlay thing you were talking about?
 
-This was actually the most annoying part if I'm being completely honest. Most of my UI design experience is entirely in web design.
-I have no clue how to create a proper native GUI, let alone a volume overlay. So, it was back to the lab.
+This was actually the most annoying part if I'm being completely honest. Most of my UI design experience is entirely in web design. I have no clue how to create a proper native GUI, let alone a volume overlay. So, it was back to the lab.
 
-I ended up using `tkinter` to create the GUI because of how simple it is, and the fact that it's built-in to Python.
-One less dependency to add to the project. And I got it working!
+I ended up using `tkinter` to create the GUI because of how simple it is, and the fact that it's built-in to Python. One less dependency to add to the project. And I got it working!
 
-Now whenever I turn the knob, the output volume changes, and you can see a quick popup of whatever the volume is set to!
-The overlay also displays the volumes of inputs whenever I change them on my Stream Deck.
-As a matter of fact, if you remove the hotkeys from the program, it functions entirely as a way to see your volume changes in real time.
+Now whenever I turn the knob, the output volume changes, and you can see a quick popup of whatever the volume is set to! The overlay also displays the volumes of inputs whenever I change them on my Stream Deck. As a matter of fact, if you remove the hotkeys from the program, it functions entirely as a way to see your volume changes in real time.
 
 And here it is in action.
 
@@ -138,13 +100,10 @@ And here it is in action.
 
 ## And the best part, anyone can use it!
 
-I'll be completely blunt, I'm not a fantastic programmer by any stretch of any degree.
-But, given how little information exists regarding how to interface with Elgato's Wave Link software,
-I figured I would make the script open source so that anyone can inspect and modify it for their own use.
+I'll be completely blunt, I'm not a fantastic programmer by any stretch of any degree. But, given how little information exists regarding how to interface with Elgato's Wave Link software, I figured I would make the script open source so that anyone can inspect and modify it for their own use.
 
 And you can check it out right now, on my [GitHub](https://github.com/theltwilson/wave-link-key-wrapper)
 
-I think that it's important to show that with enough know-how, perseverance, and creativity, you can solve almost any problem that you can think of.
-And while we're at it, thanks for reading.
+I think that it's important to show that with enough know-how, perseverance, and creativity, you can solve almost any problem that you can think of. And while we're at it, thanks for reading.
 
 ❤️
