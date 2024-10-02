@@ -24,6 +24,8 @@ const author = (await getCollection('authors'))
 
 // Get projects
 const projects = (await getCollection('projects'))
+  .sort((a, b) => a.data.name.localeCompare(b.data.name))
+  .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE)
 
 // Set consts based on my author entry
 const {
@@ -82,6 +84,17 @@ const socialLinks: SocialLink[] = [
           {projects.map((project) => <ProjectCard project={project} />)}
         </div>
       </div>
+      <div class="flex justify-center">
+        <Link
+        href="/projects"
+        class={buttonVariants({ variant: 'ghost' }) + ' group mt-4'}
+        >
+        See all projects <span
+        class="ml-1.5 transition-transform group-hover:translate-x-1"
+        >&rarr;</span
+        >
+        </Link>
+      </div>
     </section>
     <!-- Blog Posts  -->
     <section class="flex flex-col gap-y-4">
@@ -104,8 +117,8 @@ const socialLinks: SocialLink[] = [
         class="ml-1.5 transition-transform group-hover:translate-x-1"
         >&rarr;</span
         >
-      </Link>
-    </div>
+        </Link>
+      </div>
     </section>
   </Container>
 </Layout>

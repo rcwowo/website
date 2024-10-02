@@ -1,45 +1,72 @@
 ---
 import Link from '@/components/Link.astro'
+import { cn } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
+import fallbackImage from '../../public/static/missing-project-picture.png'
 
 type Props = {
   project: CollectionEntry<'projects'>
+  linkDisabled?: boolean
+  large?: boolean
 }
 
-const { project } = Astro.props
+const { project, linkDisabled, large } = Astro.props
 ---
 
-<Link
-  href={project.data.link}
-  external
-  class="flex min-w-max items-center p-4 overflow-hidden rounded-xl border transition-colors duration-300 ease-in-out hover:bg-secondary/50"
+<div
+  class="overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out has-[a:hover]:bg-secondary/50"
 >
-  <div class="flex-shrink-0">
-    <Image
-      src={project.data.image}
-      alt={project.data.name}
-      width={60}
-      height={60}
-      class="object-cover rounded-md"
-    />
+  <div class="flex flex-wrap gap-4 lg:flex-nowrap lg:items-start">
+    <div class="flex-basis-auto flex-shrink-0">
+      <Link
+        href={`/projects/${project.slug}`}
+        class={cn('block', linkDisabled && 'pointer-events-none')}
+      >
+        <Image
+          src={project.data.image ?? fallbackImage}
+          alt={project.data.name}
+          width={large ? 96 : 54}
+          height={large ? 96 : 54}
+          class="rounded-md object-cover"
+        />
+      </Link>
+    </div>
+    <div class="flex flex-grow flex-col justify-between">
+      <div>
+        <h3 class="text-lg font-semibold">{project.data.name}</h3>
+        {
+          large && (
+            <p class="pb-2 text-sm text-muted-foreground">
+              {project.data.description}
+            </p>
+          )
+        }
+      </div>
+      <div class="flex items-center gap-x-4">
+        {
+          project.data.github_repo ? (
+            <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
+              <Icon name="lucide:github" width={16} height={16} />
+              {project.data.github_repo}
+            </p>
+          ) : (
+            <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
+              <Icon name="lucide:globe" width={16} height={16} />
+              {project.data.link}
+            </p>
+          )
+        }
+        {
+          project.data.license && large && (
+            <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
+              <Icon name="lucide:scale" width={16} height={16} />
+              {project.data.license}
+            </p>
+          )
+        }
+      </div>
+    </div>
   </div>
-
-  <div class="flex flex-col pl-4">
-    <h3 class="text-lg font-semibold">{project.data.name}</h3>
-    {
-      project.data.github_repo ? (
-        <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
-          <Icon name="lucide:github" width={16} height={16} />
-          {project.data.github_repo}
-        </p>
-      ) : (
-        <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
-          <Icon name="lucide:globe" width={16} height={16} />
-          {project.data.link}
-        </p>
-      )
-    }
-  </div>
-</Link>
+</div>

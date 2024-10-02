@@ -53,10 +53,14 @@ const projects = defineCollection({
   schema: ({ image }) =>
     z.object({
       name: z.string(),
-      image: image().refine((img) => img.width === 128 && img.height === 128, {
-        message: 'The image must be exactly 128 × 128px for consistency.',
-      }),
+      description: z.string(),
+      image: image()
+        .refine((img) => img.width === 128 && img.height === 128, {
+          message: 'The image must be exactly 128 × 128px for consistency.',
+        })
+        .optional(),
       link: z.string().url(),
+      license: z.string().optional(),
       github_repo: z.string().optional(),
     }),
 })

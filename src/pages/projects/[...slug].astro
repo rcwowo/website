@@ -1,0 +1,56 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Container from '@/components/Container.astro'
+import ProjectCard from '@/components/ProjectCard.astro'
+import Link from '@/components/Link.astro'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { getCollection } from 'astro:content'
+import { Icon } from 'astro-icon/components'
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects')
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }))
+}
+
+const { project } = Astro.props
+const { Content } = await project.render()
+---
+
+<Layout title={`${project.data.name} (Project)`} description={project.data.description}>
+  <Container class="flex flex-col gap-y-6">
+    <Breadcrumbs
+      items={[
+        { href: '/projects', label: 'Projects', icon: 'lucide:panels-top-left' },
+        { label: project.data.name, icon: 'lucide:globe' },
+      ]}
+    />
+    <ProjectCard project={project} linkDisabled large />
+    <Link
+      href={project.data.link}
+      class={cn(
+        buttonVariants({ variant: 'outline' }),
+        'rounded-xl group flex items-center justify-start w-full h-fit',
+      )}
+    >
+      <Icon
+        name="lucide:globe"
+        class="size-4 transition-transform group-hover:-translate-x-1"
+      />
+      <div class="flex pl-3 flex-col items-start overflow-hidden">
+        <span class="w-full text-sm">Visit this project</span>
+        <span class="text-xs text-muted-foreground">See this project in action!</span>
+      </div>
+    </Link>
+    <section>
+      <h2 class="text-2xl pb-2 font-semibold">About this project</h2>
+      <article class="prose prose-neutral max-w-none dark:prose-invert">
+        <Content />
+      </article>
+    </section>
+  </Container>
+</Layout>
