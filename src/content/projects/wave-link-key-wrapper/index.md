@@ -9,7 +9,7 @@ github_repo: 'wave-link-key-wrapper'
 
 This is a Python script that allows you to turn keys on your keyboard into volume controls for Elgato's Wave Link software, and displays a simple popup of the current volume level. In order to make Elgato's Wave Link software more visual and easier to manipulate.
 
-I actually wrote a blog post about the entire process it took to make it [here](/blog/2024/wave-link-key-wrapper)
+I actually wrote a blog post about the entire process it took to make it [here](/blog/2024/elgato-wave-link-project).
 
 Elgato leaves a websocket open, currently on port `1824`, that is intended to be used to communicate between their Wave Link and Stream Deck software. I utilize this websocket connection to send actions based upon whatever the current volume or mute status is.
 
