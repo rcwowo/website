@@ -1,7 +1,7 @@
 ---
 name: 'Emote Showcase Extension'
 description: 'A now archived Twitch extension that would display all available emotes for a channel and how to use them or add them to your own channel.'
-image: './icon.png'
+image: './icon.webp'
 link: 'https://github.com/theltwilson/emote-showcase'
 license: 'MIT License'
 github_repo: 'emote-showcase'

@@ -2,7 +2,7 @@
 name: 'The Lt. Website'
 description: 'The very website and blog that you are currently viewing. An Astro website based on the astro-eurodite theme, running on Vercel.' 
 link: 'https://github.com/theltwilson/website'
-image: './icon.png'
+image: './icon.webp'
 license: 'MIT License'
 github_repo: 'website'
 ---

@@ -1,7 +1,7 @@
 ---
 name: 'Wave Link Key Wrapper'
 description: "A project that hooks into Elgato's Wave Link software to make audio control easier and more visual, also includes some documentation."
-image: './icon.png'
+image: './icon.webp'
 link: 'https://github.com/theltwilson/wave-link-key-wrapper'
 license: 'MIT License'
 github_repo: 'wave-link-key-wrapper'

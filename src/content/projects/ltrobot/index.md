@@ -1,7 +1,7 @@
 ---
 name: 'Lt. Robot Chatbot'
 description: 'A now archived chat robot for Twitch that allowed me to dynamically add services to interface with in chat commands.'
-image: './icon.png'
+image: './icon.webp'
 link: 'https://github.com/theltwilson/ltrobot'
 github_repo: 'ltrobot'
 ---
