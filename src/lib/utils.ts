@@ -29,7 +29,7 @@ export async function parseAuthors(authors: string[]) {
       const author = await getEntry('authors', slug)
       return {
         name: author?.data?.name || slug,
-        avatar: author?.data?.avatar || '/static/missing-author-picture.png',
+        avatar: author?.data?.avatar || '/static/missing-author-picture.webp',
         slug: slug,
         isRegistered: !!author,
       }
@@ -37,7 +37,7 @@ export async function parseAuthors(authors: string[]) {
       console.error(`Error fetching author with slug ${slug}:`, error)
       return {
         name: slug,
-        avatar: '/static/missing-author-picture.png',
+        avatar: '/static/missing-author-picture.webp',
         isRegistered: false,
       }
     }

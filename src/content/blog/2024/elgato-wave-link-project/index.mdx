@@ -3,7 +3,7 @@ title: 'How I made Elgato Wave Link even better.'
 description: 'My coding project to enhance audio control for Elgato Wave Link.'
 date: 2024-08-24
 tags: ['technology']
-image: './thumbnail.png'
+image: './thumbnail.webp'
 authors: ['rileywilson']
 ---
 
@@ -19,7 +19,7 @@ There are a few different ways that I could manage audio with my microphone. I c
 
 |Wave Link Interface|Stream Deck Buttons|
 |---|---|
-|![The interface of Elgato's Wave Link software. Displayed prominently are 5 groups of input audio faders, and 2 output mixers layed on top of each other at the bottom of the window.](./assets/wavelink-interface.png)|![Elgato’s Stream Deck software, with 15 programmable buttons displayed in the center of the screen. On the right hand side, there is a list of categories of actions. At the bottom is an empty group with the label “Select a key to configure its action.”](./assets/streamdeck-interface.png)|
+|![The interface of Elgato's Wave Link software. Displayed prominently are 5 groups of input audio faders, and 2 output mixers layed on top of each other at the bottom of the window.](https://utfs.io/f/1HXxpZGmqtvTDSv9OYuYlJy8cMU9RmaBZqkoO1K5PHx4urpf)|![Elgato’s Stream Deck software, with 15 programmable buttons displayed in the center of the screen. On the right hand side, there is a list of categories of actions. At the bottom is an empty group with the label “Select a key to configure its action.”](https://utfs.io/f/1HXxpZGmqtvThewE0WiF4kHljaYg3yxoBZOD7bsiNwecTGUX)|
 
 And while the Stream Deck is still my primary way of controlling audio, there is a few things that the entire experience still lacks.
 
@@ -66,7 +66,7 @@ So I had to take matters into my own hands. So my first instinct was to check an
 
 As it turns out, at least in Windows, you can add a key to the registry editor in Windows to enable a web interface to debug Stream Deck plugins! You can see the instructions on how to enable it for yourself [here](https://imgur.com/a/6eTOaO5). Once you have it enabled, you simply navigate to [localhost:23654](http://localhost:23654) and you will see a blinding white page with each plugin you have installed listed.
 
-![A view of page with the header “Inspectable pages” and 5 clickable options labelled “com.elgato.wavelink”, “com.elgato.tutorial”, “com.elgato.clocks”, “com.elgato.obsstudio”, and “qrc:/html/preload_dummy.html”. The mouse cursor is hovering the “com.elgato.wavelink” option.](./assets/streamdeck-debug-page.png)
+![A view of page with the header “Inspectable pages” and 5 clickable options labelled “com.elgato.wavelink”, “com.elgato.tutorial”, “com.elgato.clocks”, “com.elgato.obsstudio”, and “qrc:/html/preload_dummy.html”. The mouse cursor is hovering the “com.elgato.wavelink” option.](https://utfs.io/f/1HXxpZGmqtvTAg8IJ4rzMsGH6VhfLm49KBPbvST5dauogwZi)
 
 From here, we simply click on the one labelled `com.elgato.wavelink` and you will see a new page load with developer tools that look identical to Chrome's developer tools. Even if you're using Firefox, like me! Then we'll navigate over to the network tab, and hit `Ctrl + R` to reload the page and start recording network activity. Once we have the long list of things being loaded by the page, we are looking for WebSockets. So, near the top of the developers tools, next to where the “filter” search box is, we're going to tick the “WS” button - which stands for WebSocket.
 
@@ -74,7 +74,7 @@ From here, we simply click on the one labelled `com.elgato.wavelink` and you wil
 
 The WebSocket was sending out data every time the audio levels changed in real time, whenever the volume would change, or when basically any piece of information would change. And if you press a button on the Stream Deck, like one that would increase volume, you can see what data it sends to the WebSocket to change the volume.
 
-![Developer tools on the network tab, with a JSON encoded message uploaded to the websocket.](./assets/streamdeck-debug-json.png)
+![Developer tools on the network tab, with a JSON encoded message uploaded to the websocket.](https://utfs.io/f/1HXxpZGmqtvTGsAjwiQSaAi0gzVrLRpXTwx2D8e1F3K4d7no)
 
 Now all that I needed to do, was make the script.
 

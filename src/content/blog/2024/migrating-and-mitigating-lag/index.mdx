@@ -3,7 +3,7 @@ title: 'Lt. Wilscraft: Migration and Lag Mitigation'
 description: 'We review the process of figuring out the server bottlenecks.'
 date: 2024-02-25
 tags: ['minecraft','technology']
-image: './thumbnail.png'
+image: './thumbnail.webp'
 authors: ['rileywilson']
 ---
 
@@ -18,13 +18,13 @@ One of the quickest ways to check whether the client or the server is lagging, i
 
 On most servers, if you have permission, you can check the current tick rate and past tick rates using the `/tps` command from either in-game or via the server console. This will display the tick rate from the past minute, past 5 minutes, and past 20 minutes, respectively.
 
-![A view of Minecraft server console, with the command "tps" entered. The server responds "TPS from last 1m, 5m, 15m: 20.0, 20.0, 20.0"](./assets/tps-example.png)
+![A view of Minecraft server console, with the command "tps" entered. The server responds "TPS from last 1m, 5m, 15m: 20.0, 20.0, 20.0"](https://utfs.io/f/1HXxpZGmqtvTAYGbSBrzMsGH6VhfLm49KBPbvST5dauogwZi)
 
 If the tick rate ever drops **below 20**, it is a good indicator that the server itself is running behind, and it isn't a network or client side issue.
 
 In the case of our server, I noticed that during periods of high usage, the TPS would start to fall behind, with values as low as **17** or **15 TPS**. So, I decided to check the management panel of the server host that I used, Shockbyte. Surely enough, the panel indicated that the server didn't have enough RAM as it was constantly pinned at almost **100% usage!**
 
-![A view of the Shockbyte Multicraft panel that says: "RAM Used: 3.96 GB/4 GB (99.02%)"](./assets/ram-usage.png)
+![A view of the Shockbyte Multicraft panel that says: "RAM Used: 3.96 GB/4 GB (99.02%)"](https://utfs.io/f/1HXxpZGmqtvTMLnd1XD9DSFTy5esulA1IUJOmcNPbKXVRkC3)
 
 This means, we needed to upgrade the server. However, this brought its own set of issues.
 
@@ -61,7 +61,7 @@ It was happening to everyone at once, so it had to be something that *would* eff
 
 Just to confirm, I decided to check Minecraft's built-in debug screen for anything that would indicate a network bottleneck. When you combine the keys `F3+3` you will see two graphs open at the bottom of the screen. This is Minecraft's bandwidth profiler. This is used to provide information on the amount of data being sent and received between the game client and the server.
 
-![The Minecraft debug screen, with the bandwidth profiler open - displaying a graph of response times in milliseconds between the client and the server.](./assets/mc-profiler-bandwidth.png)
+![The Minecraft debug screen, with the bandwidth profiler open - displaying a graph of response times in milliseconds between the client and the server.](https://utfs.io/f/1HXxpZGmqtvTFLgfVlmUC9p3NrRvueTSJVXW86G7AzK2hfq5)
 
 Surely enough, every single time one of these lag spikes happened, a very large red bar would appear with a high response time reported. This indicates that the network on the server was bottlenecking every player.
 
