@@ -35,7 +35,6 @@ export default defineConfig({
     rehypePlugins: [
       rehypeHeadingIds,
       rehypeKatex,
-      // @ts-expect-error
       sectionize,
       [
         rehypePrettyCode,
