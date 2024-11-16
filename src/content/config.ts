@@ -39,6 +39,7 @@ const authors = defineCollection({
     mail: z.string().email().optional(),
     website: z.string().url().optional(),
     twitter: z.string().url().optional(),
+    bluesky: z.string().url().optional(),
     youtube: z.string().url().optional(),
     twitch: z.string().url().optional(),
     instagram: z.string().url().optional(),
