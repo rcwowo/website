@@ -62,6 +62,6 @@ export default defineConfig({
     host: true,
   },
   devToolbar: {
-    enabled: false,
+    enabled: true,
   },
 })
