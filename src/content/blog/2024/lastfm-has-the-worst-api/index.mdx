@@ -1,0 +1,294 @@
+---
+title: "Last.FM has the worst API I've ever seen."
+description: "Going in depth regarding my frustration with Last.FM's API."
+date: 2024-11-17
+tags: ['technology','rant']
+image: './thumbnail.webp'
+authors: ['rileywilson']
+---
+
+Recently, I got started working on a new project that I've been meaning to work on for quite some time. The whole purpose of this project was to create a new Twitch extension that would, if available, display your currently playing song as well as a few previously played songs. I would get this information via [Last.FM](https://last.fm).
+
+Last.FM is a scrobbling service for your music. Essentially, what it does is it connects either directly to your Spotify account or it analyzes the media playing on your device of choice to help catalogue all of the music that you've listened to. Think of it similar to how Spotify does their ["Spotify Wrapped"](https://www.spotify.com/us/wrapped/) event at the end of every year to recap your music taste. Last.FM essentially does this, but whenever you want the information.
+
+![A dashboard with the header "Top Music" - it displays various statistics about how many artists, albums, or individual tracks you've listened to. It also displays your top artist, album, and track and your top NEW artist, album, and track during the time period.](https://utfs.io/f/1HXxpZGmqtvTskW2uOqH40Oki7lPXt8RUCgfpGVZKcqWTIEM)
+
+## A long standing issue.
+
+Now, this isn't my first time utilizing Last.FM's API. Back in the very end of 2022, like the very very end... like December 31st of 2022, I had made a widget for streamers that would allow them to display their currently playing song when it changes. Just like what I'm trying to do now, I used the Last.FM API to fetch this information.
+
+And it worked fine *almost* the entire time. The problem was, occasionally it would display the incorrect song. I initially thought this was just a skill issue and I somehow managed to screw things up, until I realized that occasionally the song it would display, I had never listened to **ever**. It was a difficult problem to troubleshoot because of how inconsistent the issue was, but it was still consistent enough that it became an issue that I needed to fix.
+
+After some rigorous troubleshooting, I found out that occasionally the Last.FM API will simply return the information **for the wrong user**. And apparently, even to this day, this is still a long standing issue that hasn't been fixed.
+
+Check out this [website](https://lastfm-docs.github.io/api-docs/bugs/#random-results). This is an unofficial website that (arguably, better) documents the Last.FM API and the issues that can occur when using it, and one of the four bugs that are on a dedicated page, talks about how the API can sometimes just return data from a completely different user.
+
+![Screenshot of the website highlighting a section with the heading "Random results". The section states: The API has a rare bug where it will sometimes return data like recent tracks from a completely different user. This behavior is also seen on the website. This usually only happens once, and the next result will actually for the user you requested. This might mess with any playcount caching mechanisms you have, so keep that in mind.](https://utfs.io/f/1HXxpZGmqtvTl57t8ws3oxtHXP6viySR4VMgsqBJhbZeN9Fm)
+
+And this isn't the only place where people have complained about this, you can see threads on Reddit, and even Last.FM's own [support forum](https://support.last.fm/) of people complaining about this specific issue.
+
+- [Reddit - the (sad) state of last.fm for developers](https://www.reddit.com/r/lastfm/comments/1051phg/the_sad_state_of_lastfm_for_developers/)
+- [Last.FM Support Forums - API sometimes returning data for different users](https://support.last.fm/t/api-sometimes-returning-data-for-different-users/60069)
+
+Now, you may notice that in the support forums, supposedly a fix for this was released. I, personally, cannot confirm nor deny if this is the case anymore, but I've still seen people complain about this issue. And to be honest, this issue even existing in the first place is a huge dent for any developer who wants to interface with the service.
+
+## Their API is different than the website?
+
+I suppose we should get to the entire point of me writing this, and that's how their API just refuses to serve data that the regular website would display without any issues.
+
+Let me explain. There is one API endpoint that I would always want to call when making my Twitch extension. And that is `user.getRecentTracks`. This endpoint returns the specified user's previously playing songs, as well as their currently playing one, if available.
+
+The problem was, when I called the `user.getRecentTracks` endpoint, I noticed that the response returned an empty string for the album cover images.
+
+```json
+{
+  "recenttracks": {
+    "track": [
+      {
+        "artist": {
+          "mbid": "381086ea-f511-4aba-bdf9-71c753dc5077",
+          "#text": "Kendrick Lamar"
+        },
+        "streamable": "0",
+        "image": [
+          {
+            "size": "small",
+            "#text": ""
+          },
+          {
+            "size": "medium",
+            "#text": ""
+          },
+          {
+            "size": "large",
+            "#text": ""
+          },
+          {
+            "size": "extralarge",
+            "#text": ""
+          }
+        ],
+        "mbid": "7d021af0-62e1-4ad7-b823-757767045432",
+        "album": {
+          "mbid": "",
+          "#text": ""
+        },
+        "name": "Backseat Freestyle",
+        "url": "https://www.last.fm/music/Kendrick+Lamar/_/Backseat+Freestyle",
+        "date": {
+          "uts": "1731364685",
+          "#text": "11 Nov 2024, 22:38"
+        }
+      }
+    ]...
+```
+
+You may also notice that there is no ID returned for the album itself. This is where I started to notice a problem. No matter what song I played, the API refused to send me these properties. Which didn't make sense to me. **If I check on their website,** everything appears fine.
+
+![The Last.FM website, displaying scrobbled songs for "Monday 11 November 2024". It contains two songs: Backseat Freestyle by Kendrick Lamar, and Goodbye To a World by Porter Robinson. Both contain the proper album cover image.](https://utfs.io/f/1HXxpZGmqtvTmMWYJ3B7PwJWT15ocuiayKCNGgQFnsRO3mHD)
+
+This is when I noticed the discrepancy between the data the website displays, and the data the API returns. The website can totally tell what album the song belongs to, and displays the album art image without any problem.
+
+Me being a nerd, I decided to do some troubleshooting. When I had originally played these songs, I was using a third-party [YouTube Music client](https://youtube-music.app/) that supported Last.FM scrobbling. Maybe that was the problem? So, I opened Spotify and started streaming a couple songs to see how the API would respond. **Bingo.**
+
+```json
+{
+  "recenttracks": {
+    "track": [
+      {
+        "artist": {
+          "mbid": "f6beac20-5dfe-4d1f-ae02-0b0a740aafd6",
+          "#text": "Tyler, the Creator"
+        },
+        "streamable": "0",
+        "image": [
+          {
+            "size": "small",
+            "#text": "https://lastfm.freetls.fastly.net/i/u/34s/8c0b389bb4cbf522bc5a2b58e15b6620.jpg"
+          },
+          {
+            "size": "medium",
+            "#text": "https://lastfm.freetls.fastly.net/i/u/64s/8c0b389bb4cbf522bc5a2b58e15b6620.jpg"
+          },
+          {
+            "size": "large",
+            "#text": "https://lastfm.freetls.fastly.net/i/u/174s/8c0b389bb4cbf522bc5a2b58e15b6620.jpg"
+          },
+          {
+            "size": "extralarge",
+            "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/8c0b389bb4cbf522bc5a2b58e15b6620.jpg"
+          }
+        ],
+        "mbid": "819636de-e4d0-4fe8-833b-914c51cfcefc",
+        "album": {
+          "mbid": "e41ee68e-eb4a-4ea6-9dbd-e9d0b9d72712",
+          "#text": "Chromakopia"
+        },
+        "name": "ST. CHROMA (feat. Daniel Caesar)",
+        "url": "https://www.last.fm/music/Tyler,+the+Creator/_/ST.+CHROMA+(feat.+Daniel+Caesar)",
+        "date": {
+          "uts": "1731961493",
+          "#text": "18 Nov 2024, 20:24"
+        }
+      }
+    ]...
+```
+
+Whenever Spotify is used - likely only for Spotify Premium subscribers - all of the information is returned correctly. The website still displayed the correct information regardless of what client was used, but when using Spotify, it looks like the API actually returns the necessary data needed for developers.
+
+This discrepancy, where the website can display information that is entirely missing from their own API, is very frustrating. I intentionally picked using the Last.FM API as opposed to using Spotify's API directly so that I could support more users instead of just relying on a single music streaming platform. By limiting myself to only Spotify, I also turn away potential users who would've used the Twitch extension if it supported platforms like TIDAL, or YouTube Music.
+
+Which is disappointing to see, and I hope Last.FM will address and fix this problem at some point.
+
+## Oops, no images! (again)
+
+Somewhat similar to the issues I was having, other users were having a problem where the Last.FM API would just return placeholder images.
+
+In this instance, the API endpoint in question was `user.getTopTracks`. This endpoint is used to get the specified user's top tracks of all time, or for other time periods. This information could be useful for a developer to integrate into their own project, whether it's a widget, website, or whatever.
+
+Here's a snippet of what the API **still, to this day,** returns.
+
+```json
+{
+    "streamable": {
+        "fulltrack": "0",
+        "#text": "0"
+    },
+    "mbid": "78be434c-0908-458f-9693-f16cdebb68ef",
+    "name": "The Less I Know the Better",
+    "image": [
+        {
+        "size": "small",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "medium",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "large",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "extralarge",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png"
+        }
+    ],
+    "artist": {
+        "url": "https://www.last.fm/music/Tame+Impala",
+        "name": "Tame Impala",
+        "mbid": "63aa26c3-d59b-4da4-84ac-716b54f1ef4d"
+    },
+    "url": "https://www.last.fm/music/Tame+Impala/_/The+Less+I+Know+the+Better",
+    "duration": "217",
+    "@attr": {
+        "rank": "2"
+    },
+    "playcount": "98"
+    },
+    {
+    "streamable": {
+        "fulltrack": "0",
+        "#text": "0"
+    },
+    "mbid": "3bb01c99-0b38-4eff-9ea8-8de56f455136",
+    "name": "Look at the Sky",
+    "image": [
+        {
+        "size": "small",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "medium",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "large",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "extralarge",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png"
+        }
+    ],
+    "artist": {
+        "url": "https://www.last.fm/music/Porter+Robinson",
+        "name": "Porter Robinson",
+        "mbid": "4ae36ade-1798-48c4-b06b-cc68b7d3d83f"
+    },
+    "url": "https://www.last.fm/music/Porter+Robinson/_/Look+at+the+Sky",
+    "duration": "146",
+    "@attr": {
+        "rank": "3"
+    },
+    "playcount": "97"
+    },
+    {
+    "streamable": {
+        "fulltrack": "0",
+        "#text": "0"
+    },
+    "mbid": "5443c746-0658-4f81-88b3-23884edfb726",
+    "name": "NEW MAGIC WAND",
+    "image": [
+        {
+        "size": "small",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "medium",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "large",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png"
+        },
+        {
+        "size": "extralarge",
+        "#text": "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png"
+        }
+    ],
+    "artist": {
+        "url": "https://www.last.fm/music/Tyler,+the+Creator",
+        "name": "Tyler, the Creator",
+        "mbid": "f6beac20-5dfe-4d1f-ae02-0b0a740aafd6"
+    },
+    "url": "https://www.last.fm/music/Tyler,+the+Creator/_/NEW+MAGIC+WAND",
+    "duration": "195",
+    "@attr": {
+        "rank": "4"
+    },
+    "playcount": "96"
+    },
+```
+
+Do you notice something wrong in this API response? Maybe... a string that keeps repeating in each response? Yeah. The API would keep returning various sizes of this placeholder image: `https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png`
+
+![A placeholder icon with a white star on a gray background.](https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png)
+
+And just like before, multiple people have complained about this not working.
+
+- [Last.FM Support Forums - No images on tracks received using user.gettoptracks](https://support.last.fm/t/no-images-on-tracks-retrieved-using-user-gettoptracks/56953/1)
+- [Last.FM Support Forums - Issue with cover art when getting top tracks?](https://support.last.fm/t/issue-with-cover-art-when-getting-top-tracks/99715)
+
+The first post originates from March of 2022, and the second post being as recent as September of 2024. And today, this problem **STILL EXISTS**. A staff member had even replied to the first post in 2022, and said the following:
+
+> This is by design, artist images cannot be retrieved by the api.
+
+Which is misleading, because we aren't retrieving *artist* images, we need the *album art* images - which are literally included in the API response? Even if that's what the staff member meant to say, why is this information even being returned if it's not intended to be there in the first place?
+
+Which leads me to believe that this is just another long-running issue with Last.FM's API.
+
+## In conclusion.
+
+Last.FM has the worst API I've ever seen. From incorrect responses, to inconsistencies, to just plain broken, **it sucks.**
+
+As a developer (an amateur one, at that), I understand that maintaining these codebases are not easy. Especially when you begin operating at such a large scale. But when the entire purpose of your platform is to provide information, you should do a far better job than what we are currently working with.
+
+And the reality is, there isn't really a **good** alternative to Last.FM. Because outside of Last.FM's API, their platform is pretty good, works well, and has easy to digest information. Which just makes it all the more obnoxious when they refuse to fix longstanding issues that should've been a decently high priority.
+
+I hope I don't have to work their API again any time soon. But maybe one day they'll get around to fixing it. API v3, maybe?
+
+Either way, thank you for reading.
+
+❤️
