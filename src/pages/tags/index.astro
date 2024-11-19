@@ -9,9 +9,17 @@ import { getCollection } from 'astro:content'
 
 const blog = (await getCollection('blog')).filter((post) => !post.data.draft)
 
-const tags = blog
-  .flatMap((post) => post.data.tags)
-  .filter((tag, index, self) => self.indexOf(tag) === index)
+const tagCounts = blog.reduce((acc, post) => {
+  post.data.tags?.forEach((tag) => {
+    acc[tag] = (acc[tag] || 0) + 1
+  })
+  return acc
+}, {} as Record<string, number>)
+
+const tags = Object.entries(tagCounts)
+  .sort(([, a], [, b]) => b - a)
+  .map(([tag]) => tag)
+
 ---
 
 <Layout title="Tags" description="A list of all tags used in blog posts">
@@ -29,6 +37,7 @@ const tags = blog
             >
               <Icon name="lucide:hash" class="size-3 -translate-x-0.5" />
               {tag}
+              <span class="ml-1 text-muted-foreground">({tagCounts[tag]})</span>
             </Link>
           ))
         }
