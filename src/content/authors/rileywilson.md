@@ -5,7 +5,6 @@ avatar: 'https://yt3.googleusercontent.com/pg1WVqChBpa0VgbsGa4aK0SGWwEk91M6Hz72r
 bio: 'Strong advocate for putting Hatsune Miku into Fortnite. :3'
 website: 'https://ltwilson.tv'
 github: 'https://github.com/theltwilson'
-twitter: 'https://twitter.com/theltwilson'
 bluesky: 'https://bsky.app/profile/ltwilson.tv'
 youtube: 'https://youtube.com/@theltwilson'
 twitch: 'https://twitch.tv/theltwilson'
