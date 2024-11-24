@@ -27,8 +27,7 @@ export const SITE: Site = {
 export const NAV_LINKS: Link[] = [
   { href: 'https://streamelements.com/theltwilson/tip', label: 'donate' },
   { href: '/blog', label: 'blog' },
-  { href: '/projects', label: 'projects' },
-  { href: 'https://shop.ltwilson.tv', label: 'shop' },
+  { href: '/projects', label: 'projects' }
 ]
 
 export const FOOTER_LINKS: Link[] = [
