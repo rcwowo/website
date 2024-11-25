@@ -1,0 +1,79 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import Layout from '@/layouts/Layout.astro'
+import { getYouTubeVideoID } from '@/lib/utils'
+import { getCollection } from 'astro:content'
+
+export async function getStaticPaths() {
+  const vods = await getCollection('vods')
+  return vods.map((vod) => ({
+    params: { slug: vod.slug },
+    props: { vod },
+  }))
+}
+
+const { vod } = Astro.props
+const youtubeId = getYouTubeVideoID(vod.data.vodUrl)
+---
+
+<Layout title={vod.data.title} description={`Stream VOD: ${vod.data.title}`}>
+  <main class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+    <div class="py-4">
+      <Breadcrumbs
+        items={[
+          { href: '/vods', label: 'VODs', icon: 'lucide:film' },
+          { label: vod.data.title, icon: 'lucide:play' },
+        ]}
+      />
+    </div>
+
+    <div class="mx-auto">
+      <!-- YouTube Embed -->
+      <div class="relative mb-6 h-0 overflow-hidden rounded-lg pb-[56.25%]">
+        <iframe
+          class="absolute left-0 top-0 h-full w-full"
+          src={`https://www.youtube.com/embed/${youtubeId}`}
+          title={vod.data.title}
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        >
+        </iframe>
+      </div>
+
+      <!-- VOD Information -->
+      <Card>
+        <CardHeader>
+          <CardTitle>{vod.data.title}</CardTitle>
+          <CardDescription>
+            Playing <span class="text-foreground">{vod.data.game}</span> •
+            <span class="text-foreground"
+              >{
+                new Date(vod.data.streamDate).toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })
+              }</span
+            > • Duration: <span class="text-foreground"
+              >{vod.data.duration}</span
+            >
+          </CardDescription>
+        </CardHeader>
+      </Card>
+      <CardContent>
+        <div class="prose prose-invert max-w-none">
+          <p>{vod.data.description}</p>
+        </div>
+      </CardContent>
+    </div>
+  </main>
+</Layout>

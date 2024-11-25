@@ -13,6 +13,11 @@ export function formatDate(date: Date) {
     day: 'numeric',
   }).format(date)
 }
+export function getYouTubeVideoID(url: string) {
+  const urlRegex = /^https?:\/\/(?:www\.)?youtu(?:be\.com|\.be)\/(?:watch\?v=)?([^&\s]+)/
+  const match = url.match(urlRegex)
+  return match ? match[1] : undefined
+}
 
 export function readingTime(html: string) {
   const textOnly = html.replace(/<[^>]+>/g, '')

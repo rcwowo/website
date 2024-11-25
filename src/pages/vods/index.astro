@@ -1,0 +1,98 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import VodCard from '@/components/VodCard.astro'
+import Link from '@/components/Link.astro'
+import { buttonVariants } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { getCollection } from 'astro:content'
+
+const vods = await getCollection('vods')
+const sortedVods = vods.sort(
+  (a, b) => b.data.streamDate.valueOf() - a.data.streamDate.valueOf(),
+)
+const latestVod = sortedVods[0]
+const nextThreeVods = sortedVods.slice(1, 4)
+
+const vodsByMonth = sortedVods.reduce(
+  (acc: Record<string, typeof vods>, vod) => {
+    const monthYear = vod.data.streamDate.toLocaleString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    })
+    if (!acc[monthYear]) {
+      acc[monthYear] = []
+    }
+    acc[monthYear].push(vod)
+    return acc
+  },
+  {} as Record<string, typeof vods>,
+)
+---
+
+<Layout title="Twitch VODs" description="Archive of my Twitch streams">
+  <main class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+    <div class="pb-4">
+      <Breadcrumbs
+        items={[{ label: 'VODs', icon: 'lucide:film' }]} 
+      />
+    </div>
+    {latestVod && (
+      <section class="mb-16">
+        <VodCard vod={latestVod} featured={true} />
+      </section>
+    )}
+
+    <section class="mb-16">
+      <div class="flex flex-row justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold">Recent VODs</h2>
+        <Link
+        href="/vods/all"
+        class={buttonVariants({ variant: 'outline' }) + ' group'}
+        >
+        View all <span
+        class="ml-1.5 transition-transform group-hover:translate-x-1"
+        >&rarr;</span
+        >
+        </Link>
+      </div>
+      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {nextThreeVods.map(vod => (
+          <VodCard vod={vod} />
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <div class="flex flex-row justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold">VODs by month</h2>
+        <Link
+        href="/vods/collection"
+        class={buttonVariants({ variant: 'outline' }) + ' group'}
+        >
+        View all <span
+        class="ml-1.5 transition-transform group-hover:translate-x-1"
+        >&rarr;</span
+        >
+        </Link>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {Object.entries(vodsByMonth).slice(0, 4).map(([monthYear, monthVods]) => (
+          <Card className="hover:bg-accent transition-colors">
+            <a
+              href={`/vods/collection/${monthYear.toLowerCase().replace(' ', '-')}`}
+              class="block h-full"
+            >
+              <CardHeader className="space-y-1">
+                <CardTitle className="text-2xl text-center">{monthYear}</CardTitle>
+                <CardDescription className="text-center">
+                  {monthVods.length} video{monthVods.length === 1 ? '' : 's'}
+                </CardDescription>
+              </CardHeader>
+            </a>
+          </Card>
+        ))}
+      </div>
+    </section>
+  </main>
+</Layout>

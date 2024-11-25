@@ -5,6 +5,7 @@ export type Site = {
   NUM_POSTS_ON_HOMEPAGE: number
   NUM_PROJECTS_ON_HOMEPAGE: number
   POSTS_PER_PAGE: number
+  VODS_PER_PAGE: number
   SITEURL: string
 }
 
@@ -21,13 +22,15 @@ export const SITE: Site = {
   NUM_POSTS_ON_HOMEPAGE: 3,
   NUM_PROJECTS_ON_HOMEPAGE: 4,
   POSTS_PER_PAGE: 8,
+  VODS_PER_PAGE: 9,
   SITEURL: 'https://ltwilson.tv',
 }
 
 export const NAV_LINKS: Link[] = [
   { href: 'https://streamelements.com/theltwilson/tip', label: 'donate' },
   { href: '/blog', label: 'blog' },
-  { href: '/projects', label: 'projects' }
+  { href: '/projects', label: 'projects' },
+  { href: '/vods', label: 'VODs'}
 ]
 
 export const FOOTER_LINKS: Link[] = [

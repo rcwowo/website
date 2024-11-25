@@ -66,4 +66,17 @@ const projects = defineCollection({
     }),
 })
 
-export const collections = { blog, authors, projects }
+const vods = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    streamDate: z.coerce.date(),
+    game: z.string(),
+    vodUrl: z.string().url(),
+    thumbnail: z.string().url(),
+    duration: z.string(),
+    description: z.string().optional(),
+  }),
+})
+
+export const collections = { blog, authors, projects, vods }

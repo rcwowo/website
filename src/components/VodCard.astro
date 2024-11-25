@@ -1,0 +1,80 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+  vod: CollectionEntry<'vods'>
+  featured?: boolean
+}
+
+const { vod, featured = false } = Astro.props
+---
+
+<div class:list={[
+  'relative aspect-video overflow-hidden rounded-lg',
+]}>
+  <a
+    href={`/vods/watch/${vod.slug}`}
+    class="block"
+  >
+    <img
+      src={vod.data.thumbnail}
+      alt={vod.data.title}
+      class="h-full w-full object-cover transition-opacity hover:opacity-75"
+    />
+    <div class:list={[
+      'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/100 to-transparent',
+      featured ? 'p-6' : 'p-4'
+    ]}>
+      <h3 class:list={[
+        'font-bold text-white truncate',
+        featured ? 'text-2xl' : 'text-lg'
+      ]}>
+        {vod.data.title}
+      </h3>
+      {featured ? (
+        <div class="flex items-center justify-between text-gray-200">
+          <div>
+            {vod.data.streamDate.toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </div>
+          <div class="flex items-center gap-4">
+            {vod.data.games && (
+              <div class="flex gap-2">
+                {vod.data.games.map((game) => (
+                  <span class="rounded-md bg-black/50 px-2 py-1 text-sm">
+                    {game}
+                  </span>
+                ))}
+              </div>
+            )}
+            <div class="flex items-center gap-1">
+              <span class="sr-only">Duration:</span>
+              <Icon name="lucide:clock" />
+              <span>{vod.data.duration}</span>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div class="flex items-center justify-between text-sm text-gray-200">
+          <div>
+            {vod.data.streamDate.toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </div>
+          <div class="flex items-center gap-1">
+            <span class="sr-only">Duration:</span>
+            <Icon name="lucide:clock" />
+            <span>{vod.data.duration}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  </a>
+</div>

@@ -18,55 +18,87 @@ const { project, linkDisabled, large } = Astro.props
 <div
   class="overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out has-[a:hover]:bg-secondary/50"
 >
-  <div class="flex flex-wrap gap-4 lg:flex-nowrap lg:items-start">
-    <div class="flex-basis-auto flex-shrink-0">
-      <Link
-        href={`/projects/${project.slug}`}
-        class={cn('block', linkDisabled && 'pointer-events-none')}
-      >
+  <Link
+    href={`/projects/${project.slug}`}
+    class={cn('block', linkDisabled && 'pointer-events-none')}
+  >
+    <div class="flex flex-wrap gap-4 lg:flex-nowrap lg:items-start">
+      <div class="flex-basis-auto flex-shrink-0">
         <Image
           src={project.data.image ?? fallbackImage}
           alt={project.data.name}
-          width={large ? 96 : 54}
-          height={large ? 96 : 54}
+          width={large ? 96 : 40}
+          height={large ? 96 : 40}
           class="rounded-md object-cover"
         />
-      </Link>
-    </div>
-    <div class="flex flex-grow flex-col justify-between">
-      <div>
-        <h3 class="text-lg font-semibold">{project.data.name}</h3>
-        {
-          large && (
-            <p class="pb-2 text-sm text-muted-foreground">
-              {project.data.description}
-            </p>
-          )
-        }
       </div>
-      <div class="flex items-center gap-x-4">
-        {
-          project.data.github_repo ? (
-            <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
-              <Icon name="lucide:github" width={16} height={16} />
-              {project.data.github_repo}
-            </p>
-          ) : (
-            <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
-              <Icon name="lucide:globe" width={16} height={16} />
-              {project.data.link}
-            </p>
-          )
-        }
-        {
-          project.data.license && large && (
-            <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
-              <Icon name="lucide:scale" width={16} height={16} />
-              {project.data.license}
-            </p>
-          )
-        }
+      <div
+        class={cn(
+          'flex flex-grow flex-col justify-between',
+          !large && 'w-0 min-w-0',
+        )}
+      >
+        <div>
+          <h3 class="text-md truncate font-semibold">{project.data.name}</h3>
+          {
+            large && (
+              <p class="pb-2 text-sm text-muted-foreground">
+                {project.data.description}
+              </p>
+            )
+          }
+        </div>
+        <div
+          class={cn('flex items-center gap-x-4', !large && 'w-full min-w-0')}
+        >
+          {
+            project.data.github_repo ? (
+              <p
+                class={cn(
+                  'flex items-center gap-x-2 text-sm text-muted-foreground',
+                  !large && 'w-full min-w-0',
+                )}
+              >
+                <Icon
+                  name="lucide:github"
+                  class="flex-shrink-0"
+                  width={16}
+                  height={16}
+                />
+                <span class="truncate">{project.data.github_repo}</span>
+              </p>
+            ) : (
+              <p
+                class={cn(
+                  'flex items-center gap-x-2 text-sm text-muted-foreground',
+                  !large && 'w-full min-w-0',
+                )}
+              >
+                <Icon
+                  name="lucide:globe"
+                  class="flex-shrink-0"
+                  width={16}
+                  height={16}
+                />
+                <span class="truncate">{project.data.link}</span>
+              </p>
+            )
+          }
+          {
+            project.data.license && large && (
+              <p class="flex items-center gap-x-2 text-sm text-muted-foreground">
+                <Icon
+                  name="lucide:scale"
+                  class="flex-shrink-0"
+                  width={16}
+                  height={16}
+                />
+                <span class="truncate">{project.data.license}</span>
+              </p>
+            )
+          }
+        </div>
       </div>
     </div>
-  </div>
+  </Link>
 </div>
