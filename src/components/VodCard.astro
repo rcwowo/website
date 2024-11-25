@@ -43,15 +43,11 @@ const { vod, featured = false } = Astro.props
             })}
           </div>
           <div class="flex items-center gap-4">
-            {vod.data.games && (
-              <div class="flex gap-2">
-                {vod.data.games.map((game) => (
-                  <span class="rounded-md bg-black/50 px-2 py-1 text-sm">
-                    {game}
-                  </span>
-                ))}
-              </div>
-            )}
+            <div class="flex gap-2">
+                <span class="rounded-md bg-black/50 px-2 py-1 text-sm">
+                  {vod.data.game}
+                </span>
+            </div>
             <div class="flex items-center gap-1">
               <span class="sr-only">Duration:</span>
               <Icon name="lucide:clock" />
