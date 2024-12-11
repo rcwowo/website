@@ -1,12 +1,6 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import Layout from '@/layouts/Layout.astro'
 import { getYouTubeVideoID } from '@/lib/utils'
 import { getCollection } from 'astro:content'
@@ -49,31 +43,45 @@ const youtubeId = getYouTubeVideoID(vod.data.vodUrl)
       </div>
 
       <!-- VOD Information -->
-      <Card>
-        <CardHeader>
-          <CardTitle>{vod.data.title}</CardTitle>
-          <CardDescription>
-            Playing <span class="text-foreground">{vod.data.game}</span> •
-            <span class="text-foreground"
-              >{
-                new Date(vod.data.streamDate).toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })
-              }</span
-            > • Duration: <span class="text-foreground"
-              >{vod.data.duration}</span
-            >
-          </CardDescription>
-        </CardHeader>
-      </Card>
-      <CardContent>
-        <div class="prose prose-invert max-w-none">
-          <p>{vod.data.description}</p>
+      <Card className="flex gap-x-4 p-4">
+        <img
+          src={vod.data.gameCoverURL}
+          alt={`Game cover for ${vod.data.game}`}
+          class="aspect-[3/4] max-h-24 max-w-20 rounded-lg"
+        />
+        <div>
+          <h3 class="mb-1 text-xl font-semibold md:text-2xl">
+            {vod.data.title}
+          </h3>
+          <div class="text-sm text-muted-foreground">
+            <p>
+              Playing: <span class="font-semibold text-foreground"
+                ><a
+                  href={`/vods/games/${vod.data.game.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                  class="hover:underline">{vod.data.game}</a
+                ></span
+              >
+            </p>
+            <p>
+              Streamed on: <span class="font-semibold text-foreground"
+                >{
+                  vod.data.streamDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })
+                }</span
+              >
+            </p>
+            <p>
+              Duration: <span class="font-semibold text-foreground"
+                >{vod.data.duration}</span
+              >
+            </p>
+          </div>
         </div>
-      </CardContent>
+      </Card>
     </div>
   </main>
 </Layout>
