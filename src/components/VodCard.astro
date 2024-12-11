@@ -15,12 +15,12 @@ const { vod, featured = false } = Astro.props
 ]}>
   <a
     href={`/vods/watch/${vod.slug}`}
-    class="block"
+    class="block group"
   >
     <img
       src={vod.data.thumbnail}
       alt={vod.data.title}
-      class="h-full w-full object-cover transition-opacity hover:opacity-75"
+      class="h-full w-full object-cover transition group-hover:scale-105 group-hover:opacity-75"
     />
     <div class:list={[
       'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/100 to-transparent',
