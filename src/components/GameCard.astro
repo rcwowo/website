@@ -19,7 +19,7 @@ const { game, coverUrl, vodCount } = Astro.props
     {coverUrl ? (
       <img
         src={coverUrl}
-        alt=""
+        alt={`Game cover for ${game}`}
         class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 group-hover:opacity-70 transition ease-in-out"
       />
     ) : (
