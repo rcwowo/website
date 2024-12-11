@@ -1,0 +1,35 @@
+---
+import { Card } from '@/components/ui/card'
+
+interface Props {
+  game: string
+  coverUrl: string
+  vodCount: number
+}
+
+const { game, coverUrl, vodCount } = Astro.props
+---
+
+<Card className="group relative overflow-hidden">
+  <a
+    href={`/vods/games/${game.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+    class="block aspect-[3/4] relative"
+  >
+    <div class="absolute inset-0" />
+    {coverUrl ? (
+      <img
+        src={coverUrl}
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 group-hover:opacity-70 transition ease-in-out"
+      />
+    ) : (
+      <div class="absolute inset-0 bg-muted" />
+    )}
+    <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform ease-in-out">
+      <h3 class="text-xl font-semibold text-center text-white">{game}</h3>
+      <p class="text-center text-white/80">
+        {vodCount} video{vodCount === 1 ? '' : 's'}
+      </p>
+    </div>
+  </a>
+</Card>

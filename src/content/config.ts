@@ -72,6 +72,7 @@ const vods = defineCollection({
     title: z.string(),
     streamDate: z.coerce.date(),
     game: z.string(),
+    gameCoverURL: z.string().url(),
     vodUrl: z.string().url(),
     thumbnail: z.string().url(),
     duration: z.string(),

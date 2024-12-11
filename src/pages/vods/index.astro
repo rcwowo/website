@@ -6,6 +6,7 @@ import Link from '@/components/Link.astro'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { getCollection } from 'astro:content'
+import GameCard from '@/components/GameCard.astro'
 
 const vods = await getCollection('vods')
 const sortedVods = vods.sort(
@@ -28,6 +29,21 @@ const vodsByMonth = sortedVods.reduce(
   },
   {} as Record<string, typeof vods>,
 )
+
+const vodsByGame = sortedVods.reduce(
+  (acc: Record<string, { vods: typeof vods; coverUrl: string }>, vod) => {
+    const game = vod.data.game || 'Other'
+    if (!acc[game]) {
+      acc[game] = {
+        vods: [],
+        coverUrl: vod.data.gameCoverURL || '',
+      }
+    }
+    acc[game].vods.push(vod)
+    return acc
+  },
+  {} as Record<string, { vods: typeof vods; coverUrl: string }>,
+)
 ---
 
 <Layout title="Twitch VODs" description="Archive of my Twitch streams">
@@ -45,7 +61,7 @@ const vodsByMonth = sortedVods.reduce(
 
     <section class="mb-16">
       <div class="flex flex-row justify-between items-center mb-8">
-        <h2 class="text-3xl font-bold">Recent VODs</h2>
+        <h2 class="text-3xl font-bold">Recent Streams</h2>
         <Link
         href="/vods/all"
         class={buttonVariants({ variant: 'outline' }) + ' group'}
@@ -65,7 +81,7 @@ const vodsByMonth = sortedVods.reduce(
 
     <section>
       <div class="flex flex-row justify-between items-center mb-8">
-        <h2 class="text-3xl font-bold">VODs by month</h2>
+        <h2 class="text-3xl font-bold">Sorted by Month</h2>
         <Link
         href="/vods/collection"
         class={buttonVariants({ variant: 'outline' }) + ' group'}
@@ -91,6 +107,29 @@ const vodsByMonth = sortedVods.reduce(
               </CardHeader>
             </a>
           </Card>
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-16">
+      <div class="flex flex-row justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold">Streamed Games</h2>
+        <Link
+          href="/vods/games"
+          class={buttonVariants({ variant: 'outline' }) + ' group'}
+        >
+          View all <span
+            class="ml-1.5 transition-transform group-hover:translate-x-1"
+          >&rarr;</span>
+        </Link>
+      </div>
+      <div class="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        {Object.entries(vodsByGame).slice(0, 6).map(([game, { vods: gameVods, coverUrl }]) => (
+          <GameCard
+            game={game}
+            coverUrl={coverUrl}
+            vodCount={gameVods.length}
+          />
         ))}
       </div>
     </section>
