@@ -76,7 +76,7 @@ const vods = defineCollection({
     vodUrl: z.string().url(),
     thumbnail: z.string().url(),
     duration: z.string(),
-    description: z.string().optional(),
+    chatReplayURL: z.string().url().optional(),
   }),
 })
 
