@@ -7,6 +7,7 @@ export type Site = {
   POSTS_PER_PAGE: number
   VODS_PER_PAGE: number
   SITEURL: string
+  TWITCH_USER_ID: number
 }
 
 export type Link = {
@@ -24,6 +25,7 @@ export const SITE: Site = {
   POSTS_PER_PAGE: 8,
   VODS_PER_PAGE: 9,
   SITEURL: 'https://ltwilson.tv',
+  TWITCH_USER_ID: 194814599
 }
 
 export const NAV_LINKS: Link[] = [

@@ -1,6 +1,7 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import { Card } from '@/components/ui/card'
+import ChatReplay from '@/components/ChatReplay'
 import Layout from '@/layouts/Layout.astro'
 import { getYouTubeVideoID } from '@/lib/utils'
 import { getCollection } from 'astro:content'
@@ -14,6 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { vod } = Astro.props
+const { Content } = await vod.render()
 const youtubeId = getYouTubeVideoID(vod.data.vodUrl)
 ---
 
@@ -29,18 +31,20 @@ const youtubeId = getYouTubeVideoID(vod.data.vodUrl)
     </div>
 
     <div class="mx-auto">
-      <!-- YouTube Embed -->
-      <div class="relative mb-6 h-0 overflow-hidden rounded-lg pb-[56.25%]">
-        <iframe
-          class="absolute left-0 top-0 h-full w-full"
-          src={`https://www.youtube.com/embed/${youtubeId}`}
-          title={vod.data.title}
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        >
-        </iframe>
-      </div>
+      <div class={vod.data.chatReplayURL ? "grid grid-cols-1 lg:grid-cols-[1fr,300px] gap-6" : ""}>
+        <div>
+          <!-- YouTube Embed -->
+          <div class="relative mb-6 h-0 overflow-hidden rounded-lg pb-[56.25%]">
+            <iframe
+              id={`youtube-player-${youtubeId}`}
+              class="absolute left-0 top-0 h-full w-full"
+              src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&autoplay=1`}
+              title={vod.data.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            >
+            </iframe>
+          </div>
 
       <!-- VOD Information -->
       <Card className="flex gap-x-4 p-4">
@@ -81,7 +85,12 @@ const youtubeId = getYouTubeVideoID(vod.data.vodUrl)
             </p>
           </div>
         </div>
-      </Card>
+      </div>
+        {vod.data.chatReplayURL && (
+          <div class="h-[calc(100vh-12rem)] sticky top-24">
+            <ChatReplay client:load chatReplayURL={vod.data.chatReplayURL} youtubeId={youtubeId} />
+          </div>
+        )}
     </div>
   </main>
 </Layout>
