@@ -34,13 +34,40 @@ interface ChatReplayProps {
   youtubeId: string | undefined
 }
 
+interface YouTubePlayer {
+  getCurrentTime(): number;
+  getPlayerState(): number;
+  destroy(): void;
+}
+
+interface YouTubeEvent {
+  target: YouTubePlayer;
+  data: number;
+}
+
+declare global {
+  interface Window {
+    YT: {
+      Player: new (
+        elementId: string,
+        config: {
+          videoId: string;
+          playerVars?: Record<string, any>;
+          events?: Record<string, (event: YouTubeEvent) => void>;
+        }
+      ) => YouTubePlayer;
+    };
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
 export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps) {
   const [comments, setComments] = useState<ChatComment[]>([])
   const [visibleComments, setVisibleComments] = useState<ChatComment[]>([])
   const [currentTime, setCurrentTime] = useState(0)
   const [userScrolled, setUserScrolled] = useState(false)
   const chatContainerRef = useRef<HTMLDivElement>(null)
-  const playerRef = useRef<any>(null)
+  const playerRef = useRef<YouTubePlayer | null>(null)
   const MAX_VISIBLE_MESSAGES = 200
 
   // Load chat messages
@@ -59,52 +86,77 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
 
   // Initialize YouTube Player API
   useEffect(() => {
-    const tag = document.createElement('script')
-    tag.src = 'https://www.youtube.com/iframe_api'
-    const firstScriptTag = document.getElementsByTagName('script')[0]
-    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+    if (!youtubeId) return;
 
-    // @ts-ignore
-    window.onYouTubeIframeAPIReady = () => {
-      // @ts-ignore
-      playerRef.current = new YT.Player(`youtube-player-${youtubeId}`, {
+    const iframeId = `youtube-player-${youtubeId}`;
+    const iframe = document.getElementById(iframeId);
+    if (!iframe) return;
+
+    const initPlayer = () => {
+      playerRef.current = new window.YT.Player(iframeId, {
+        videoId: youtubeId,
+        playerVars: {
+          autoplay: 1,
+          enablejsapi: 1,
+          playsinline: 1,
+          origin: window.location.origin
+        },
         events: {
-          onStateChange: (event: any) => {
-            // Update currentTime when video is playing
+          onStateChange: (event: YouTubeEvent) => {
             if (event.data === 1) { // Playing
               const updateTime = () => {
                 if (playerRef.current) {
-                  setCurrentTime(playerRef.current.getCurrentTime())
-                  requestAnimationFrame(updateTime)
+                  const time = playerRef.current.getCurrentTime();
+                  setCurrentTime(time);
+                  requestAnimationFrame(updateTime);
                 }
-              }
-              updateTime()
+              };
+              updateTime();
             }
           }
         }
-      })
-    }
+      });
+    };
+
+    const loadYouTubeAPI = () => {
+      return new Promise<void>((resolve) => {
+        if (window.YT) {
+          resolve();
+          return;
+        }
+
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+
+        window.onYouTubeIframeAPIReady = () => {
+          resolve();
+        };
+      });
+    };
+
+    loadYouTubeAPI().then(initPlayer);
 
     return () => {
       if (playerRef.current) {
-        playerRef.current.destroy()
+        playerRef.current.destroy();
       }
-    }
-  }, [youtubeId])
+    };
+  }, [youtubeId]);
 
   // Update visible messages based on current time
   useEffect(() => {
     const visibleComments = comments
       .filter(comment => comment.content_offset_seconds <= currentTime)
-      // Take the last MAX_VISIBLE_MESSAGES messages
-      .slice(-MAX_VISIBLE_MESSAGES)
-    setVisibleComments(visibleComments)
+      .slice(-MAX_VISIBLE_MESSAGES);
+    setVisibleComments(visibleComments);
 
     // Auto-scroll to bottom only if user hasn't scrolled up
     if (chatContainerRef.current && !userScrolled) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [currentTime, comments, userScrolled])
+  }, [currentTime, comments, userScrolled]);
 
   // Handle scroll events
   const handleScroll = () => {
@@ -118,25 +170,25 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
   }
 
   return (
-    <div className="bg-card h-4/6 lg:h-full rounded-lg border">
-      <div className="p-3 h-[60px] border-b flex justify-between items-center">
+    <div className="h-full flex flex-col">
+      <div className="shrink-0 p-3 border-b flex justify-between items-center">
         <h3 className="font-semibold">Chat Replay</h3>
         {userScrolled && (
           <button
             className={buttonVariants({ variant: 'outline', size: 'sm' })}
             onClick={() => {
               if (chatContainerRef.current) {
-                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+                chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
               }
             }}
           >
             Scrolling Paused
           </button>
-      )}
+        )}
       </div>
       <div 
         ref={chatContainerRef}
-        className="h-[calc(100%-60px)] overflow-y-auto p-4 space-y-2"
+        className="grow overflow-y-auto p-4 space-y-2"
         onScroll={handleScroll}
       >
         {visibleComments.map((comment) => (

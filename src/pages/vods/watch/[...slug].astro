@@ -43,13 +43,14 @@ const youtubeId = getYouTubeVideoID(vod.data.vodUrl)
     </div>
 
     <!-- Content Area -->
-    <div class="relative flex flex-1 flex-col md:flex-row">
+    <div class="relative flex flex-1 flex-col md:flex-row overflow-hidden">
       <!-- Video Player -->
       <div class="relative flex-1">
         <div class="relative h-full w-full">
           <iframe
+            id={`youtube-player-${youtubeId}`}
             class="absolute left-0 top-0 h-full w-full"
-            src={`https://www.youtube.com/embed/${youtubeId}`}
+            src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&origin=${Astro.url.origin}&autoplay=1`}
             title={vod.data.title}
             allow="autoplay; encrypted-media; picture-in-picture"
             allowfullscreen
@@ -60,7 +61,7 @@ const youtubeId = getYouTubeVideoID(vod.data.vodUrl)
 
       <!-- Chat Replay -->
       {vod.data.chatReplayURL && (
-        <div class="h-[60vh] border-t md:h-auto md:w-80 md:border-l md:border-t-0 bg-muted/30">
+        <div class="h-[60vh] md:h-auto md:w-80 border-t md:border-l md:border-t-0 bg-muted/30 overflow-hidden">
           <ChatReplay client:load chatReplayURL={vod.data.chatReplayURL} youtubeId={youtubeId} />
         </div>
       )}
