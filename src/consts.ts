@@ -23,7 +23,7 @@ export const SITE: Site = {
   NUM_POSTS_ON_HOMEPAGE: 3,
   NUM_PROJECTS_ON_HOMEPAGE: 4,
   POSTS_PER_PAGE: 8,
-  VODS_PER_PAGE: 9,
+  VODS_PER_PAGE: 15,
   SITEURL: 'https://ltwilson.tv',
   TWITCH_USER_ID: 194814599
 }
