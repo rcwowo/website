@@ -47,15 +47,10 @@ const youtubeId = getYouTubeVideoID(vod.data.vodUrl)
       <!-- Video Player -->
       <div class="relative flex-1">
         <div class="relative h-full w-full">
-          <iframe
+          <div
             id={`youtube-player-${youtubeId}`}
             class="absolute left-0 top-0 h-full w-full"
-            src={`https://www.youtube.com/embed/${youtubeId}?enablejsapi=1&origin=${Astro.url.origin}&autoplay=1`}
-            title={vod.data.title}
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowfullscreen
-          >
-          </iframe>
+          ></div>
         </div>
       </div>
 

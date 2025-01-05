@@ -74,11 +74,13 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
   useEffect(() => {
     const fetchComments = async () => {
       try {
+        console.log('[ChatReplay] Fetching comments from:', chatReplayURL);
         const response = await fetch(chatReplayURL)
         const data: ChatData = await response.json()
+        console.log('[ChatReplay] Fetched', data.comments.length, 'comments');
         setComments(data.comments.sort((a, b) => a.content_offset_seconds - b.content_offset_seconds))
       } catch (error) {
-        console.error('Error loading chat messages:', error)
+        console.error('[ChatReplay] Error fetching comments:', error)
       }
     }
     fetchComments()
@@ -88,58 +90,125 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
   useEffect(() => {
     if (!youtubeId) return;
 
+    let isApiLoaded = false;
+    let attempts = 0;
+    const maxAttempts = 10;
+    const retryInterval = 1000; // 1 second
+
     const iframeId = `youtube-player-${youtubeId}`;
-    const iframe = document.getElementById(iframeId);
-    if (!iframe) return;
+    console.log('[ChatReplay] Looking for iframe:', iframeId);
 
     const initPlayer = () => {
-      playerRef.current = new window.YT.Player(iframeId, {
-        videoId: youtubeId,
-        playerVars: {
-          autoplay: 1,
-          enablejsapi: 1,
-          playsinline: 1,
-          origin: window.location.origin
-        },
-        events: {
-          onStateChange: (event: YouTubeEvent) => {
-            if (event.data === 1) { // Playing
-              const updateTime = () => {
-                if (playerRef.current) {
-                  const time = playerRef.current.getCurrentTime();
-                  setCurrentTime(time);
-                  requestAnimationFrame(updateTime);
-                }
-              };
-              updateTime();
+      const iframe = document.getElementById(iframeId);
+      if (!iframe) {
+        console.error('[ChatReplay] Iframe not found:', iframeId);
+        return false;
+      }
+      console.log('[ChatReplay] Found iframe, initializing player');
+
+      try {
+        if (!window.YT || !window.YT.Player) {
+          console.log('[ChatReplay] YouTube API not ready yet');
+          return false;
+        }
+
+        console.log('[ChatReplay] Initializing player');
+        
+        // Destroy existing player if it exists
+        if (playerRef.current) {
+          playerRef.current.destroy();
+        }
+
+        // Create new player
+        playerRef.current = new window.YT.Player(iframeId, {
+          videoId: youtubeId,
+          playerVars: {
+            autoplay: 1,
+            playsinline: 1,
+            rel: 0,
+            origin: window.location.origin,
+            enablejsapi: 1
+          },
+          events: {
+            onReady: (event: YouTubeEvent) => {
+              console.log('[ChatReplay] Player ready');
+              isApiLoaded = true;
+            },
+            onStateChange: (event: YouTubeEvent) => {
+              console.log('[ChatReplay] Player state changed:', event.data);
+              if (event.data === 1) { // Playing
+                const updateTime = () => {
+                  if (playerRef.current) {
+                    try {
+                      const time = playerRef.current.getCurrentTime();
+                      setCurrentTime(time);
+                      if (event.data === 1) { // Only continue if still playing
+                        requestAnimationFrame(updateTime);
+                      }
+                    } catch (error) {
+                      console.error('[ChatReplay] Error getting time:', error);
+                    }
+                  }
+                };
+                updateTime();
+              }
+            },
+            onError: (event: any) => {
+              console.error('[ChatReplay] Player error:', event.data);
+              isApiLoaded = false;
             }
           }
-        }
-      });
+        });
+        return true;
+      } catch (error) {
+        console.error('[ChatReplay] Error initializing player:', error);
+        return false;
+      }
     };
 
     const loadYouTubeAPI = () => {
       return new Promise<void>((resolve) => {
-        if (window.YT) {
+        if (window.YT && window.YT.Player) {
+          console.log('[ChatReplay] YouTube API already loaded');
           resolve();
           return;
         }
 
+        console.log('[ChatReplay] Loading YouTube API script');
         const tag = document.createElement('script');
         tag.src = 'https://www.youtube.com/iframe_api';
         const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
         window.onYouTubeIframeAPIReady = () => {
+          console.log('[ChatReplay] YouTube API script loaded');
           resolve();
         };
       });
     };
 
-    loadYouTubeAPI().then(initPlayer);
+    const attemptInitialization = async () => {
+      if (attempts >= maxAttempts) {
+        console.error('[ChatReplay] Max initialization attempts reached');
+        return;
+      }
+
+      attempts++;
+      console.log(`[ChatReplay] Initialization attempt ${attempts}/${maxAttempts}`);
+
+      await loadYouTubeAPI();
+      
+      if (!initPlayer()) {
+        console.log('[ChatReplay] Initialization failed, retrying...');
+        setTimeout(attemptInitialization, retryInterval);
+      }
+    };
+
+    attemptInitialization();
 
     return () => {
       if (playerRef.current) {
+        console.log('[ChatReplay] Cleaning up player');
         playerRef.current.destroy();
       }
     };
@@ -163,7 +232,7 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
     if (!chatContainerRef.current) return
 
     const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 5
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 20
 
     // Update userScrolled state based on scroll position
     setUserScrolled(!isAtBottom)
