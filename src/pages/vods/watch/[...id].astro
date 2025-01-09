@@ -10,7 +10,7 @@ import Image from 'astro/components/Image.astro'
 export async function getStaticPaths() {
   const vods = await getCollection('vods')
   return vods.map((vod) => ({
-    params: { slug: vod.slug },
+    params: { id: vod.id },
     props: { vod },
   }))
 }

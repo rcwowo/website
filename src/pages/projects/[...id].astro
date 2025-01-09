@@ -8,17 +8,18 @@ import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { getCollection } from 'astro:content'
 import { Icon } from 'astro-icon/components'
+import { render } from 'astro:content'
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects')
   return projects.map((project) => ({
-    params: { slug: project.slug },
+    params: { id: project.id },
     props: { project },
   }))
 }
 
 const { project } = Astro.props
-const { Content } = await project.render()
+const { Content } = await render(project)
 ---
 
 <Layout title={`${project.data.name} (Project)`} description={project.data.description}>
