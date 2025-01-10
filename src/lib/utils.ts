@@ -1,4 +1,3 @@
-import { getEntry } from 'astro:content'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -24,29 +23,4 @@ export function readingTime(html: string) {
   const wordCount = textOnly.split(/\s+/).length
   const readingTimeMinutes = (wordCount / 200 + 1).toFixed()
   return `${readingTimeMinutes} min read`
-}
-
-export async function parseAuthors(authors: string[]) {
-  if (!authors || authors.length === 0) return []
-
-  const parseAuthor = async (slug: string) => {
-    try {
-      const author = await getEntry('authors', slug)
-      return {
-        name: author?.data?.name || slug,
-        avatar: author?.data?.avatar || '/static/missing-author-picture.webp',
-        slug: slug,
-        isRegistered: !!author,
-      }
-    } catch (error) {
-      console.error(`Error fetching author with slug ${slug}:`, error)
-      return {
-        name: slug,
-        avatar: '/static/missing-author-picture.webp',
-        isRegistered: false,
-      }
-    }
-  }
-
-  return await Promise.all(authors.map(parseAuthor))
 }

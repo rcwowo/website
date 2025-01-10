@@ -20,7 +20,7 @@ const blog = (await getCollection('blog'))
 
 // Get my author entry
 const author = (await getCollection('authors'))
-  .filter((person) => person.slug === "rileywilson")
+  .filter((person) => person.id === "rileywilson")
 
 // Get projects
 const projects = (await getCollection('projects'))
