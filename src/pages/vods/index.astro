@@ -4,9 +4,10 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import VodCard from '@/components/VodCard.astro'
 import Link from '@/components/Link.astro'
 import { buttonVariants } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { getCollection } from 'astro:content'
 import GameCard from '@/components/GameCard.astro'
+import { Icon } from 'astro-icon/components'
 
 const vods = await getCollection('vods')
 const sortedVods = vods.sort(
@@ -48,18 +49,52 @@ const vodsByGame = sortedVods.reduce(
 
 <Layout title="Twitch VODs" description="Archive of my Twitch streams">
   <main class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumbs  -->
     <div class="pb-4">
       <Breadcrumbs
         items={[{ label: 'VODs', icon: 'lucide:film' }]} 
       />
     </div>
+
+    <!-- Latest Stream  -->
     <h2 class="text-3xl font-bold mb-4">Latest Stream</h2>
     {latestVod && (
-      <section class="mb-16">
+      <section class="mb-4">
         <VodCard vod={latestVod} featured={true} />
       </section>
     )}
 
+    <!-- About -->
+    <section class="mb-16">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">
+            👋 Welcome to the Lt. Vault!
+          </CardTitle>
+          <CardDescription>
+            Explore the archives of past Lt. Wilson streams. While most streams are preserved, please note:
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul class="text-sm list-disc list-inside space-y-2 text-muted-foreground">
+            <li class="flex items-center">
+              <Icon name="lucide:calendar" class="mr-4 text-lg text-foreground" />
+              Not all streams are or will be archived.
+            </li>
+            <li class="flex items-center">
+              <Icon name="lucide:volume" class="mr-4 text-lg text-foreground" />
+              Music played on stream is not included in VODs.
+            </li>
+            <li class="flex items-center">
+              <Icon name="lucide:message-square-more" class="mr-4 text-lg text-foreground" />
+              A chat replay is available for select VODs.
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
+    </section>
+
+    <!-- Recent Streams  -->
     <section class="mb-16">
       <div class="flex flex-row justify-between items-center mb-8">
         <h2 class="text-3xl font-bold">Recent Streams</h2>
@@ -80,6 +115,7 @@ const vodsByGame = sortedVods.reduce(
       </div>
     </section>
 
+    <!-- Sorted by Month  -->
     <section>
       <div class="flex flex-row justify-between items-center mb-8">
         <h2 class="text-3xl font-bold">Sorted by Month</h2>
@@ -112,6 +148,7 @@ const vodsByGame = sortedVods.reduce(
       </div>
     </section>
 
+    <!-- Sorted by Games  -->
     <section class="mt-16">
       <div class="flex flex-row justify-between items-center mb-8">
         <h2 class="text-3xl font-bold">Streamed Games</h2>
