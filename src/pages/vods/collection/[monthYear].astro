@@ -7,14 +7,14 @@ import { getCollection } from 'astro:content'
 export async function getStaticPaths() {
   const vods = await getCollection('vods')
   const sortedVods = vods.sort(
-    (a, b) => b.data.streamDate.valueOf() - a.data.streamDate.valueOf(),
+    (a, b) => b.data['Stream Date'].valueOf() - a.data['Stream Date'].valueOf(),
   )
 
   // Get unique month-years
   const monthYears = [
     ...new Set(
       sortedVods.map((vod) =>
-        vod.data.streamDate.toLocaleString('en-US', {
+        vod.data['Stream Date'].toLocaleString('en-US', {
           month: 'long',
           year: 'numeric',
         }),
@@ -25,7 +25,7 @@ export async function getStaticPaths() {
   return monthYears.map((monthYear) => {
     const monthVods = sortedVods.filter(
       (vod) =>
-        vod.data.streamDate.toLocaleString('en-US', {
+        vod.data['Stream Date'].toLocaleString('en-US', {
           month: 'long',
           year: 'numeric',
         }) === monthYear,

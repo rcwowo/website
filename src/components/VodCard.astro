@@ -18,8 +18,8 @@ const { vod, featured = false } = Astro.props
     class="block group"
   >
     <img
-      src={vod.data.thumbnail}
-      alt={vod.data.title}
+      src={vod.data['Thumbnail URL']}
+      alt={vod.data['Title']}
       class="h-full w-full object-cover transition group-hover:scale-105 group-hover:opacity-75"
     />
     <div class:list={[
@@ -30,12 +30,12 @@ const { vod, featured = false } = Astro.props
         'font-bold text-white truncate',
         featured ? 'text-2xl' : 'text-lg'
       ]}>
-        {vod.data.title}
+        {vod.data['Title']}
       </h3>
       {featured ? (
         <div class="flex items-center justify-between text-gray-200">
           <div>
-            {vod.data.streamDate.toLocaleDateString('en-US', {
+            {vod.data['Stream Date'].toLocaleDateString('en-US', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
@@ -45,20 +45,20 @@ const { vod, featured = false } = Astro.props
           <div class="flex items-center gap-4">
             <div class="flex gap-2">
                 <span class="rounded-md max-[560px]:hidden bg-black/50 px-2 py-1 text-sm">
-                  {vod.data.game}
+                  {vod.data['Game']}
                 </span>
             </div>
             <div class="flex items-center gap-1">
               <span class="sr-only">Duration:</span>
               <Icon name="lucide:clock" />
-              <span>{vod.data.duration}</span>
+              <span>{vod.data['Duration']}</span>
             </div>
           </div>
         </div>
       ) : (
         <div class="flex items-center justify-between text-sm text-gray-200">
           <div>
-            {vod.data.streamDate.toLocaleDateString('en-US', {
+            {vod.data['Stream Date'].toLocaleDateString('en-US', {
               month: 'long',
               day: 'numeric',
               year: 'numeric'
@@ -67,7 +67,7 @@ const { vod, featured = false } = Astro.props
           <div class="flex items-center gap-1">
             <span class="sr-only">Duration:</span>
             <Icon name="lucide:clock" />
-            <span>{vod.data.duration}</span>
+            <span>{vod.data['Duration']}</span>
           </div>
         </div>
       )}
