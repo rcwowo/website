@@ -14,7 +14,7 @@ export async function getStaticPaths({
 }) {
   const allVods = await getCollection('vods')
   return paginate(
-    allVods.sort((a, b) => b.data.streamDate.valueOf() - a.data.streamDate.valueOf()),
+    allVods.sort((a, b) => b.data['Stream Date'].valueOf() - a.data['Stream Date'].valueOf()),
     { pageSize: SITE.VODS_PER_PAGE },
   )
 }

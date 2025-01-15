@@ -7,16 +7,16 @@ import GameCard from '@/components/GameCard.astro'
 
 const vods = await getCollection('vods')
 const sortedVods = vods.sort(
-  (a, b) => b.data.streamDate.valueOf() - a.data.streamDate.valueOf(),
+  (a, b) => b.data['Stream Date'].valueOf() - a.data['Stream Date'].valueOf(),
 )
 
 const vodsByGame = sortedVods.reduce(
   (acc: Record<string, { vods: typeof vods; coverUrl: string }>, vod) => {
-    const game = vod.data.game || 'Other'
+    const game = vod.data['Game'] || 'Other'
     if (!acc[game]) {
       acc[game] = {
         vods: [],
-        coverUrl: vod.data.gameCoverURL || ''
+        coverUrl: vod.data['Game Cover URL'] || ''
       }
     }
     acc[game].vods.push(vod)
