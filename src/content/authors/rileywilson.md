@@ -1,7 +1,7 @@
 ---
 name: 'Riley Wilson'
 pronouns: 'he/him'
-avatar: 'https://yt3.googleusercontent.com/pg1WVqChBpa0VgbsGa4aK0SGWwEk91M6Hz72rWBlpB-92buVvfNczmathGWalae-FHOf8QIUKQ=s160-c-k-c0x00ffffff-no-rj'
+avatar: 'https://raw.githubusercontent.com/TheLtWilson/website/refs/heads/main/public/static/logo.webp'
 bio: 'Strong advocate for putting Hatsune Miku into Fortnite. :3'
 website: 'https://ltwilson.tv'
 github: 'https://github.com/theltwilson'

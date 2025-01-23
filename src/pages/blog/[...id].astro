@@ -33,14 +33,14 @@ function getPostIndex(id: string): number {
   return posts.findIndex((post) => post.id === id)
 }
 
-function getNextPost(id: string): Props | null {
+function getPrevPost(id: string): Props | null {
   const postIndex = getPostIndex(id)
   return postIndex !== -1 && postIndex < posts.length - 1
     ? posts[postIndex + 1]
     : null
 }
 
-function getPrevPost(id: string): Props | null {
+function getNextPost(id: string): Props | null {
   const postIndex = getPostIndex(id)
   return postIndex > 0 ? posts[postIndex - 1] : null
 }
@@ -158,15 +158,21 @@ const authors = await parseAuthors(post.data.authors ?? [])
 
     <PostNavigation prevPost={prevPost} nextPost={nextPost} />
 
-    <!-- Utterances Comment Section  -->
-    {/* @ts-ignore */}
-    <script src="https://utteranc.es/client.js"
-        repo="theltwilson/website"
-        issue-term="pathname"
-        theme="preferred-color-scheme"
-        crossorigin="anonymous"
-        async>
-    </script>
+    { post.data.disableComments? (
+      <Container class="text-muted">Comments are disabled on this post.</Container>
+    ):(      
+      <!-- Utterances Comment Section  -->
+      {/* @ts-ignore */}
+      <script src="https://utteranc.es/client.js"
+          repo="theltwilson/website"
+          issue-term="pathname"
+          theme="preferred-color-scheme"
+          crossorigin="anonymous"
+          async>
+      </script>
+      
+    )}
+
   </Container>
 
   <Button
