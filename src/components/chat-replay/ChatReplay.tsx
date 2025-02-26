@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { buttonVariants } from '@/components/ui/button'
+import { Badge } from './Badge'
 
 interface ChatComment {
   _id: string
@@ -266,6 +267,13 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
               className="font-semibold"
               style={{ color: comment.message.user_color || 'inherit' }}
             >
+              {comment.message.user_badges?.map((badge) => (
+                <Badge
+                  key={`${badge._id}-${badge.version}`}
+                  badgeId={badge._id}
+                  version={badge.version}
+                />
+              ))}
               {comment.commenter.display_name}
             </span>{': '}
             <span>{comment.message.body}</span>
