@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { buttonVariants } from './ui/button'
+import { buttonVariants } from '@/components/ui/button'
 
 interface ChatComment {
   _id: string

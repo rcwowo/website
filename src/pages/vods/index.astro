@@ -1,12 +1,12 @@
 ---
 import Layout from '@/layouts/Layout.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import VodCard from '@/components/VodCard.astro'
+import VodCard from '@/components/vod-vault/VodCard.astro'
 import Link from '@/components/Link.astro'
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { getCollection } from 'astro:content'
-import GameCard from '@/components/GameCard.astro'
+import GameCard from '@/components/vod-vault/GameCard.astro'
 import { Icon } from 'astro-icon/components'
 
 const vods = await getCollection('vods')
