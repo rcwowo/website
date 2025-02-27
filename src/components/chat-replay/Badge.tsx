@@ -1,10 +1,6 @@
 import { BADGES } from '@/consts';
 import type { BadgeId } from '@/consts';
-
-interface BadgeProps {
-  badgeId: string;
-  version: string;
-}
+import type { BadgeProps } from './types';
 
 export function Badge({ badgeId, version }: BadgeProps) {
   const badge = BADGES[badgeId as BadgeId];
