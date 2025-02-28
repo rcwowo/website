@@ -1,49 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { buttonVariants } from '@/components/ui/button'
-
-interface ChatComment {
-  _id: string
-  created_at: string
-  content_offset_seconds: number
-  commenter: {
-    display_name: string
-    name: string
-    logo?: string
-  }
-  message: {
-    body: string
-    user_color?: string
-    user_badges?: Array<{
-      _id: string
-      version: string
-    }>
-  }
-}
-
-interface ChatData {
-  comments: ChatComment[]
-  video: {
-    title: string
-    created_at: string
-    length: number
-  }
-}
-
-interface ChatReplayProps {
-  chatReplayURL: string
-  youtubeId: string | undefined
-}
-
-interface YouTubePlayer {
-  getCurrentTime(): number;
-  getPlayerState(): number;
-  destroy(): void;
-}
-
-interface YouTubeEvent {
-  target: YouTubePlayer;
-  data: number;
-}
+import { Badge } from './Badge'
+import { ChatMessage } from './ChatMessage'
+import { SITE } from '@/consts'
+import type { ChatComment, ChatData, ChatReplayProps, YouTubePlayer, YouTubeEvent, SevenTvObject, SevenTvEmoteSet } from './types'
 
 declare global {
   interface Window {
@@ -66,11 +26,12 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
   const [visibleComments, setVisibleComments] = useState<ChatComment[]>([])
   const [currentTime, setCurrentTime] = useState(0)
   const [userScrolled, setUserScrolled] = useState(false)
+  const [emoteData, setEmoteData] = useState<Record<string, { type: 'twitch' | '7tv', id: string }>>({});
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const playerRef = useRef<YouTubePlayer | null>(null)
   const MAX_VISIBLE_MESSAGES = 200
 
-  // Load chat messages
+  // Load chat messages and process emotes
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -78,6 +39,81 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
         const response = await fetch(chatReplayURL)
         const data: ChatData = await response.json()
         console.log('[ChatReplay] Fetched', data.comments.length, 'comments');
+
+        // Process emotes from all comments
+        const emoteMap: Record<string, { type: 'twitch' | '7tv', id: string }> = {};
+        data.comments.forEach(comment => {
+          comment.message.fragments?.forEach(fragment => {
+            if (fragment.emoticon) {
+              emoteMap[fragment.text] = {
+                type: 'twitch',
+                id: fragment.emoticon.emoticon_id
+              };
+            }
+          });
+        });
+
+        // Fetch 7TV emotes
+        try {
+          const sevenTvResponse = await fetch('https://7tv.io/v4/gql', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              query: `
+                query($id: String!) {
+                  users {
+                    userByConnection(platform: TWITCH, platformId: $id) {
+                      style {
+                        activeEmoteSetId
+                      }
+                      emoteSets {
+                        id
+                        emotes {
+                          items {
+                            id 
+                            alias
+                          }
+                        }
+                      }
+                    } 
+                  }
+                }
+              `,
+              variables: {
+                id: SITE.TWITCH_USER_ID.toString()
+              }
+            })
+          });
+
+          const sevenTvData: SevenTvObject = await sevenTvResponse.json();
+          const activeEmoteSetId: string | undefined = sevenTvData.data.users.userByConnection.style.activeEmoteSetId
+
+          if (activeEmoteSetId) {
+            const activeEmoteSet: SevenTvEmoteSet | undefined = sevenTvData.data.users.userByConnection.emoteSets.find(obj => obj.id === activeEmoteSetId )
+            console.log('[ChatReplay] Active emote set:', activeEmoteSet)
+            console.log('[ChatReplay] Fetched 7TV emotes:', activeEmoteSet?.emotes?.items?.length || 0);
+  
+            // Add 7TV emotes to the emote map
+            if (activeEmoteSet) {
+              activeEmoteSet.emotes?.items?.forEach((emote: { id: string, alias: string }) => {
+                emoteMap[emote.alias] = {
+                  type: '7tv',
+                  id: emote.id
+                };
+              });   
+            } else {
+              console.error('[ChatReplay] Active emote set not found, skipping 7TV emotes');
+            }
+          } else {
+            console.error('[ChatReplay] Active emote set not found, skipping 7TV emotes');
+          }
+        } catch (error) {
+          console.error('[ChatReplay] Error fetching 7TV emotes:', error);
+        }
+
+        setEmoteData(emoteMap);
         setComments(data.comments.sort((a, b) => a.content_offset_seconds - b.content_offset_seconds))
       } catch (error) {
         console.error('[ChatReplay] Error fetching comments:', error)
@@ -85,7 +121,6 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
     }
     fetchComments()
   }, [chatReplayURL])
-
   // Initialize YouTube Player API
   useEffect(() => {
     if (!youtubeId) return;
@@ -266,9 +301,20 @@ export default function ChatReplay({ chatReplayURL, youtubeId }: ChatReplayProps
               className="font-semibold"
               style={{ color: comment.message.user_color || 'inherit' }}
             >
+              {comment.message.user_badges?.map((badge) => (
+                <Badge
+                  key={`${badge._id}-${badge.version}`}
+                  badgeId={badge._id}
+                  version={badge.version}
+                />
+              ))}
               {comment.commenter.display_name}
             </span>{': '}
-            <span>{comment.message.body}</span>
+            <ChatMessage
+              fragments={comment.message.fragments || [{ text: comment.message.body, emoticon: null }]}
+              userColor={comment.message.user_color || 'inherit'}
+              emoteData={emoteData}
+            />
           </div>
         ))}
       </div>
