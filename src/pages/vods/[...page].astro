@@ -1,11 +1,15 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import VodCard from '@/components/vod-vault/VodCard.astro'
+import Link from '@/components/Link.astro'
+import { buttonVariants } from '@/components/ui/button'
 import PaginationComponent from '@/components/ui/pagination'
+import VodCard from '@/components/vod-vault/VodCard.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import type { PaginateFunction } from 'astro'
 import { getCollection } from 'astro:content'
+import { Calendar, Gamepad } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export async function getStaticPaths({
   paginate,
@@ -14,7 +18,10 @@ export async function getStaticPaths({
 }) {
   const allVods = await getCollection('vods')
   return paginate(
-    allVods.sort((a, b) => b.data['Stream Date'].valueOf() - a.data['Stream Date'].valueOf()),
+    allVods.sort(
+      (a, b) =>
+        b.data['Stream Date'].valueOf() - a.data['Stream Date'].valueOf(),
+    ),
     { pageSize: SITE.VODS_PER_PAGE },
   )
 }
@@ -33,11 +40,28 @@ const { page } = Astro.props
       />
     </div>
 
-    <h1 class="mb-8 text-4xl font-bold">All VODs</h1>
+    <div class="mb-8 grid md:grid-cols-2">
+      <h1 class="text-4xl font-bold">All VODs</h1>
+      <div class="flex gap-2 mt-2 md:justify-end md:items-end md:mt-0">
+        <Link
+          href="/vods/collection"
+          class={cn(buttonVariants({ variant: 'outline' }), 'gap-2')}
+        >
+          <Calendar className='size-4' />
+          Find By Month
+        </Link>
+        <Link
+          href="/vods/games"
+          class={cn(buttonVariants({ variant: 'outline' }), 'gap-2')}
+        >
+          <Gamepad className='size-4' />
+          Find By Game
+        </Link>
+      </div>
+    </div>
+
     <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-      {page.data.map((vod) => (
-        <VodCard vod={vod} />
-      ))}
+      {page.data.map((vod) => <VodCard vod={vod} />)}
     </div>
 
     <div class="py-4">
