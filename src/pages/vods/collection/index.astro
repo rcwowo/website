@@ -8,24 +8,30 @@ const vods = await getCollection('vods')
 const sortedVods = vods.sort(
   (a, b) => b.data['Stream Date'].valueOf() - a.data['Stream Date'].valueOf(),
 )
-const latestVod = sortedVods[0]
-const nextThreeVods = sortedVods.slice(1, 4)
 
-// Group VODs by month
-const vodsByMonth = sortedVods.reduce(
-  (acc: Record<string, typeof vods>, vod) => {
+// Group VODs by year, then by month
+const vodsByYear = sortedVods.reduce(
+  (acc: Record<string, Record<string, typeof vods>>, vod) => {
+    const year = vod.data['Stream Date'].getFullYear().toString()
     const monthYear = vod.data['Stream Date'].toLocaleString('en-US', {
       month: 'long',
       year: 'numeric',
     })
-    if (!acc[monthYear]) {
-      acc[monthYear] = []
+    
+    if (!acc[year]) {
+      acc[year] = {}
     }
-    acc[monthYear].push(vod)
+    if (!acc[year][monthYear]) {
+      acc[year][monthYear] = []
+    }
+    acc[year][monthYear].push(vod)
     return acc
   },
-  {} as Record<string, typeof vods>,
+  {} as Record<string, Record<string, typeof vods>>,
 )
+
+// Sort years in descending order
+const sortedYears = Object.keys(vodsByYear).sort((a, b) => parseInt(b) - parseInt(a))
 ---
 
 <Layout title="VOD Collections" description="Collections of previous streams, sorted by month.">
@@ -38,22 +44,29 @@ const vodsByMonth = sortedVods.reduce(
                 ]}
           />
         </div>
-        <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {Object.entries(vodsByMonth).map(([monthYear, monthVods]) => (
-            <Card className="hover:bg-accent transition-colors">
-                <a
-                href={`/vods/collection/${monthYear.toLowerCase().replace(' ', '-')}`}
-                class="block h-full"
-                >
-                <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl text-center">{monthYear}</CardTitle>
-                    <CardDescription className="text-center">
-                    {monthVods.length} video{monthVods.length === 1 ? '' : 's'}
-                    </CardDescription>
-                </CardHeader>
-                </a>
-            </Card>
-            ))}
-        </div>
+        {sortedYears.map((year) => (
+          <div class="mb-8">
+            <h2 class="text-3xl font-bold mb-4">{year}</h2>
+            <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {Object.entries(vodsByYear[year]).map(([monthYear, monthVods]) => (
+                <Card className="hover:bg-accent transition-colors">
+                  <a
+                    href={`/vods/collection/${monthYear.toLowerCase().replace(' ', '-')}`}
+                    class="block h-full"
+                  >
+                    <CardHeader className="space-y-1">
+                      <CardTitle className="text-2xl text-center">
+                        {monthYear.split(' ')[0]}
+                      </CardTitle>
+                      <CardDescription className="text-center">
+                        {monthVods.length} video{monthVods.length === 1 ? '' : 's'}
+                      </CardDescription>
+                    </CardHeader>
+                  </a>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ))}
     </main>
 </Layout>
