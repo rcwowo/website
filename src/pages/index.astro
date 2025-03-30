@@ -1,18 +1,26 @@
 ---
-import Layout from '@/layouts/Layout.astro'
-import VodCard from '@/components/vod-vault/VodCard.astro'
+import BlogCard from '@/components/blog/BlogCard.astro'
 import Link from '@/components/Link.astro'
-import { buttonVariants } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { getCollection } from 'astro:content'
-import GameCard from '@/components/vod-vault/GameCard.astro'
-import { Icon } from 'astro-icon/components'
 import SocialIcons from '@/components/SocialIcons.astro'
-import type { Link as SocialLink } from '@/consts'
+import { buttonVariants } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import VodCard from '@/components/vod-vault/VodCard.astro'
+import ProjectCard from '@/components/projects/ProjectCard.astro'
+import { SITE, type Link as SocialLink } from '@/consts'
+import Layout from '@/layouts/Layout.astro'
+import { Icon } from 'astro-icon/components'
+import { getCollection } from 'astro:content'
 
 // Get my author entry
-const author = (await getCollection('authors'))
-  .filter((person) => person.id === "rileywilson")
+const author = (await getCollection('authors')).filter(
+  (person) => person.id === 'rileywilson',
+)
 
 // Set consts based on my author entry
 const {
@@ -48,172 +56,145 @@ const sortedVods = vods.sort(
 const latestVod = sortedVods[0]
 const nextThreeVods = sortedVods.slice(1, 4)
 
-// Sort vods by month
-const vodsByMonth = sortedVods.reduce(
-  (acc: Record<string, typeof vods>, vod) => {
-    const monthYear = vod.data['Stream Date'].toLocaleString('en-US', {
-      month: 'long',
-      year: 'numeric',
-    })
-    if (!acc[monthYear]) {
-      acc[monthYear] = []
-    }
-    acc[monthYear].push(vod)
-    return acc
-  },
-  {} as Record<string, typeof vods>,
-)
+// Get blog posts to display
+const blog = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE)
 
-// Sort vods by game
-const vodsByGame = sortedVods.reduce(
-  (acc: Record<string, { vods: typeof vods; coverUrl: string }>, vod) => {
-    const game = vod.data['Game'] || 'Other'
-    if (!acc[game]) {
-      acc[game] = {
-        vods: [],
-        coverUrl: vod.data['Game Cover URL'] || '',
-      }
-    }
-    acc[game].vods.push(vod)
-    return acc
-  },
-  {} as Record<string, { vods: typeof vods; coverUrl: string }>,
-)
+// Get projects
+const projects = (await getCollection('projects'))
+  .sort((a, b) => a.data.name.localeCompare(b.data.name))
+  .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE)
 ---
 
-<Layout title="Twitch VODs" description="Archive of my Twitch streams">
+<Layout title="Home" description={SITE.DESCRIPTION}>
   <main class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-
     <!-- Latest Stream  -->
-    <h2 class="text-3xl font-bold mb-4">Latest Stream</h2>
-    {latestVod && (
-      <section class="mb-4">
-        <VodCard vod={latestVod} featured={true} />
-      </section>
-    )}
+    <h2 class="mb-4 text-3xl font-bold">Latest Stream</h2>
+    {
+      latestVod && (
+        <section class="mb-4">
+          <VodCard vod={latestVod} featured={true} />
+        </section>
+      )
+    }
 
     <!-- Information Section -->
     <section class="mb-16">
-        <div class="grid gap-4 md:grid-cols-2">
-            <!-- Welcome Card -->
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl">
-                  👋 Welcome to ltwilson.tv!
-                </CardTitle>
-                <CardDescription>
-                  Explore the archives of past Lt. Wilson streams. While most streams are preserved, please take note of the following:
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul class="text-sm list-disc list-inside space-y-2">
-                  <li class="flex items-center">
-                    <Icon name="lucide:calendar" class="mr-4 text-lg" />
-                    Not all streams are or will be archived.
-                  </li>
-                  <li class="flex items-center">
-                    <Icon name="lucide:volume-off" class="mr-4 text-lg" />
-                    Music played on stream is not included in VODs.
-                  </li>
-                  <li class="flex items-center">
-                    <Icon name="lucide:message-square-more" class="mr-4 text-lg" />
-                    A chat replay is available for select VODs.
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            <!-- Social Links Card -->
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-2xl">
-                    😎 Stay connected!
-                    </CardTitle>
-                    <CardDescription>
-                        Find me on various social media platforms. I don't know why you'd want to, but here they are anyway:
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <SocialIcons links={socialLinks} large className='grid grid-cols-3'/>
-                </CardContent>
-            </Card>
-        </div>
+      <div class="grid gap-4 md:grid-cols-2">
+        <!-- Welcome Card -->
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">
+              👋 Welcome to ltwilson.tv!
+            </CardTitle>
+            <CardDescription>
+              Explore the archives of past Lt. Wilson streams. While most
+              streams are preserved, please take note of the following:
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul class="list-inside list-disc space-y-2 text-sm">
+              <li class="flex items-center">
+                <Icon name="lucide:calendar" class="mr-4 text-lg" />
+                Not all streams are or will be archived.
+              </li>
+              <li class="flex items-center">
+                <Icon name="lucide:volume-off" class="mr-4 text-lg" />
+                Music played on stream is not included in VODs.
+              </li>
+              <li class="flex items-center">
+                <Icon name="lucide:message-square-more" class="mr-4 text-lg" />
+                A chat replay is available for select VODs.
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+        <!-- Social Links Card -->
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl"> 😎 Stay connected! </CardTitle>
+            <CardDescription>
+              Find me on various social media platforms. I don't know why you'd
+              want to, but here they are anyway:
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SocialIcons
+              links={socialLinks}
+              large
+              className="grid grid-cols-3"
+            />
+          </CardContent>
+        </Card>
+      </div>
     </section>
 
     <!-- Recent Streams  -->
     <section class="mb-16">
-      <div class="flex flex-row justify-between items-center mb-8">
+      <div class="mb-8 flex flex-row items-center justify-between">
         <h2 class="text-3xl font-bold">Recent Streams</h2>
         <Link
-        href="/vods/all"
-        class={buttonVariants({ variant: 'outline' }) + ' group'}
-        >
-        View all <span
-        class="ml-1.5 transition-transform group-hover:translate-x-1"
-        >&rarr;</span
-        >
-        </Link>
-      </div>
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {nextThreeVods.map(vod => (
-          <VodCard vod={vod} />
-        ))}
-      </div>
-    </section>
-
-    <!-- Sorted by Month  -->
-    <section>
-      <div class="flex flex-row justify-between items-center mb-8">
-        <h2 class="text-3xl font-bold">Sorted by Month</h2>
-        <Link
-        href="/vods/collection"
-        class={buttonVariants({ variant: 'outline' }) + ' group'}
-        >
-        View all <span
-        class="ml-1.5 transition-transform group-hover:translate-x-1"
-        >&rarr;</span
-        >
-        </Link>
-      </div>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {Object.entries(vodsByMonth).slice(0, 4).map(([monthYear, monthVods]) => (
-          <Card className="hover:bg-accent transition-colors">
-            <a
-              href={`/vods/collection/${monthYear.toLowerCase().replace(' ', '-')}`}
-              class="block h-full"
-            >
-              <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl text-center">{monthYear}</CardTitle>
-                <CardDescription className="text-center">
-                  {monthVods.length} video{monthVods.length === 1 ? '' : 's'}
-                </CardDescription>
-              </CardHeader>
-            </a>
-          </Card>
-        ))}
-      </div>
-    </section>
-
-    <!-- Sorted by Games  -->
-    <section class="mt-16">
-      <div class="flex flex-row justify-between items-center mb-8">
-        <h2 class="text-3xl font-bold">Streamed Games</h2>
-        <Link
-          href="/vods/games"
+          href="/vods/all"
           class={buttonVariants({ variant: 'outline' }) + ' group'}
         >
           View all <span
             class="ml-1.5 transition-transform group-hover:translate-x-1"
-          >&rarr;</span>
+            >&rarr;</span
+          >
         </Link>
       </div>
-      <div class="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-        {Object.entries(vodsByGame).slice(0, 6).map(([game, { vods: gameVods, coverUrl }]) => (
-          <GameCard
-            game={game}
-            coverUrl={coverUrl}
-            vodCount={gameVods.length}
-          />
-        ))}
+      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {nextThreeVods.map((vod) => <VodCard vod={vod} />)}
+      </div>
+    </section>
+
+    <!-- Blog Posts & Projects -->
+    <section>
+      <div class="grid gap-8 lg:grid-cols-[3fr_1fr]">
+        <!-- Blog Posts -->
+        <div>
+          <div class="mb-8 flex flex-row items-center justify-between">
+            <h2 class="text-3xl font-bold">Latest Posts</h2>
+            <Link
+              href="/blog"
+              class={buttonVariants({ variant: 'outline' }) + ' group'}
+            >
+              View all <span
+                class="ml-1.5 transition-transform group-hover:translate-x-1"
+                >&rarr;</span
+              >
+            </Link>
+          </div>
+          <ul class="not-prose flex flex-col gap-y-4">
+            {
+              blog.map((post) => (
+                <li>
+                  <BlogCard entry={post} />
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <!-- Projects -->
+        <div>
+          <div class="mb-8 flex flex-row items-center justify-between">
+            <h2 class="text-3xl font-bold">Projects</h2>
+            <Link
+              href="/projects"
+              class={buttonVariants({ variant: 'outline' }) + ' group'}
+            >
+              View all <span
+                class="ml-1.5 transition-transform group-hover:translate-x-1"
+                >&rarr;</span
+              >
+            </Link>
+          </div>
+          <div class="flex flex-col gap-4">
+            {projects.map((project) => <ProjectCard project={project} />)}
+          </div>
+        </div>
       </div>
     </section>
   </main>
