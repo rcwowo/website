@@ -45,7 +45,7 @@ const getSocialLink = ({ href, label }: SocialLink) => ({
             href={href}
             aria-label={ariaLabel}
             title={ariaLabel}
-            class={cn(buttonVariants({ variant: 'outline', size: large ? 'lg' : 'icon' }), 'w-full gap-2')}
+            class={cn(buttonVariants({ variant: 'outline', size: large ? 'lg' : 'icon' }), large ? 'w-full gap-2' : 'gap-2')}
             external
           >
             <Icon name={iconName} class="size-4 min-w-4 min-h-4" />
