@@ -102,17 +102,7 @@ const authors = await parseAuthors(post.data.authors ?? [])
                         height={24}
                         class="rounded-full"
                       />
-                      {author.isRegistered ? (
-                        <Link
-                          href={`/authors/${author.id}`}
-                          underline
-                          class="text-foreground"
-                        >
-                          <span>{author.name}</span>
-                        </Link>
-                      ) : (
-                        <span>{author.name}</span>
-                      )}
+                      <span>{author.name}</span>
                     </div>
                   ))}
                 </div>
