@@ -28,7 +28,7 @@ export const SITE: Site = {
     'Personal website of a guy that edits videos and occasionally dabbles in coding projects.',
   EMAIL: 'contact@ltwilson.tv',
   NUM_POSTS_ON_HOMEPAGE: 3,
-  NUM_PROJECTS_ON_HOMEPAGE: 4,
+  NUM_PROJECTS_ON_HOMEPAGE: 5,
   POSTS_PER_PAGE: 8,
   VODS_PER_PAGE: 15,
   SITEURL: 'https://ltwilson.tv',
@@ -36,9 +36,9 @@ export const SITE: Site = {
 }
 
 export const NAV_LINKS: Link[] = [
-  { href: 'https://streamelements.com/theltwilson/tip', label: 'donate' },
-  { href: '/blog', label: 'blog' },
-  { href: '/projects', label: 'projects' },
+  { href: 'https://memos.ltwilson.tv', label: 'Memos' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
   { href: '/vods', label: 'VODs'}
 ]
 
