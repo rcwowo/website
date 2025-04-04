@@ -36,8 +36,9 @@ export const SITE: Site = {
 }
 
 export const NAV_LINKS: Link[] = [
-  { href: '/blog', label: 'blog' },
-  { href: '/projects', label: 'projects' },
+  { href: 'https://memos.ltwilson.tv', label: 'Memos' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/projects', label: 'Projects' },
   { href: '/vods', label: 'VODs'}
 ]
 
