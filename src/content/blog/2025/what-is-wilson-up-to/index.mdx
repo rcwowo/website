@@ -1,0 +1,127 @@
+---
+title: "What is Wilson up to?"
+description: "Talking about the technical things behind the scenes."
+date: 2025-04-03
+tags: ['life','technology']
+image: './thumbnail.webp'
+authors: ['rileywilson']
+---
+
+It's been a hot minute since I've posted anything on the website, especially after the bombshell of my [last post](/blog/2025/who-am-i). Don't worry, we're not getting that personal this time around.
+
+I wanted to write this post to highlight some of the things that I've been working on as of late. Some of them are quite obvious, but other things are stuff that I generally keep under wraps. So let's take the time and review them all.
+
+---
+
+## ♻️ Smol Site Redesign
+
+You have **very likely** already noticed, since you had to go through the homepage to get to this post, but I have redesigned a couple things here on this very site! From the homepage, to the VODs, to author pages. A decent amount has changed, but nothing that breaks the already existing "style" (or lack thereof).
+
+So, what exactly has changed?
+
+### Home
+
+Previously, the homepage was a simple about box, as well as a list of the latest posts and projects. One of my biggest gripes with the previous design was that it felt very horizontally restricted. Especially compared to the VOD page, which utilized more screen real estate. So, I wanted to replicate it.
+
+Similarly, I feel like a lot of the focus that I've had on the website so far has been on the VOD archive. It felt unneccessary to have to navigate to a specific page for VODs, when it's what I would consider the primary functionality. Thus, VODs play a much more important role on the new homepage.
+
+The new homepage combines both the old VODs page, and the old home page, to create a giant feed of the latest content. First and foremost, the latest VOD is featured at the top as well as a couple recent streams lower on the page, just like the old VODs page. Then, just like the old homepage, the latest posts and projects are also featured near the bottom.
+
+### All VODs Page
+
+While the old VODs page is no longer, the new VODs page utilizes the same layout I used to show all the VODs (`/vods/all`). Except, now there are convinent buttons to filter the VODs by date, and to filter them by game category.
+
+Not only that, but the page that lets you filter VODs by date now sorts them better, with every year being its own category with each month of VODs. This makes it easier to find a VOD from a specific date. No longer will you have to scroll through the home page to filter by date or game.
+
+Do keep in mind: with this site being primarily static, creating a search page would be a lot of work. *But it may exist at some point.*
+
+### Authors
+
+This website is now a pretty heavily modified version of the [astro-erudite](https://github.com/jktrn/astro-erudite) template, built by [enscribe](https://enscribe.dev). In this template, there existed a functionality that allowed you to browse the "profiles" of different authors of blog posts.
+
+However, I felt like I didn't really need this functionality as I will be the only person making posts here, so as of this redesign, that functionality has been removed.
+
+---
+
+## 🧰 The Lt. Toolkit
+
+While I've been known to make [videos](https://youtube.com/@theltwilson) and [stream](https://twitch.tv/theltwilson) on occasions, I really don't want to be labeled as a "content creator" especially as I don't really have any intention of growing. I like making things, and I like hanging out with my friends. It just so happens that streaming is, in my opinion, one of the best ways to do both of those things.
+
+In the process of making things, sometimes I try to find tools that fit a specific usecase that I need, and often enough I don't find them to be very useful. That, or they have a specific downside that ends up ruining it for me. So, I've decided to start a project where I can make some of my own that fit my needs. They may not be universal, but it's good enough for me.
+
+This is [The Lt. Toolkit](https://kit.ltwilson.tv). The goal of this project is to create an assortment of privacy-first tools that anyone can use if it fits their needs.
+
+Right now, it's nothing special and it's in a very early stage (I don't think the word tracker even works on Firefox yet...) but I intend for it to be one of the biggest projects that I make, and that's for a very specific reason.
+
+### What does privacy-first mean?
+
+The idea behind privacy-first is that all computing and data processing is stored entirely on your own device. This means that no sensitive data is ever sent to any server.
+
+While right now, there are no tools that rely on a server, the plan is to eventually have a "bridge" that runs as an app in the background of your computer. All that this app will do, is act as a server for any tools that **DO** rely on third-parties. Take for example, a Spotify overlay. The configuration page and overlay will simply be a frontend to interact with the bridge. The bridge will be responsible for storing the proper credentials locally, communicating with the Spotify API, and then communicating with the frontend.
+
+The main reason for making it this way, is that I don't want to bear the responsibility, and more importantly, **the cost** of running a publicly accessible server. If you didn't know, when you operate a website or app where user information is collected, you open yourself up to leagues of legal liability. **I'd like to avoid that as much as possible.**
+
+### What tools are currently in the toolkit?
+
+Right now, there isn't much of anything. There are two tools that I have made so far:
+
+- **Word Tracker**: This tool uses your browser's speech to text API to track the number of times you say one or more specific words.
+- **Chatvoice**: This tool uses your browser's text to speech API to read Twitch chat messages aloud and assign them specific voices.
+
+I'm planning on adding more, and fixing up the existing ones, but a lot of the **big** things that I want to do will require me to create the "bridge" I mentioned earlier.
+
+For example, one of the things that I want to add is assigning each chatter their own emote. Then when they speak, there will be an overlay that you can add to your streaming software that will display their emote moving along with their message. Maybe even a little speech bubble. That would be cute. But of course, this will require a way to communicate between configuration pages, and the overlay. That's where the bridge will be needed.
+
+---
+
+## 🤖 Capybotra
+
+For those that know me for my streams and other things on Twitch, you likely already know about this project.
+
+This is a Discord bot for my friend [Capybarha](https://twitch.tv/capybarha), and it doesn't do anything complicated. Like at all. All that the bot does is send "meme submissions" privately to a secret channel that server administrators can define. That's about it. The idea is that Capy will be able to go through the submissions and shuffle them. Then, viewers will be able to guess on who the meme is from. This allows people to submit memes throughout the week, without the hastles of having to sort through DMs to find submissions.
+
+### Any future plans?
+
+Right now, there's nothing concrete. But I do have some ideas for things that I'd like to add. But I'm not entirely sure if it's worth the effort. But here's the rundown. Also, full disclosure, if you don't know the context of what I'm talking about, don't worry. It's not that important.
+
+- **Easier way to view memes**: In the future, I might want to make submissions be sent to a database. Then, I could have a page that will automatically randomize the order of submissions. Once the guessing is over, Capy can click to reveal who the meme is from, and move on to the next one. This would save a lot of time, and would also create an archive of all the submissions in the process.
+- **Emotemons**: While we're on the topic of a database, what if we added commands to the bot where viewers could see what emotemons or other stuff they or others chatters have? View their statistics, or a global "mondex" where you can look at all the emotemons. It would be cool, but a lot of work.
+- **Leaderboards**: Still on the same topic of a database, I think a leaderboard/statistics command would be cool. But I could also see how it could get too competitive. The idea is you could see how many times someone has participated in a specific event, how many times they've won, how many points they've earned, and potentially make a leaderboard out of it.
+
+### Why make it?
+
+In all honesty, there wasn't really any reason to make it, other than the fact that I felt like it would be more useful than what we already had. Oh, and also because I like the fancy [bot developer badge](https://support-dev.discord.com/hc/en-us/articles/10113997751447-Active-Developer-Badge) that Discord gives you.
+
+But for real, sometimes I just like making things, and this is one of those times. It's simple enough and opens the door to more possibilities in the future. If Capy wants to run an event thats a little more complicated, there's a chance that having the structure already in-place could make it all the more possible.
+
+---
+
+## 💭 Memos
+
+To wrap things up, let's talk about something that I didn't code. This is a self-hosted service called [Memos](https://usememos.com), and it serves a very simple purpose - storing memos.
+
+But, that's not entirely what I'm using it for. **Time to get personal, again!**
+
+I have created an instance that runs at [memos.ltwilson.tv](https://memos.ltwilson.tv), and I am using it as a way to write down some of the thoughts that I have that might not make sense to make full-on blog posts about. In my first "memo" I highlight that while I'm not against talking about deeper and personal topics here on the blog, sometimes it would just be easier if I could quickly write down how I'm feeling.
+
+You may have also noticed that this was added in the [redesign](#%EF%B8%8F-smol-site-redesign), as there is now a "Memos" navigation button in the header.
+
+### What's the point?
+
+The idea is that if I have a place where I can quickly jot down my feelings, I will much more inclined to update it. The way the blog is right now, and I don't see this changing, each post is (*usually*) manually written in a code editor, and are stored as `.mdx` files. And I'm very comfortable in writing like that, but for quick notes, the entire process is a bit of a pain in the ass. Memos, on the other hand, let's me write things very quickly as long as I'm logged in on whatever device.
+
+I also think I'll enjoy the seperation of personal "diary-esque" entries and the much more long-form "blog-esque" entries here on the site. This kind-of allows people to filter what they want to see. I don't want my website to be entirely posts talking about my life and "woe is me!" So this seems like a good middle ground to me.
+
+---
+
+## 👋 That's about it!
+
+I hope you enjoyed this "behind the scenes" look into everything that I'm working on. A lot of the time I feel like I'm not accomplishing anything, so it's good to take the time and write the things that I **have** accomplished, as well as some of the things I'd like to work on.
+
+There are, of course, other things that I've been working on, but I feel like this is a good summary of the latest stuff.
+
+I've still been meaning to work on that music showcase Twitch extension that I mentioned in the [Last.FM post](/blog/2024/lastfm-has-the-worst-api), but I just haven't gotten to it. The version that I made didn't work when uploaded to Twitch due to how Svelte apps compile, so I'll either have to tinker with it, or just rewrite it in React. And that takes **a lot** of time.
+
+But either way, thanks for reading!
+
+❤️
