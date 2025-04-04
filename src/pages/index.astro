@@ -15,11 +15,12 @@ import VodCard from '@/components/vod-vault/VodCard.astro'
 import { SITE, type Link as SocialLink } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { Icon } from 'astro-icon/components'
+import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 
 // Get my author entry
 const author = (await getCollection('authors')).filter(
-  (person) => person.id === 'rileywilson',
+  (person: CollectionEntry<"authors">) => person.id === 'rileywilson',
 )
 
 // Set consts based on my author entry
@@ -49,7 +50,7 @@ const socialLinks: SocialLink[] = [
 ].filter(Boolean) as SocialLink[]
 
 // Get all da vods
-const vods = await getCollection('vods')
+const vods: CollectionEntry<"vods">[] = await getCollection('vods')
 const sortedVods = vods.sort(
   (a, b) => b.data['Stream Date'].valueOf() - a.data['Stream Date'].valueOf(),
 )
@@ -57,14 +58,14 @@ const latestVod = sortedVods[0]
 const nextThreeVods = sortedVods.slice(1, 4)
 
 // Get blog posts to display
-const blog = (await getCollection('blog'))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+const blog: CollectionEntry<"blog">[] = (await getCollection('blog'))
+  .filter((post: CollectionEntry<"blog">) => !post.data.draft)
+  .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE)
 
 // Get projects
-const projects = (await getCollection('projects'))
-  .sort((a, b) => a.data.name.localeCompare(b.data.name))
+const projects: CollectionEntry<"projects">[] = (await getCollection('projects'))
+  .sort((a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => a.data.name.localeCompare(b.data.name))
   .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE)
 ---
 
