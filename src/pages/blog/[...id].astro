@@ -1,14 +1,12 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import Container from '@/components/Container.astro'
-import Link from '@/components/Link.astro'
 import PostNavigation from '@/components/blog/PostNavigation.astro'
 import TableOfContents from '@/components/blog/TableOfContents.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import Layout from '@/layouts/Layout.astro'
-import { parseAuthors } from '@/lib/server-utils'
 import { formatDate, readingTime } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
@@ -51,8 +49,6 @@ const prevPost = getPrevPost(currentPostId)
 
 const post = Astro.props
 const { Content, headings } = await render(post)
-
-const authors = await parseAuthors(post.data.authors ?? [])
 ---
 
 <Layout
@@ -89,27 +85,6 @@ const authors = await parseAuthors(post.data.authors ?? [])
         <div
           class="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground"
         >
-          {
-            authors.length > 0 && (
-              <>
-                <div class="flex items-center gap-x-2">
-                  {authors.map((author) => (
-                    <div class="flex items-center gap-x-1.5">
-                      <Image
-                        src={author.avatar}
-                        alt={author.name}
-                        width={24}
-                        height={24}
-                        class="rounded-full"
-                      />
-                      <span>{author.name}</span>
-                    </div>
-                  ))}
-                </div>
-                <Separator orientation="vertical" className="h-4" />
-              </>
-            )
-          }
           <div class="flex items-center gap-2">
             <span>{formatDate(post.data.date)}</span>
             <Separator orientation="vertical" className="h-4" />
