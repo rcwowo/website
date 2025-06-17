@@ -117,7 +117,7 @@ const { Content, headings } = await render(post)
 
     {headings.length > 0 && <TableOfContents headings={headings} />}
 
-    <article class="prose prose-neutral max-w-none dark:prose-invert">
+    <article class="prose prose-invert max-w-none">
       <Content />
     </article>
 

@@ -1,7 +1,6 @@
 ---
 import Container from '@/components/Container.astro'
 import Link from '@/components/Link.astro'
-import { ModeToggle } from '@/components/ui/mode-toggle'
 import { SITE } from '@/consts'
 import { Image } from 'astro:assets'
 import logo from '../../public/static/logo.webp'
@@ -20,9 +19,6 @@ import logo from '../../public/static/logo.webp'
         <Image src={logo} alt="Logo" class="size-8 rounded-md" loading={"eager"} />
         {SITE.TITLE}
       </Link>
-      <div class="flex items-center gap-2 md:gap-4">
-        <ModeToggle client:load transition:persist />
-      </div>
     </div>
   </Container>
 </header>
