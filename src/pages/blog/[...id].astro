@@ -51,89 +51,70 @@ const post = Astro.props
 const { Content, headings } = await render(post)
 ---
 
-<Layout
-  title={post.data.title}
-  description={post.data.description}
-  image={post.data.image?.src ?? '/static/1200x630.webp'}
->
-  <Container class="flex flex-col gap-y-6">
-    <Breadcrumbs
-      items={[
-        { href: '/blog', label: 'Blog', icon: 'lucide:archive' },
-        { label: post.data.title, icon: 'lucide:file-text' },
-      ]}
-    />
-
-    {
-      post.data.image && (
-        <Image
-          src={post.data.image}
-          alt={post.data.title}
-          width={1200}
-          height={630}
-          class="object-cover rounded-md"
-        />
-      )
-    }
-
-    <section class="flex flex-col gap-6 text-center">
-      <div>
-        <h1 class="mb-4 text-4xl font-bold leading-tight sm:text-5xl">
-          {post.data.title}
-        </h1>
-
-        <div
-          class="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground"
-        >
-          <div class="flex items-center gap-2">
-            <span>{formatDate(post.data.date)}</span>
-            <Separator orientation="vertical" className="h-4" />
-            <span>{readingTime(post.body!)}</span>
+<Layout title={post.data.title} description={post.data.description} image={post.data.image?.src ?? '/static/1200x630.webp'}>
+  <main class="flex flex-col gap-y-6">
+    <Container class="flex flex-col p-6 gap-y-6">
+      <Breadcrumbs
+        items={[
+          { href: '/blog', label: 'Blog', icon: 'lucide:archive' },
+          { label: post.data.title, icon: 'lucide:file-text' },
+        ]}
+      />
+  
+      {
+        post.data.image && (
+          <Image
+            src={post.data.image}
+            alt={post.data.title}
+            width={1200}
+            height={630}
+            class="object-cover rounded-md"
+          />
+        )
+      }
+  
+      <section class="flex flex-col gap-6 text-center">
+        <div>
+          <h1 class="mb-4 text-4xl font-bold leading-tight sm:text-5xl">
+            {post.data.title}
+          </h1>
+  
+          <div
+            class="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground"
+          >
+            <div class="flex items-center gap-2">
+              <Icon name="lucide:calendar" size="16" />
+              <span>{formatDate(post.data.date)}</span>
+              <Separator orientation="vertical" className="h-2" />
+              <Icon name="lucide:clock" size="16" />
+              <span>{readingTime(post.body!)}</span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <PostNavigation prevPost={prevPost} nextPost={nextPost} />
-    </section>
-
-    {headings.length > 0 && <TableOfContents headings={headings} />}
-
-    <article class="prose prose-invert max-w-none">
-      <Content />
-    </article>
-
-    <PostNavigation prevPost={prevPost} nextPost={nextPost} />
-
-    { post.data.disableComments? (
-      <Container class="text-muted">Comments are disabled on this post.</Container>
-    ):(      
-      <!-- Utterances Comment Section  -->
-      {/* @ts-ignore */}
-      <script src="https://utteranc.es/client.js"
-          repo="theltwilson/website"
-          issue-term="pathname"
-          theme="preferred-color-scheme"
-          crossorigin="anonymous"
-          async>
-      </script>
-      
-    )}
-
-  </Container>
-
-  <Button
-    variant="outline"
-    size="icon"
-    className="group fixed bottom-8 right-8 z-50 hidden"
-    id="scroll-to-top"
-    title="Scroll to top"
-    aria-label="Scroll to top"
-  >
-    <Icon
-      name="lucide:arrow-up"
-      class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
-    />
-  </Button>
+  
+      </section>
+    </Container>
+    <Container class="flex flex-col gap-y-6 p-6">
+      {headings.length > 0 && <TableOfContents headings={headings} />}
+  
+      <article class="prose prose-invert max-w-none">
+        <Content />
+      </article>
+    </Container>
+  
+    <Button
+      size="icon"
+      className="group fixed bottom-8 right-8 z-50 hidden"
+      id="scroll-to-top"
+      title="Scroll to top"
+      aria-label="Scroll to top"
+    >
+      <Icon
+        name="lucide:arrow-up"
+        class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
+      />
+    </Button>
+  </main>
 
   <script>
     document.addEventListener('astro:page-load', () => {
