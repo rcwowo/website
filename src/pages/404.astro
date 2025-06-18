@@ -10,23 +10,22 @@ import { Icon } from 'astro-icon/components'
 ---
 
 <Layout title="404" description={SITE.DESCRIPTION}>
-  <Container class="flex grow flex-col gap-y-6">
-    <Breadcrumbs items={[{ label: '???', icon: 'lucide:circle-help' }]} />
-
+  <Container class="flex grow flex-col p-6 gap-y-6">
     <section
-      class="flex flex-col items-center justify-center gap-y-4 text-center"
+      class="flex flex-col items-center justify-center gap-y-6 text-center"
     >
       <Icon name="lucide:file-question" width={50} height={50} />
       <div class="max-w-md">
-        <h1 class="mb-4 text-3xl font-bold">404: Page not found</h1>
-        <p class="prose prose-neutral dark:prose-invert">
-          Oops! The page you're looking for doesn't exist.
+        <h1 class="mb-2 text-3xl font-bold">404</h1>
+        <p>
+          The page you're looking for doesn't appear to exist.
+          Please check your URL or return home. 
         </p>
       </div>
       <Link
         href="/"
         class={cn(
-          buttonVariants({ variant: 'outline' }),
+          buttonVariants(),
           'flex gap-x-1.5 group',
         )}
       >
