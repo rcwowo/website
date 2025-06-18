@@ -8,14 +8,14 @@ import { Icon } from 'astro-icon/components'
 interface Props {
   links?: Socials[]
   className?: string
-  large?: boolean
+  small?: boolean
 }
 
 if (!Astro.props.links) {
   Astro.props.links = SOCIALS
 }
 
-const { links, className, large } = Astro.props
+const { links, className, small } = Astro.props
 ---
 
 <ul class={cn('not-prose flex flex-wrap gap-2', className)} role="list">
@@ -27,17 +27,10 @@ const { links, className, large } = Astro.props
             href={link.URL}
             aria-label={link.TITLE}
             title={link.TITLE}
-            class={cn(buttonVariants({ variant: 'default', size: large ? 'lg' : 'icon' }), large ? 'w-full gap-2' : 'gap-2')}
+            class={cn(buttonVariants({ variant: 'default', size: small ? 'sm' : 'icon' }), small ? 'w-8 gap-2' : 'gap-2')}
             external
           >
             <Icon name={link.ICON} class="size-4 min-w-4 min-h-4" />
-            {
-            large && (
-              <p class="text-sm">
-                {link.TITLE}
-              </p>
-            )
-          }
           </Link>
         </li>
       )

@@ -2,23 +2,55 @@
 import Container from '@/components/Container.astro'
 import Link from '@/components/Link.astro'
 import { SITE } from '@/consts'
+import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import logo from '../../public/static/logo.webp'
+import { buttonVariants } from './ui/button'
+import MobileMenu from './ui/mobile-menu'
 ---
 
-<header
-  class="sticky top-0 z-10 bg-background/50 backdrop-blur-md"
-  transition:persist
->
-  <Container>
-    <div class="flex flex-wrap items-center justify-between gap-4 py-4">
+<header class="sticky top-0 z-10 pt-0 md:pt-6" transition:persist>
+  <div class="absolute inset-0 -z-10 bg-gradient-to-b from-black/70 to-transparent opacity-0 transition-opacity duration-300" id="header-gradient"></div>
+  <Container class="border-0 border-b rounded-none md:rounded-xl md:border md:drop-shadow-lg">
+    <div class="flex flex-wrap items-center justify-between gap-4 py-2">
       <Link
         href="/"
-        class="flex flex-shrink-0 items-center gap-2 text-xl font-semibold transition-colors duration-300 hover:text-primary"
+        class="flex flex-shrink-0 items-center -ml-2 p-2 gap-2 rounded-lg align-middle text-xl font-bold transition-colors duration-300 group hover:bg-primary/20"
       >
-        <Image src={logo} alt="Logo" class="size-8 rounded-md" loading={"eager"} />
+        <Image
+          src={logo}
+          alt="Logo"
+          class="size-8 rounded-md transition-transform group-hover:scale-110 group-hover:rotate-6"
+          loading={'eager'}
+        />
         {SITE.TITLE}
       </Link>
+      <nav class="hidden md:flex items-center gap-4">
+        <Link href="/blog" class="hidden md:block text-sm hover:text-primary/70"> Memos </Link>
+        <Link href="/blog" class="hidden md:block text-sm hover:text-primary/70"> Blog </Link>
+        <Link
+          href="https://vods.ltwilson.tv"
+          class={buttonVariants({ variant: 'default' })}
+          external={true}
+          size="sm"
+        >
+          <Icon name="lucide:file-video-2" size="16" />
+          VOD Vault
+        </Link>
+      </nav>
+      <MobileMenu client:load transition:persist />
     </div>
   </Container>
 </header>
+
+<script>
+  const header = document.getElementById('header-gradient');
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 10) {
+      header?.classList.remove('opacity-0');
+    } else {
+      header?.classList.add('opacity-0');
+    }
+  });
+</script>
