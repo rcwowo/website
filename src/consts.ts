@@ -7,7 +7,12 @@ export type Site = {
   POSTS_PER_PAGE: number
   VODS_PER_PAGE: number
   SITEURL: string
-  TWITCH_USER_ID: number
+}
+
+export type Socials = {
+  TITLE: string,
+  ICON: string,
+  URL: string
 }
 
 export const SITE: Site = {
@@ -20,5 +25,12 @@ export const SITE: Site = {
   POSTS_PER_PAGE: 8,
   VODS_PER_PAGE: 15,
   SITEURL: 'https://ltwilson.tv',
-  TWITCH_USER_ID: 194814599
 }
+
+export const SOCIALS: Socials[] = [
+  { TITLE: 'YouTube', ICON: 'lucide:youtube', URL: 'https://youtube.com/@theltwilson' },
+  { TITLE: 'Twitch', ICON: 'lucide:twitch', URL: 'https://twitch.tv/theltwilson' },
+  { TITLE: 'Bluesky', ICON: 'mingcute:bluesky-social-line', URL: 'https://bsky.app/profile/ltwilson.tv' },
+  { TITLE: 'Discord', ICON: 'mingcute:discord-line', URL: 'https://discord.gg/fJtyxttGpq' },
+  { TITLE: 'GitHub', ICON: 'lucide:github', URL: 'https://github.com/theltwilson'}
+]
