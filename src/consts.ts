@@ -20,7 +20,7 @@ export const SITE: Site = {
   DESCRIPTION:
     'Personal website of a guy that edits videos and occasionally dabbles in coding projects.',
   EMAIL: 'contact@ltwilson.tv',
-  NUM_POSTS_ON_HOMEPAGE: 3,
+  NUM_POSTS_ON_HOMEPAGE: 5,
   NUM_PROJECTS_ON_HOMEPAGE: 5,
   POSTS_PER_PAGE: 8,
   VODS_PER_PAGE: 15,

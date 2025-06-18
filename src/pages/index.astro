@@ -1,57 +1,75 @@
 ---
 import BlogCard from '@/components/blog/BlogCard.astro'
+import Container from '@/components/Container.astro'
 import Link from '@/components/Link.astro'
+import SocialIcons from '@/components/SocialIcons.astro'
 import { buttonVariants } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
+import { Icon } from 'astro-icon/components'
 import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 
-const blog: CollectionEntry<"blog">[] = (await getCollection('blog'))
-  .filter((post: CollectionEntry<"blog">) => !post.data.draft)
-  .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => b.data.date.valueOf() - a.data.date.valueOf())
+const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
+  .filter((post: CollectionEntry<'blog'>) => !post.data.draft)
+  .sort(
+    (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+      b.data.date.valueOf() - a.data.date.valueOf(),
+  )
   .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE)
 ---
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
-  <main class="mx-auto max-w-screen-md px-4 sm:px-6 lg:px-8">
-    <!-- Blog Posts & Projects -->
+  <main class="mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- About Box -->
     <section>
-      <div>
-        <!-- Blog Posts -->
-        <Card>
-          <CardHeader className="flex-row items-center justify-between">
-            <h2 class="text-xl font-bold lg:text-2xl">Latest Posts</h2>
-            <Link
-              href="/blog"
-              class={buttonVariants({ variant: 'outline' }) + ' group'}
-            >
-              View all <span
-                class="ml-1.5 transition-transform group-hover:translate-x-1"
-                >&rarr;</span
-              >
-            </Link>
-          </CardHeader>
-          <CardContent>
-            <ul class="not-prose flex flex-col gap-y-4">
-              {
-                blog.map((post) => (
-                  <li>
-                    <BlogCard entry={post} />
-                  </li>
-                ))
-              }
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
+      <Container class="mb-4 flex flex-col gap-5 p-6">
+        <div class="flex flex-row items-center justify-between">
+          <!-- Name & Pronoun Stuff -->
+          <div>
+            <h1 class="text-3xl font-bold md:text-4xl">👋 Hey! I'm Wilson.</h1>
+            <h2 class="opacity-50">
+              <b>he/him</b> • video editor & web developer
+            </h2>
+          </div>
+          <!-- This is where ill put online status -->
+        </div>
+        <!-- Description -->
+        <p class="text-sm">
+          Most people on the internet just call me Wilson, but that's my last
+          name. My real name is Riley, and I work on all sorts of different
+          things. Web and software development, graphic design, video editing,
+          I'm just a very creative oriented person. You can often find me
+          working on things in HTML/CSS, JS/TS, or Python. If you are interested
+          in work, please email <a
+            href="mailto:contact@ltwilson.tv"
+            class="text-purple-400">contact@ltwilson.tv</a
+          >!
+        </p>
+        <!-- Social Links -->
+        <SocialIcons />
+      </Container>
+    </section>
+    <!-- Blog Posts -->
+    <section>
+      <Container class="p-6">
+        <div class="mb-4 flex flex-row items-start justify-between gap-2">
+          <h2 class="text-xl font-extrabold lg:text-2xl">Recent posts.</h2>
+          <Link href="/blog" class={buttonVariants() + ' group'}>
+            <Icon name="lucide:layout-list" size="16" />
+            View All
+          </Link>
+        </div>
+        <ul class="not-prose flex flex-col gap-y-4">
+          {
+            blog.map((post) => (
+              <li>
+                <BlogCard entry={post} />
+              </li>
+            ))
+          }
+        </ul>
+      </Container>
     </section>
   </main>
 </Layout>
