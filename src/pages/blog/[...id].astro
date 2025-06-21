@@ -50,7 +50,7 @@ const { Content, headings } = await render(post)
 ---
 
 <Layout title={post.data.title} description={post.data.description} image={post.data.image?.src ?? '/static/1200x630.webp'}>
-  <main class="flex flex-col gap-y-6">
+  <main class="flex flex-col px-4 sm:px-6 lg:px-8 gap-y-6">
     <Container class="flex flex-col p-6 gap-y-6">
       <Breadcrumbs
         items={[
