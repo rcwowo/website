@@ -46,7 +46,7 @@ That being said, development is super easy. Follow these steps:
 git clone https://github.com/theltwilson/website
 
 # Install dependencies
-cd /website && bun install
+cd website && bun install
 
 # Run the test server
 bun dev
