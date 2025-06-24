@@ -15,7 +15,6 @@ import remarkEmoji from 'remark-emoji'
 import remarkMath from 'remark-math'
 import remarkToc from 'remark-toc'
 import sectionize from '@hbsnow/rehype-sectionize'
-
 import icon from 'astro-icon'
 
 // https://astro.build/config

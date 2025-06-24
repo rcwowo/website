@@ -6,7 +6,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { NAV_LINKS } from '@/consts'
 import { Menu } from 'lucide-react'
 
 const MobileMenu = () => {
@@ -31,7 +30,6 @@ const MobileMenu = () => {
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="outline"
           size="icon"
           className="md:hidden"
           title="Menu"
@@ -41,17 +39,33 @@ const MobileMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-background">
-        {NAV_LINKS.map((item) => (
-          <DropdownMenuItem key={item.href} asChild>
-            <a
-              href={item.href}
-              className="w-full text-lg font-medium capitalize"
-              onClick={() => setIsOpen(false)}
-            >
-              {item.label}
-            </a>
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuItem>
+          <a
+            href="https://memos.ltwilson.tv"
+            className="w-full text-lg font-medium capitalize"
+            onClick={() => setIsOpen(false)}
+          >
+            Memos
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <a
+            href="/blog"
+            className="w-full text-lg font-medium capitalize"
+            onClick={() => setIsOpen(false)}
+          >
+            Blog
+          </a>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <a
+            href="https://vods.ltwilson.tv"
+            className="w-full text-lg font-medium capitalize"
+            onClick={() => setIsOpen(false)}
+          >
+            VOD Vault
+          </a>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

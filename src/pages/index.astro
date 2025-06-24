@@ -1,210 +1,89 @@
 ---
 import BlogCard from '@/components/blog/BlogCard.astro'
+import Container from '@/components/Container.astro'
 import Link from '@/components/Link.astro'
-import ProjectCard from '@/components/projects/ProjectCard.astro'
 import SocialIcons from '@/components/SocialIcons.astro'
 import { buttonVariants } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import VodCard from '@/components/vod-vault/VodCard.astro'
-import { SITE, type Link as SocialLink } from '@/consts'
+import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { Icon } from 'astro-icon/components'
 import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 
-// Get my author entry
-const author = (await getCollection('authors')).filter(
-  (person: CollectionEntry<"authors">) => person.id === 'rileywilson',
-)
-
-// Set consts based on my author entry
-const {
-  github,
-  twitter,
-  bluesky,
-  discord,
-  linkedin,
-  youtube,
-  twitch,
-  instagram,
-  mail,
-} = author[0].data
-
-// Create links to display from my author entry
-const socialLinks: SocialLink[] = [
-  github && { href: github, label: 'GitHub' },
-  twitter && { href: twitter, label: 'Twitter' },
-  bluesky && { href: bluesky, label: 'Bluesky' },
-  discord && { href: discord, label: 'Discord' },
-  linkedin && { href: linkedin, label: 'LinkedIn' },
-  youtube && { href: youtube, label: 'YouTube' },
-  twitch && { href: twitch, label: 'Twitch' },
-  instagram && { href: instagram, label: 'Instagram' },
-  mail && { href: mail, label: 'Email' },
-].filter(Boolean) as SocialLink[]
-
-// Get all da vods
-const vods: CollectionEntry<"vods">[] = await getCollection('vods')
-const sortedVods = vods.sort(
-  (a, b) => b.data['Stream Date'].valueOf() - a.data['Stream Date'].valueOf(),
-)
-const latestVod = sortedVods[0]
-const nextThreeVods = sortedVods.slice(1, 4)
-
-// Get blog posts to display
-const blog: CollectionEntry<"blog">[] = (await getCollection('blog'))
-  .filter((post: CollectionEntry<"blog">) => !post.data.draft)
-  .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => b.data.date.valueOf() - a.data.date.valueOf())
+const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
+  .filter((post: CollectionEntry<'blog'>) => !post.data.draft)
+  .sort(
+    (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+      b.data.date.valueOf() - a.data.date.valueOf(),
+  )
   .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE)
-
-// Get projects
-const projects: CollectionEntry<"projects">[] = (await getCollection('projects'))
-  .sort((a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => a.data.name.localeCompare(b.data.name))
-  .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE)
 ---
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
-  <main class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-    <!-- Latest Stream  -->
-    {
-      latestVod && (
-        <section class="mb-4">
-          <VodCard vod={latestVod} featured={true} />
-        </section>
-      )
-    }
-
-    <!-- Information Section -->
-    <section class="mb-4">
-      <div class="grid gap-4 lg:grid-cols-2">
-        <!-- Welcome Card -->
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl lg:text-2xl">
-              👋 Welcome to ltwilson.tv!
-            </CardTitle>
-            <CardDescription>
-              Explore the archives of past Lt. Wilson streams. While most
-              streams are preserved, please take note of the following:
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul class="list-inside list-disc space-y-2 text-sm">
-              <li class="flex items-center">
-                <Icon name="lucide:calendar" class="mr-4 text-lg" />
-                Not all streams are or will be archived.
-              </li>
-              <li class="flex items-center">
-                <Icon name="lucide:volume-off" class="mr-4 text-lg" />
-                Music played on stream is not included in VODs.
-              </li>
-              <li class="flex items-center">
-                <Icon name="lucide:message-square-more" class="mr-4 text-lg" />
-                A chat replay is available for select VODs.
-              </li>
-            </ul>
-          </CardContent>
-        </Card>
-        <!-- Social Links Card -->
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl lg:text-2xl">
-              😎 Stay connected!
-            </CardTitle>
-            <CardDescription>
-              Find me on various social media platforms. I don't know why you'd
-              want to, but here they are anyway:
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <SocialIcons
-              links={socialLinks}
-              large
-              className="grid grid-cols-3"
-            />
-          </CardContent>
-        </Card>
-      </div>
-    </section>
-
-    <!-- Recent Streams  -->
-    <section class="mb-4">
-      <Card>
-        <CardHeader className="flex-row items-center justify-between">
-          <h2 class="text-xl font-bold lg:text-2xl">Recent Streams</h2>
-          <Link
-            href="/vods"
-            class={buttonVariants({ variant: 'outline' }) + ' group'}
-          >
-            View all <span
-              class="ml-1.5 transition-transform group-hover:translate-x-1"
-              >&rarr;</span
-            >
-          </Link>
-        </CardHeader>
-        <CardContent className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {nextThreeVods.map((vod) => <VodCard vod={vod} />)}
-        </CardContent>
-      </Card>
-    </section>
-
-    <!-- Blog Posts & Projects -->
+  <main class="mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- About Box -->
     <section>
-      <div class="grid gap-4 lg:grid-cols-[2fr_1fr]">
-        <!-- Blog Posts -->
-        <Card>
-          <CardHeader className="flex-row items-center justify-between">
-            <h2 class="text-xl font-bold lg:text-2xl">Latest Posts</h2>
-            <Link
-              href="/blog"
-              class={buttonVariants({ variant: 'outline' }) + ' group'}
-            >
-              View all <span
-                class="ml-1.5 transition-transform group-hover:translate-x-1"
-                >&rarr;</span
-              >
-            </Link>
-          </CardHeader>
-          <CardContent>
-            <ul class="not-prose flex flex-col gap-y-4">
-              {
-                blog.map((post) => (
-                  <li>
-                    <BlogCard entry={post} />
-                  </li>
-                ))
-              }
-            </ul>
-          </CardContent>
-        </Card>
-        <!-- Projects -->
-        <Card>
-          <CardHeader className="flex-row items-center justify-between">
-            <h2 class="text-xl font-bold lg:text-2xl">Projects</h2>
-            <Link
-              href="/projects"
-              class={buttonVariants({ variant: 'outline' }) + ' group'}
-            >
-              View all <span
-                class="ml-1.5 transition-transform group-hover:translate-x-1"
-                >&rarr;</span
-              >
-            </Link>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-2">
-            {projects.map((project) => <ProjectCard project={project} />)}
-          </CardContent>
-        </Card>
-        <div>
-          <div class="flex flex-col gap-4"></div>
+      <Container class="mb-4 flex flex-col gap-5 p-6">
+        <div class="flex flex-row items-center justify-between">
+          <!-- Name & Pronoun Stuff -->
+          <div>
+            <h1 class="text-3xl font-bold md:text-4xl">👋 Hey! I'm Wilson.</h1>
+            <h2 class="opacity-50">
+              <b>he/him</b> • video editor & web developer
+            </h2>
+          </div>
+          <!-- This is where ill put online status -->
         </div>
-      </div>
+        <!-- Description -->
+        <p class="text-sm">
+          Most people on the internet just call me Wilson, but that's my last
+          name. My real name is Riley, and I work on all sorts of different
+          things. Web and software development, graphic design, video editing,
+          I'm just a very creative oriented person. You can often find me
+          working on things in HTML/CSS, JS/TS, or Python. If you are interested
+          in work, please email <a
+            href="mailto:contact@ltwilson.tv"
+            class="text-purple-400">contact@ltwilson.tv</a
+          >!
+        </p>
+        <!-- Social Links -->
+        <SocialIcons />
+      </Container>
+    </section>
+    <!-- Blog Posts -->
+    <section>
+      <Container class="mb-4 p-6">
+        <div class="mb-4 flex flex-row items-start justify-between gap-2">
+          <h2 class="text-xl font-extrabold lg:text-2xl">Recent posts.</h2>
+          <Link href="/blog" class={buttonVariants() + ' group'}>
+            <Icon name="lucide:layout-list" size="16" />
+            View All
+          </Link>
+        </div>
+        <ul class="not-prose flex flex-col gap-y-4">
+          {
+            blog.map((post) => (
+              <li>
+                <BlogCard entry={post} />
+              </li>
+            ))
+          }
+        </ul>
+      </Container>
+    </section>
+    <!-- Work in progress notif -->
+    <section>
+      <Container class="flex flex-row gap-4 p-6">
+        <Icon name="lucide:hammer" size="36" class="min-w-6 text-fuchsia-300" />
+        <span>
+          <h2 class="text-xl font-extrabold lg:text-2xl">Work in progress!</h2>
+          <p class="text-sm text-muted-foreground">
+            This site is still a work in progress, with cool things to come in the
+            future. I wanted to get this new design out because I like it a lot and
+            wanted to share it with you!
+          </p>
+        </span>
+      </Container>
     </section>
   </main>
 </Layout>

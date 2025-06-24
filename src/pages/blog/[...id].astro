@@ -1,14 +1,9 @@
 ---
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import Container from '@/components/Container.astro'
-import Link from '@/components/Link.astro'
-import PostNavigation from '@/components/blog/PostNavigation.astro'
 import TableOfContents from '@/components/blog/TableOfContents.astro'
-import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import Layout from '@/layouts/Layout.astro'
-import { parseAuthors } from '@/lib/server-utils'
 import { formatDate, readingTime } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
@@ -51,133 +46,65 @@ const prevPost = getPrevPost(currentPostId)
 
 const post = Astro.props
 const { Content, headings } = await render(post)
-
-const authors = await parseAuthors(post.data.authors ?? [])
 ---
 
-<Layout
-  title={post.data.title}
-  description={post.data.description}
-  image={post.data.image?.src ?? '/static/1200x630.webp'}
->
-  <Container class="flex flex-col gap-y-6">
-    <Breadcrumbs
-      items={[
-        { href: '/blog', label: 'Blog', icon: 'lucide:archive' },
-        { label: post.data.title, icon: 'lucide:file-text' },
-      ]}
-    />
-
-    {
-      post.data.image && (
-        <Image
-          src={post.data.image}
-          alt={post.data.title}
-          width={1200}
-          height={630}
-          class="object-cover rounded-md"
-        />
-      )
-    }
-
-    <section class="flex flex-col gap-6 text-center">
-      <div>
-        <h1 class="mb-4 text-4xl font-bold leading-tight sm:text-5xl">
-          {post.data.title}
-        </h1>
-
-        <div
-          class="flex flex-wrap items-center justify-center gap-2 text-sm text-muted-foreground"
-        >
-          {
-            authors.length > 0 && (
-              <>
-                <div class="flex items-center gap-x-2">
-                  {authors.map((author) => (
-                    <div class="flex items-center gap-x-1.5">
-                      <Image
-                        src={author.avatar}
-                        alt={author.name}
-                        width={24}
-                        height={24}
-                        class="rounded-full"
-                      />
-                      <span>{author.name}</span>
-                    </div>
-                  ))}
-                </div>
-                <Separator orientation="vertical" className="h-4" />
-              </>
-            )
-          }
-          <div class="flex items-center gap-2">
-            <span>{formatDate(post.data.date)}</span>
-            <Separator orientation="vertical" className="h-4" />
-            <span>{readingTime(post.body!)}</span>
+<Layout title={post.data.title} description={post.data.description} image={post.data.image?.src ?? '/static/twitter-card.webp'}>
+  <main class="flex flex-col sm:px-6 lg:px-8 gap-y-6">
+    <Container class="flex flex-col p-6 gap-y-6">
+      {
+        post.data.image && (
+          <Image
+            src={post.data.image}
+            alt={post.data.title}
+            width={1200}
+            height={630}
+            class="object-cover rounded-lg"
+          />
+        )
+      }
+  
+      <section class="flex flex-col text-center">
+        <div>
+          <h1 class="mb-2 text-4xl font-bold leading-tight sm:text-5xl">
+            {post.data.title}
+          </h1>
+  
+          <div
+            class="flex flex-wrap items-center justify-center mb-2 text-sm text-muted-foreground"
+          >
+            <div class="flex items-center gap-2">
+              <Icon name="lucide:calendar" size="16" />
+              <span>{formatDate(post.data.date)}</span>
+              <Separator orientation="vertical" className="h-2" />
+              <Icon name="lucide:clock" size="16" />
+              <span>{readingTime(post.body!)}</span>
+            </div>
           </div>
         </div>
-        <div class="mt-4 flex flex-wrap justify-center gap-2">
-          {
-            post.data.tags && post.data.tags.length > 0 ? (
-              post.data.tags.map((tag) => (
-                <a
-                  href={`/tags/${tag}`}
-                  class={badgeVariants({ variant: 'secondary' })}
-                >
-                  <Icon name="lucide:hash" class="size-3 -translate-x-0.5" />
-                  {tag}
-                </a>
-              ))
-            ) : (
-              <span class="text-sm text-muted-foreground">
-                No tags available
-              </span>
-            )
-          }
-        </div>
-      </div>
-
-      <PostNavigation prevPost={prevPost} nextPost={nextPost} />
-    </section>
-
-    {headings.length > 0 && <TableOfContents headings={headings} />}
-
-    <article class="prose prose-neutral max-w-none dark:prose-invert">
-      <Content />
-    </article>
-
-    <PostNavigation prevPost={prevPost} nextPost={nextPost} />
-
-    { post.data.disableComments? (
-      <Container class="text-muted">Comments are disabled on this post.</Container>
-    ):(      
-      <!-- Utterances Comment Section  -->
-      {/* @ts-ignore */}
-      <script src="https://utteranc.es/client.js"
-          repo="theltwilson/website"
-          issue-term="pathname"
-          theme="preferred-color-scheme"
-          crossorigin="anonymous"
-          async>
-      </script>
-      
-    )}
-
-  </Container>
-
-  <Button
-    variant="outline"
-    size="icon"
-    className="group fixed bottom-8 right-8 z-50 hidden"
-    id="scroll-to-top"
-    title="Scroll to top"
-    aria-label="Scroll to top"
-  >
-    <Icon
-      name="lucide:arrow-up"
-      class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
-    />
-  </Button>
+  
+      </section>
+    </Container>
+    <Container class="flex flex-col gap-y-6 p-6">
+      {headings.length > 0 && <TableOfContents headings={headings} />}
+  
+      <article class="prose prose-invert max-w-none">
+        <Content />
+      </article>
+    </Container>
+  
+    <Button
+      size="icon"
+      className="group fixed bottom-8 right-8 z-50 hidden"
+      id="scroll-to-top"
+      title="Scroll to top"
+      aria-label="Scroll to top"
+    >
+      <Icon
+        name="lucide:arrow-up"
+        class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
+      />
+    </Button>
+  </main>
 
   <script>
     document.addEventListener('astro:page-load', () => {

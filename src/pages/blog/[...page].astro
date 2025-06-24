@@ -34,8 +34,8 @@ const postsByYear = page.data.reduce(
 const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
 ---
 
-<Layout title="Blog" description="Blog">
-  <Container class="flex grow flex-col gap-y-6">
+<Layout title="Blog" description="Explore the inner workings of my mind through my blog posts.">
+  <Container class="flex grow flex-col px-4 sm:px-6 lg:px-8 p-6 gap-y-6">
     <Breadcrumbs
       items={[
         { label: 'Blog', href: '/blog', icon: 'lucide:archive' },
