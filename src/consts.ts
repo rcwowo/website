@@ -30,7 +30,6 @@ export const SITE: Site = {
 export const SOCIALS: Socials[] = [
   { TITLE: 'YouTube', ICON: 'lucide:youtube', URL: 'https://youtube.com/@theltwilson' },
   { TITLE: 'Twitch', ICON: 'lucide:twitch', URL: 'https://twitch.tv/theltwilson' },
-  { TITLE: 'Bluesky', ICON: 'mingcute:bluesky-social-line', URL: 'https://bsky.app/profile/ltwilson.tv' },
   { TITLE: 'Discord', ICON: 'mingcute:discord-line', URL: 'https://discord.gg/fJtyxttGpq' },
   { TITLE: 'GitHub', ICON: 'lucide:github', URL: 'https://github.com/theltwilson'}
 ]
