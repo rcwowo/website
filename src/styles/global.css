@@ -164,7 +164,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply absolute h-auto w-screen z-[-2] text-foreground;
+    @apply absolute h-auto w-full overflow-x-hidden z-[-2] text-foreground;
 
     /* Grid gradient background :3 */
     background-image:
