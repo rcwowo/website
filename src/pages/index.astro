@@ -3,6 +3,8 @@ import BlogCard from '@/components/blog/BlogCard.astro'
 import Container from '@/components/Container.astro'
 import Link from '@/components/Link.astro'
 import SocialIcons from '@/components/SocialIcons.astro'
+import Status from '@/components/widgets/status'
+import NowPlaying from '@/components/widgets/now-playing'
 import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
@@ -24,7 +26,7 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
     <!-- About Box -->
     <section>
       <Container class="mb-4 flex flex-col gap-5 p-6">
-        <div class="flex flex-row items-center justify-between">
+        <div class="flex flex-row justify-between">
           <!-- Name & Pronoun Stuff -->
           <div>
             <h1 class="text-3xl font-bold md:text-4xl">👋 Hey! I'm Wilson.</h1>
@@ -32,7 +34,8 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
               <b>he/him</b> • video editor & web developer
             </h2>
           </div>
-          <!-- This is where ill put online status -->
+          <!-- My Discord status widget -->
+          <Status client:load />
         </div>
         <!-- Description -->
         <p class="text-sm">
@@ -51,26 +54,47 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
       </Container>
     </section>
     <!-- Blog Posts -->
-    <section>
-      <Container class="mb-4 p-6">
-        <div class="mb-4 flex flex-row items-start justify-between gap-2">
-          <h2 class="text-xl font-extrabold lg:text-2xl">Recent posts.</h2>
-          <Link href="/blog" class={buttonVariants() + ' group'}>
-            <Icon name="lucide:layout-list" size="16" />
-            View All
-          </Link>
-        </div>
-        <ul class="not-prose flex flex-col gap-y-4">
-          {
-            blog.map((post) => (
-              <li>
-                <BlogCard entry={post} />
-              </li>
-            ))
-          }
-        </ul>
-      </Container>
-    </section>
+    <div class="mx-auto max-w-[50rem] flex flex-col lg:flex-row gap-4 mb-4">
+      <!-- Left column -->
+      <section class="w-full lg:w-2/3">
+        <Container class="p-6 h-full">
+          <div class="mb-4 flex flex-row items-start justify-between gap-2">
+            <h2 class="text-xl font-extrabold lg:text-2xl">Recent posts.</h2>
+            <Link href="/blog" class={buttonVariants() + ' group'}>
+              <Icon name="lucide:layout-list" size="16" />
+              View All
+            </Link>
+          </div>
+          <ul class="not-prose flex flex-col gap-y-3">
+            {
+              blog.map((post) => (
+                <li>
+                  <BlogCard entry={post} />
+                </li>
+              ))
+            }
+          </ul>
+        </Container>
+      </section>
+      <!-- Right column -->
+      <section class="w-full lg:w-1/3">
+        <Container class="mb-4 p-3">
+          <!-- LastFM last played widget -->
+          <NowPlaying client:load />
+        </Container>
+        <Container class="flex flex-row gap-4 p-6">
+          <span>
+            <h2 class="text-xl font-extrabold lg:text-2xl">Container.</h2>
+            <p class="text-sm text-muted-foreground">
+              This site is still a work in progress, with cool things to come in the
+              future. I wanted to get this new design out because I like it a lot and
+              wanted to share it with you!
+            </p>
+          </span>
+          <Icon name="lucide:hammer" size="100" class="absolute bottom-5 right-5 -z-10 opacity-25" />
+        </Container>
+      </section>
+    </div>
     <!-- Work in progress notif -->
     <section>
       <Container class="flex flex-row gap-4 p-6">
