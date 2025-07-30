@@ -70,7 +70,7 @@ function NowPlaying() {
             </div>
           </div>
           <div className="flex justify-between text-sm mt-2">
-            { isPlaying == true && lastPlayed.timestamp ? (
+            { isPlaying == true && !lastPlayed.timestamp ? (
               <p className="text-green-500 font-bold animate-pulse">•&nbsp;Now Playing</p>
             ) : (
               <p className="opacity-50">{lastPlayed.timestamp !== undefined ? moment(lastPlayed.timestamp*1000).fromNow() : 'Unknown time'}</p>
