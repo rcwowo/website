@@ -40,10 +40,6 @@ function getNextPost(id: string): Props | null {
   return postIndex > 0 ? posts[postIndex - 1] : null
 }
 
-const currentPostId = Astro.params.id
-const nextPost = getNextPost(currentPostId)
-const prevPost = getPrevPost(currentPostId)
-
 const post = Astro.props
 const { Content, headings } = await render(post)
 ---
