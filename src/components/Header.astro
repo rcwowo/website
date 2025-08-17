@@ -11,7 +11,7 @@ import MobileMenu from './ui/mobile-menu'
 
 <header class="sticky top-0 z-10 pt-0 md:pt-6" transition:persist>
   <div class="absolute inset-0 -z-10 bg-gradient-to-b from-black/70 to-transparent opacity-0 transition-opacity duration-300" id="header-gradient"></div>
-  <Container class="border-0 border-b rounded-none md:rounded-xl md:border md:drop-shadow-lg">
+  <Container class="border-0 transition-all border-b rounded-none md:rounded-xl md:border md:drop-shadow-lg" id="header">
     <div class="flex flex-wrap items-center justify-between gap-4 py-2">
       <Link
         href="/"
@@ -20,7 +20,7 @@ import MobileMenu from './ui/mobile-menu'
         <Image
           src={logo}
           alt="Logo"
-          class="size-8 rounded-md transition-transform group-hover:scale-110 group-hover:rotate-6"
+          class="size-8 rounded-md transition-transform group-hover:scale-110 group-hover:rotate-6 group-active:scale-95"
           loading={'eager'}
         />
         {SITE.TITLE}
@@ -44,13 +44,16 @@ import MobileMenu from './ui/mobile-menu'
 </header>
 
 <script>
-  const header = document.getElementById('header-gradient');
+  const headerShadow = document.getElementById('header-gradient');
+  const header = document.getElementById('header');
   
   window.addEventListener('scroll', () => {
     if (window.scrollY > 10) {
-      header?.classList.remove('opacity-0');
+      headerShadow?.classList.remove('opacity-0');
+      header?.classList.add('!max-w-2xl')
     } else {
-      header?.classList.add('opacity-0');
+      headerShadow?.classList.add('opacity-0');
+      header?.classList.remove('!max-w-2xl');
     }
   });
 </script>
