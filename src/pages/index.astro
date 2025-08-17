@@ -6,6 +6,8 @@ import SocialIcons from '@/components/SocialIcons.astro'
 import Status from '@/components/widgets/status'
 import NowPlaying from '@/components/widgets/now-playing'
 import DiscordStatus from '@/components/widgets/discord'
+import YouTube from '@/components/widgets/youtube'
+import Twitch from '@/components/widgets/twitch'
 import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
@@ -54,6 +56,15 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
         <SocialIcons />
       </Container>
     </section>
+    <!-- youtube vid & vod stuff -->
+    <section>
+      <Container class="mb-4 flex flex-col gap-4 p-6">
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <YouTube client:load />
+          <Twitch client:load />
+        </div>
+      </Container>
+    </section>
     <!-- Blog Posts -->
     <div class="mx-auto max-w-[50rem] flex flex-col lg:flex-row gap-4 mb-4">
       <!-- Left column -->
@@ -85,12 +96,22 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
           <Icon name="lucide:music" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
         </Container>
         <!-- Discord server widget -->
-        <Container class="flex flex-row p-0 overflow-hidden group">
-          <a class="transition-colors p-6 hover:bg-primary/10 w-full" href="https://discord.gg/fJtyxttGpq" target="_blank">
+        <Container class="mb-4 flex flex-row p-0 overflow-hidden group">
+          <a class="transition-colors p-5 hover:bg-primary/10 w-full" href="https://discord.gg/fJtyxttGpq" target="_blank">
             <h2 class="text-xl font-extrabold lg:text-2xl mb-2">Hang out.</h2>
             <DiscordStatus client:load />
           </a>
           <Icon name="mingcute:discord-fill" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
+        </Container>
+        <!-- ill figure it out -->
+        <Container class="flex flex-row p-0 overflow-hidden group">
+          <a class="transition-colors p-5 hover:bg-primary/10 w-full" href="https://shop.ltwilson.tv" target="_blank">
+            <h2 class="text-xl font-extrabold lg:text-2xl mb-2">Shop.</h2>
+            <p class="text-sm text-muted-foreground">
+              Currently <span class="text-yellow-600">under construction.</span> Check back at some point in the far future.
+            </p>
+            <Icon name="lucide:shopping-cart" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
+          </a>
         </Container>
       </section>
     </div>
