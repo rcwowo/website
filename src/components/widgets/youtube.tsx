@@ -41,12 +41,15 @@ function YouTube() {
 
   if (!latestVideo) {
     return (
-      <div className="flex flex-col p-4">
-        <div className="flex flex-col gap-3">
-          <Skeleton className="w-full aspect-video rounded-lg" />
-          <div className="flex flex-col gap-2">
-            <Skeleton className="w-full h-6" />
-            <Skeleton className="w-2/3 h-4" />
+      <div className="flex flex-col overflow-hidden rounded-xl w-full border border-white/25">
+        <div className="flex flex-col">
+          <Skeleton className="aspect-video w-full" />
+          <div className="flex flex-col p-4">
+            <Skeleton className="mb-2 h-7 w-full" />
+            <div className="flex flex-row items-center gap-2">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-32" />
+            </div>
           </div>
         </div>
       </div>
@@ -56,18 +59,18 @@ function YouTube() {
   const thumbnailUrl = `https://i.ytimg.com/vi/${latestVideo.id}/maxresdefault.jpg`
 
   return (
-    <a href={latestVideo.url} target="_blank" className="flex flex-col overflow-hidden transition-colors border-white/25 border rounded-xl hover:bg-primary/10">
+    <a href={latestVideo.url} target="_blank" className="flex flex-col overflow-hidden max-w-[50%] transition-colors border-white/25 border rounded-xl hover:bg-primary/10">
       <div className="flex flex-col">
         <img
           src={thumbnailUrl}
           alt={latestVideo.video_name}
           className="w-full aspect-video object-cover"
         />
-        <div className="flex flex-col p-4 truncate">
-            <h3 className="text-lg font-extrabold line-clamp-2">{latestVideo.video_name}</h3>
+        <div className="flex flex-col p-4">
+            <h3 className="text-lg font-extrabold line-clamp-1">{latestVideo.video_name}</h3>
             <div className="flex flex-row text-sm items-center opacity-50 gap-2">
                 <SiYoutube size="16" className='min-w-4' />
-                <p>Published {moment(latestVideo.published).fromNow()}</p>
+                <p>{moment(latestVideo.published).fromNow()}</p>
             </div>
         </div>
       </div>

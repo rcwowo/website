@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Badge } from '@/components/ui/badge'
 import { Info } from 'lucide-react'
 import { SiTwitch } from '@icons-pack/react-simple-icons'
 import { Skeleton } from '../ui/skeleton'
@@ -33,7 +34,9 @@ function Twitch() {
   useEffect(() => {
     const fetchTwitchStatus = async () => {
       try {
-        const response = await fetch('https://n8n.ltwilson.tv/webhook/twitch-status')
+        const response = await fetch(
+          'https://n8n.ltwilson.tv/webhook/twitch-status',
+        )
         const data = await response.json()
         setTwitchData(data)
       } catch (error) {
@@ -47,7 +50,7 @@ function Twitch() {
 
   if (isError) {
     return (
-      <div className="flex flex-row gap-2 opacity-50 items-center justify-center">
+      <div className="flex flex-row items-center justify-center gap-2 opacity-50">
         <Info size={18} />
         Twitch data unavailable.
       </div>
@@ -56,50 +59,53 @@ function Twitch() {
 
   if (!twitchData) {
     return (
-      <div className="flex flex-col p-4">
-        <div className="flex flex-col gap-3">
-          <Skeleton className="w-full aspect-video rounded-lg" />
-          <div className="flex flex-col gap-2">
-            <Skeleton className="w-full h-6" />
-            <Skeleton className="w-2/3 h-4" />
+      <div className="flex flex-col overflow-hidden rounded-xl w-full border border-white/25">
+        <div className="flex flex-col">
+          <Skeleton className="aspect-video w-full" />
+          <div className="flex flex-col p-4">
+            <Skeleton className="mb-2 h-7 w-full" />
+            <div className="flex flex-row items-center gap-2">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 w-32" />
+            </div>
           </div>
         </div>
       </div>
     )
   }
 
-  const content = twitchData.isLive ? (
-    // Live stream content
-    <a href="https://twitch.tv/theltwilson" target="_blank" className="flex flex-col overflow-hidden transition-colors border-white/25 border rounded-xl hover:bg-primary/10">
+  const content = (
+    <a
+      href={twitchData.isLive ? "https://twitch.tv/theltwilson" : twitchData.vod!.url}
+      target="_blank"
+      className="flex flex-col overflow-hidden rounded-xl max-w-[50%] border border-white/25 transition-colors hover:bg-primary/10"
+    >
       <div className="flex flex-col">
-        <img
-          src={twitchData.stream!.thumbnail_url.replace('{width}', '1280').replace('{height}', '720')}
-          alt={twitchData.stream!.title}
-          className="w-full aspect-video object-cover"
-        />
-        <div className="flex flex-col p-4 truncate">
-          <h3 className="text-lg font-extrabold line-clamp-2">{twitchData.stream!.title}</h3>
-          <div className="flex flex-row text-sm items-center opacity-50 gap-2">
-            <SiTwitch size="16" className="min-w-4" />
-            <p>Live now • {twitchData.stream!.viewer_count} viewers • Playing {twitchData.stream!.game_name}</p>
-          </div>
+        <div className="relative">
+          <img
+            src={twitchData.isLive
+              ? twitchData.stream!.thumbnail_url.replace('{width}', '1280').replace('{height}', '720')
+              : twitchData.vod!.thumbnail_url}
+            alt={twitchData.isLive ? twitchData.stream!.title : twitchData.vod!.title}
+            className="aspect-video w-full object-cover"
+          />
+          {twitchData.isLive && (
+            <Badge showHash={false} variant="destructive" className="absolute top-3 right-3 uppercase text-sm shadow-lg">
+              • Live
+            </Badge>
+          )}
         </div>
-      </div>
-    </a>
-  ) : (
-    // VOD content
-    <a href={twitchData.vod!.url} target="_blank" className="flex flex-col overflow-hidden transition-colors border-white/25 border rounded-xl hover:bg-primary/10">
-      <div className="flex flex-col">
-        <img
-          src={twitchData.vod!.thumbnail_url}
-          alt={twitchData.vod!.title}
-          className="w-full aspect-video object-cover"
-        />
-        <div className="flex flex-col p-4 truncate">
-          <h3 className="text-lg font-extrabold line-clamp-2">{twitchData.vod!.title}</h3>
-          <div className="flex flex-row text-sm items-center opacity-50 gap-2">
-            <SiTwitch size="16" className='min-w-4' />
-            <p>Streamed {moment(twitchData.vod!.stream_date).fromNow()} • {twitchData.vod!.game_name}</p>
+        <div className="flex flex-col p-4">
+          <h3 className="line-clamp-1 text-lg font-extrabold">
+            {twitchData.isLive ? twitchData.stream!.title : twitchData.vod!.title}
+          </h3>
+          <div className="flex flex-row items-center gap-2 text-sm opacity-50">
+            <SiTwitch size="16" className="min-w-4" />
+            <p className='line-clamp-1'>
+              {twitchData.isLive 
+                ? `Started ${moment(twitchData.stream!.started_at).fromNow()} • ${twitchData.stream!.game_name}`
+                : `From ${moment(twitchData.vod!.stream_date).fromNow()} • ${twitchData.vod!.game_name}`}
+            </p>
           </div>
         </div>
       </div>

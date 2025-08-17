@@ -59,6 +59,7 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
     <!-- youtube vid & vod stuff -->
     <section>
       <Container class="mb-4 flex flex-col gap-4 p-6">
+        <h2 class="text-xl font-extrabold lg:text-2xl">Latest media.</h2>
         <div class="flex flex-col gap-2 sm:flex-row">
           <YouTube client:load />
           <Twitch client:load />
@@ -103,31 +104,15 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
           </a>
           <Icon name="mingcute:discord-fill" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
         </Container>
-        <!-- ill figure it out -->
-        <Container class="flex flex-row p-0 overflow-hidden group">
-          <a class="transition-colors p-5 hover:bg-primary/10 w-full" href="https://shop.ltwilson.tv" target="_blank">
-            <h2 class="text-xl font-extrabold lg:text-2xl mb-2">Shop.</h2>
-            <p class="text-sm text-muted-foreground">
-              Currently <span class="text-yellow-600">under construction.</span> Check back at some point in the far future.
-            </p>
-            <Icon name="lucide:shopping-cart" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
-          </a>
-        </Container>
+        <!-- Work in progress notif -->
+        <Container class="flex flex-col gap-1 p-5 overflow-hidden">
+          <h2 class="text-xl font-extrabold lg:text-2xl">W.I.P.</h2>
+          <p class="text-sm text-muted-foreground">
+            This site is still a work in progress. Some elements or designs may change in the future :3
+          </p>
+          <Icon name="lucide:hammer" size="100" class="absolute -bottom-5 -right-5 -z-10 opacity-25 blur-sm" />
+      </Container>
       </section>
     </div>
-    <!-- Work in progress notif -->
-    <section>
-      <Container class="flex flex-row gap-4 p-6">
-        <Icon name="lucide:hammer" size="36" class="min-w-6 text-fuchsia-300" />
-        <span>
-          <h2 class="text-xl font-extrabold lg:text-2xl">Work in progress!</h2>
-          <p class="text-sm text-muted-foreground">
-            This site is still a work in progress, with cool things to come in the
-            future. I wanted to get this new design out because I like it a lot and
-            wanted to share it with you!
-          </p>
-        </span>
-      </Container>
-    </section>
   </main>
 </Layout>
