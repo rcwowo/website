@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { LoaderCircle, Info } from 'lucide-react'
+import { Info } from 'lucide-react'
 import { Skeleton } from '../ui/skeleton'
 
 function DiscordStatus() {
