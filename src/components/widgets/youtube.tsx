@@ -59,7 +59,7 @@ function YouTube() {
   const thumbnailUrl = `https://i.ytimg.com/vi/${latestVideo.id}/maxresdefault.jpg`
 
   return (
-    <a href={latestVideo.url} target="_blank" className="flex flex-col overflow-hidden max-w-[50%] transition-colors border-white/25 border rounded-xl hover:bg-primary/10">
+    <a href={latestVideo.url} target="_blank" className="flex flex-col overflow-hidden lg:max-w-[50%] transition-colors border-white/25 border rounded-xl hover:bg-primary/10">
       <div className="flex flex-col">
         <img
           src={thumbnailUrl}

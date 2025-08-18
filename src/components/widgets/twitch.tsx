@@ -78,7 +78,7 @@ function Twitch() {
     <a
       href={twitchData.isLive ? "https://twitch.tv/theltwilson" : twitchData.vod!.url}
       target="_blank"
-      className="flex flex-col overflow-hidden rounded-xl max-w-[50%] border border-white/25 transition-colors hover:bg-primary/10"
+      className="flex flex-col overflow-hidden rounded-xl lg:max-w-[50%] border border-white/25 transition-colors hover:bg-primary/10"
     >
       <div className="flex flex-col">
         <div className="relative">
