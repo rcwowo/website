@@ -6,6 +6,7 @@ import SocialIcons from '@/components/SocialIcons.astro'
 import Status from '@/components/widgets/status'
 import NowPlaying from '@/components/widgets/now-playing'
 import DiscordStatus from '@/components/widgets/discord'
+import Bluesky from '@/components/widgets/bluesky'
 import YouTube from '@/components/widgets/youtube'
 import Twitch from '@/components/widgets/twitch'
 import { buttonVariants } from '@/components/ui/button'
@@ -94,7 +95,12 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
         <!-- LastFM last played widget -->
         <Container class="mb-4 p-0 overflow-hidden group">
           <NowPlaying client:load />
-          <Icon name="lucide:music" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
+          <Icon name="mingcute:music-fill" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
+        </Container>
+        <!-- Bluesky widget -->
+        <Container class="mb-4 p-0 overflow-hidden group">
+          <Bluesky client:load />
+          <Icon name="mingcute:bluesky-social-fill" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
         </Container>
         <!-- Discord server widget -->
         <Container class="mb-4 flex flex-row p-0 overflow-hidden group">
