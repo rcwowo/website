@@ -9,13 +9,14 @@ My personal website and blog, made with Astro.
 
 ## About this repo.
 
-This is the source code for my website and blog, originally derived from the [astro-eudite](https://github.com/jktrn/astro-erudite) template. It has been pretty heavily modified to fit it's own aesthetic and for my own purposes.
+This is the source code for my website and blog, originally derived from the [astro-erudite](https://github.com/jktrn/astro-erudite) template. It has been pretty heavily modified to fit it's own aesthetic and for my own purposes.
 
 With the **2.0.0** release of the website, a lot of the website and other things have changed to better reflect what I truly want out of the website. Such as:  
 
 * Changed and added more colorful theming.
 * Removed a lot of things I didn't like or need, like tags, authors, projects, and comments.
 * Moved the previous VOD archival functionality to it's [own website](https://vods.ltwilson.tv) and [repository](https://github.com/theltwilson/vod-archive).
+* Added cool dynamic widgets to the home page.
 
 And of course, this project is open source and available under the [MIT License](LICENSE) - modify and shape it to be yours!
 
@@ -27,11 +28,12 @@ Here's what's potentially next:
 
 * The return of projects in a smaller form factor.
 * More widgets on the main page, such as:
-    * ☐ Status indicator - am I online, or live?
-    * ☐ Now playing - what am or was I listening to?
-    * ☐ Shop widget - very work-in-progress.
-    * ☐ Webring - showcase other cool sites.
-    * ☐ Latest from me - videos, VODs, etc.
+    - [x] **Status indicator** - am I online, or live?
+    - [x] **Now playing** - what am or was I listening to?
+    - [x] **Latest from me** - videos, VODs, etc.
+    - [x] **Bluesky posts** - the latest post from yours truly.
+    - [ ] **Shop widget** - very work-in-progress.
+    - [ ] **Webring** - showcase other cool sites.
 
 I would like the home page to be a quick and easy way to get to know me, without having to look around elsewhere to figure it out. While I don't have the same artistic or programming skills to make a page like this, I want to make something like [dimden's website](https://dimden.dev).
 
