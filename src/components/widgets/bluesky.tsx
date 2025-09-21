@@ -174,7 +174,7 @@ function Bluesky() {
           </div>
         </div>
 
-        <div className="text-sm opacity-50">via Bluesky</div>
+        <div className="text-sm opacity-30">via Bluesky</div>
       </div>
     </a>
   )
