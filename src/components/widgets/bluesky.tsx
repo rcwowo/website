@@ -27,7 +27,7 @@ function Bluesky() {
       try {
         // Get my profile
         const pResp = await fetch(
-          'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=ltwilson.tv',
+          'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=did:plc:siwlk4jbqorvg5iytyxgsz4z',
         )
         const pJson = await pResp.json()
 
