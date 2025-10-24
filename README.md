@@ -1,8 +1,8 @@
-![Showcase Card](/public/static/twitter-card.webp)
+![Showcase Card](public/static/twitter-card.webp)
 
 <div align="center">
 
-# The Lt. Wilson Website
+# My Website
 My personal website and blog, made with Astro.
 
 </div>
@@ -45,7 +45,7 @@ That being said, development is super easy. Follow these steps:
 
 ```sh
 # Clone the repo
-git clone https://github.com/theltwilson/website
+git clone https://tangled.org/@rcw.lol/website
 
 # Install dependencies
 cd website && bun install
