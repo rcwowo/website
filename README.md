@@ -45,7 +45,7 @@ That being said, development is super easy. Follow these steps:
 
 ```sh
 # Clone the repo
-git clone https://tangled.org/@rcw.lol/website
+git clone https://github.com/rcwowo/website
 
 # Install dependencies
 cd website && bun install
