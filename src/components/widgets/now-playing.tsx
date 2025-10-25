@@ -20,7 +20,7 @@ function NowPlaying() {
   useEffect(() => {
     const fetchNowPlaying = async () => {
       try {
-        const response = await fetch('https://n8n.ltwilson.tv/webhook/spotify-status')
+        const response = await fetch('https://n8n.lab.rcw.lol/webhook/spotify-status')
         const data = await response.json()
         console.log("Song data", data)
         setIsPlaying(data.isPlaying)

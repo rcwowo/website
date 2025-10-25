@@ -7,7 +7,7 @@ function Status() {
   const [status, setStatus] = useState<StatusType | ''>('')
 
   useEffect(() => {
-    fetch('https://n8n.ltwilson.tv/webhook/discord-status')
+    fetch('https://n8n.lab.rcw.lol/webhook/discord-status')
       .then((response) => response.json())
       .then((data) => setStatus(data.status))
   }, [])

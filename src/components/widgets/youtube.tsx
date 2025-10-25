@@ -18,7 +18,7 @@ function YouTube() {
   useEffect(() => {
     const fetchLatestVideo = async () => {
       try {
-        const response = await fetch('https://n8n.ltwilson.tv/webhook/youtube-status')
+        const response = await fetch('https://n8n.lab.rcw.lol/webhook/youtube-status')
         const data = await response.json()
         setLatestVideo(data)
       } catch (error) {
