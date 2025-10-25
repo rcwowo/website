@@ -28,18 +28,6 @@ function getPostIndex(id: string): number {
   return posts.findIndex((post) => post.id === id)
 }
 
-function getPrevPost(id: string): Props | null {
-  const postIndex = getPostIndex(id)
-  return postIndex !== -1 && postIndex < posts.length - 1
-    ? posts[postIndex + 1]
-    : null
-}
-
-function getNextPost(id: string): Props | null {
-  const postIndex = getPostIndex(id)
-  return postIndex > 0 ? posts[postIndex - 1] : null
-}
-
 const post = Astro.props
 const { Content, headings } = await render(post)
 ---
