@@ -18,7 +18,7 @@ export const SITE: Site = {
   TITLE: 'rcw.lol',
   DESCRIPTION:
     'Personal website of a guy that edits videos and occasionally dabbles in coding projects.',
-  EMAIL: 'contact@ltwilson.tv',
+  EMAIL: 'riley@rcw.lol',
   NUM_POSTS_ON_HOMEPAGE: 7,
   POSTS_PER_PAGE: 8,
   VODS_PER_PAGE: 15,
