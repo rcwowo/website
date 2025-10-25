@@ -30,5 +30,5 @@ export const SOCIALS: Socials[] = [
   { TITLE: 'Twitch', ICON: 'lucide:twitch', URL: 'https://twitch.tv/rcwowo' },
   { TITLE: 'Bluesky', ICON: 'mingcute:bluesky-social-line', URL: 'https://bsky.app/profile/rcw.lol' },
   { TITLE: 'Discord', ICON: 'mingcute:discord-line', URL: 'https://discord.gg/fJtyxttGpq' },
-  { TITLE: 'Tangled', ICON: 'lucide:git-graph', URL: 'https://tangled.org/@rcw.lol'}
+  { TITLE: 'GitHub', ICON: 'lucide:github', URL: 'https://github.com/rcwowo'}
 ]
