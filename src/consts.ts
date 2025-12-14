@@ -4,7 +4,6 @@ export type Site = {
   EMAIL: string
   NUM_POSTS_ON_HOMEPAGE: number
   POSTS_PER_PAGE: number
-  VODS_PER_PAGE: number
   SITEURL: string
 }
 
@@ -20,8 +19,7 @@ export const SITE: Site = {
     'Personal website of a guy that edits videos and occasionally dabbles in coding projects.',
   EMAIL: 'riley@rcw.lol',
   NUM_POSTS_ON_HOMEPAGE: 7,
-  POSTS_PER_PAGE: 8,
-  VODS_PER_PAGE: 15,
+  POSTS_PER_PAGE: 10,
   SITEURL: 'https://rcw.lol',
 }
 
