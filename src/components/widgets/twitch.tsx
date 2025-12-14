@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Info } from 'lucide-react'
-import { SiTwitch } from '@icons-pack/react-simple-icons'
 import { Skeleton } from '../ui/skeleton'
 import moment from 'moment'
 
@@ -76,9 +75,9 @@ function Twitch() {
 
   const content = (
     <a
-      href={twitchData.isLive ? "https://twitch.tv/theltwilson" : twitchData.vod!.url}
+      href={twitchData.isLive ? "https://twitch.tv/rcwowo" : twitchData.vod!.url}
       target="_blank"
-      className="flex flex-col overflow-hidden rounded-xl lg:max-w-[50%] border border-white/25 transition-colors hover:bg-primary/10"
+      className="flex flex-col overflow-hidden rounded-xl border-white/25 transition-colors hover:bg-primary/10"
     >
       <div className="flex flex-col">
         <div className="relative">
@@ -90,21 +89,25 @@ function Twitch() {
             className="aspect-video w-full object-cover"
           />
           {twitchData.isLive && (
-            <Badge showHash={false} variant="destructive" className="absolute top-3 right-3 uppercase text-sm shadow-lg">
+            <Badge showHash={false} variant="destructive" className="absolute top-2 right-2 uppercase text-sm shadow-lg shadow-red-950/80">
               • Live
             </Badge>
           )}
         </div>
         <div className="flex flex-col p-4">
-          <h3 className="line-clamp-1 text-lg font-extrabold">
+          <h3 className="text-md font-extrabold truncate">
             {twitchData.isLive ? twitchData.stream!.title : twitchData.vod!.title}
           </h3>
-          <div className="flex flex-row items-center gap-2 text-sm opacity-50">
-            <SiTwitch size="16" className="min-w-4" />
-            <p className='line-clamp-1'>
+          <div className="flex flex-row items-center justify-between gap-2 text-sm opacity-50">
+            <p className='truncate'>
               {twitchData.isLive 
-                ? `Started ${moment(twitchData.stream!.started_at).fromNow()} • ${twitchData.stream!.game_name}`
-                : `From ${moment(twitchData.vod!.stream_date).fromNow()} • ${twitchData.vod!.game_name}`}
+                ? `started ${moment(twitchData.stream!.started_at).fromNow()}`
+                : `from ${moment(twitchData.vod!.stream_date).fromNow()}`}
+            </p>
+            <p>
+              {twitchData.isLive
+                ? `via Twitch`
+                : 'via VOD Vault'}
             </p>
           </div>
         </div>
