@@ -15,7 +15,7 @@ With the **2.0.0** release of the website, a lot of the website and other things
 
 * Changed and added more colorful theming.
 * Removed a lot of things I didn't like or need, like tags, authors, projects, and comments.
-* Moved the previous VOD archival functionality to it's [own website](https://vods.ltwilson.tv) and [repository](https://github.com/theltwilson/vod-archive).
+* Moved the previous VOD archival functionality to it's [own website](https://vods.rcw.lol) and [repository](https://gitlab.com/rcw.lol/vods).
 * Added cool dynamic widgets to the home page.
 
 And of course, this project is open source and available under the [MIT License](LICENSE) - modify and shape it to be yours!
@@ -45,7 +45,7 @@ That being said, development is super easy. Follow these steps:
 
 ```sh
 # Clone the repo
-git clone https://github.com/rcwowo/website
+git clone https://gitlab.com/rcw.lol/website
 
 # Install dependencies
 cd website && bun install

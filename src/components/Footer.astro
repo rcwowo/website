@@ -1,12 +1,7 @@
 ---
 import Container from '@/components/Container.astro'
 import SocialIcons from './SocialIcons.astro'
-import { SITE, type Socials } from '@/consts'
-
-const links: Socials[] = [
-  { TITLE: 'Source Code', URL: 'https://github.com/theltwilson/website', ICON: 'lucide:git-graph' },
-  { TITLE: 'RSS', URL: '/rss.xml', ICON: 'lucide:rss' }
-]
+import { SITE, FOOTER_LINKS } from '@/consts'
 ---
 
 <footer class="p-0 md:pb-4">
@@ -19,7 +14,7 @@ const links: Socials[] = [
           <b>&copy; {new Date().getFullYear()} {SITE.TITLE}</b> - All rights reserved.
         </p>
       </div>
-      <SocialIcons links={links} small />
+      <SocialIcons links={FOOTER_LINKS} small />
     </div>
   </Container>
 </footer>
