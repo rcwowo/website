@@ -41,15 +41,6 @@ const MobileMenu = () => {
       <DropdownMenuContent align="end" className="bg-background">
         <DropdownMenuItem>
           <a
-            href="https://memos.ltwilson.tv"
-            className="w-full text-lg font-medium capitalize"
-            onClick={() => setIsOpen(false)}
-          >
-            Memos
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <a
             href="/blog"
             className="w-full text-lg font-medium capitalize"
             onClick={() => setIsOpen(false)}
