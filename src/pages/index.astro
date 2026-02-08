@@ -1,15 +1,12 @@
 ---
 import BlogCard from '@/components/blog/BlogCard.astro'
-import Container from '@/components/Container.astro'
 import Link from '@/components/Link.astro'
+import Section from '@/components/Section.astro'
 import SocialIcons from '@/components/SocialIcons.astro'
-import Status from '@/components/widgets/status'
-import NowPlaying from '@/components/widgets/now-playing'
-import DiscordStatus from '@/components/widgets/discord'
-import Bluesky from '@/components/widgets/bluesky'
-import Twitch from '@/components/widgets/twitch'
 import { buttonVariants } from '@/components/ui/button'
-import { SITE } from '@/consts'
+import NowPlaying from '@/components/widgets/now-playing'
+import Status from '@/components/widgets/status'
+import { SITE, TAGLINES } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { Icon } from 'astro-icon/components'
 import type { CollectionEntry } from 'astro:content'
@@ -25,85 +22,50 @@ const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
 ---
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
-  <main class="mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- About Box -->
-    <section>
-      <Container class="mb-4 flex flex-col gap-5 p-6">
-        <div class="flex flex-row justify-between">
-          <!-- Name & Pronoun Stuff -->
-          <div>
-            <h1 class="text-3xl font-bold md:text-4xl">👋 Hey! I'm Riley.</h1>
-            <h2 class="opacity-50">
-              <b>he/him</b> • video editor & web developer
-            </h2>
-          </div>
-          <!-- My Discord status widget -->
-          <Status client:load />
-        </div>
-        <!-- Description -->
-        <p class="text-sm">
-          Most people on the internet just call me Wilson, but that's my last
-          name. My real name is Riley, and I work on all sorts of different
-          things. Web and software development, graphic design, video editing,
-          I'm just a very creative oriented person. You can often find me
-          working on things in HTML/CSS, JS/TS, or Python. If you are interested
-          in work, please email <a
-            href="mailto:riley@rcw.lol"
-            class="text-purple-400">riley@rcw.lol</a
-          >.
-        </p>
-        <!-- Social Links -->
-        <SocialIcons />
-      </Container>
-    </section>
-    <!-- Blog Posts -->
-    <div class="mx-auto max-w-[50rem] flex flex-col lg:flex-row gap-4">
-      <!-- Left column -->
-      <section class="w-full lg:w-2/3">
-        <Container class="p-6 h-full">
-          <div class="mb-4 flex flex-row items-start justify-between gap-2">
-            <h2 class="text-xl font-extrabold lg:text-2xl">Recent posts.</h2>
-            <Link href="/blog" class={buttonVariants() + ' group'}>
-              <Icon name="lucide:layout-list" size="16" />
-              View All
-            </Link>
-          </div>
-          <ul class="not-prose flex flex-col gap-y-3">
-            {
-              blog.map((post) => (
-                <li>
-                  <BlogCard entry={post} />
-                </li>
-              ))
-            }
-          </ul>
-        </Container>
-      </section>
-      <!-- Right column -->
-      <section class="w-full lg:w-1/3">
-        <!-- Stream widget -->
-        <Container class="mb-4 p-0 overflow-hidden group">
-          <Twitch client:load />
-          <Icon name="mingcute:video-camera-fill" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
-        </Container>
-        <!-- LastFM last played widget -->
-        <Container class="mb-4 p-0 overflow-hidden group">
-          <NowPlaying client:load />
-          <Icon name="mingcute:music-fill" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
-        </Container>
-        <!-- Bluesky widget -->
-        <Container class="mb-4 p-0 overflow-hidden group">
-          <Bluesky client:load />
-          <Icon name="mingcute:bluesky-social-fill" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
-        </Container>
-        <!-- Discord server widget -->
-        <Container class="flex flex-row p-0 overflow-hidden group">
-          <a class="transition-colors p-5 hover:bg-primary/10 w-full" href="https://discord.gg/fJtyxttGpq" target="_blank">
-            <DiscordStatus client:load />
-          </a>
-          <Icon name="mingcute:discord-fill" size="100" class="absolute -bottom-5 -right-5 -z-10 rotate-12 opacity-25 blur-sm transition-transform group-hover:scale-125" />
-        </Container>
-      </section>
+  <!-- About Box -->
+  <Section class="flex h-40 flex-row items-center justify-between">
+    <!-- Name & Tagline -->
+    <div class="flex flex-col gap-1">
+      <h1 class="text-3xl font-bold md:text-5xl">{SITE.TITLE}</h1>
+      <h2 class="text-sm opacity-50">
+        {TAGLINES[Math.floor(Math.random() * TAGLINES.length)]}
+      </h2>
     </div>
-  </main>
+    <!-- Status & Pronouns (woke af) -->
+    <div class="flex h-full flex-col justify-between">
+      <Status client:load />
+      <div class="flex flex-col items-end justify-end">
+        <p>he/him</p>
+        <p class="text-xs opacity-50">video editor</p>
+        <p class="text-xs opacity-50">web developer</p>
+      </div>
+    </div>
+  </Section>
+  <!-- Social Icons -->
+  <Section class="p-0">
+    <SocialIcons />
+  </Section>
+  <!-- Music Status -->
+  <Section class="px-6 py-3">
+    <NowPlaying client:load />
+  </Section>
+  <!-- Blog Posts -->
+  <Section class="flex flex-col gap-3" last>
+    <ul class="not-prose flex flex-col gap-y-3">
+      {
+        blog.map((post) => (
+          <li>
+            <BlogCard entry={post} />
+          </li>
+        ))
+      }
+    </ul>
+    <Link
+      href="/blog"
+      class={buttonVariants({ variant: 'outline', size: 'lg' }) + ' group'}
+    >
+      <Icon name="lucide:layout-list" size="16" />
+      View All
+    </Link>
+  </Section>
 </Layout>

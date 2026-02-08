@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Menu } from 'lucide-react'
+import { MENU_LINKS } from '@/consts'
 
 const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -30,33 +31,26 @@ const MobileMenu = () => {
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
+          className="bg-transparent text-border hover:bg-transparent hover:text-primary border-l rounded-none h-14 w-14"
           size="icon"
-          className="md:hidden"
           title="Menu"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-6 w-6" />
           <span className="sr-only">Toggle menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-background">
-        <DropdownMenuItem>
-          <a
-            href="/blog"
-            className="w-full text-lg font-medium capitalize"
-            onClick={() => setIsOpen(false)}
-          >
-            Blog
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <a
-            href="https://vods.ltwilson.tv"
-            className="w-full text-lg font-medium capitalize"
-            onClick={() => setIsOpen(false)}
-          >
-            VOD Vault
-          </a>
-        </DropdownMenuItem>
+      <DropdownMenuContent align="end" className="bg-background rounded-none">
+        {MENU_LINKS.map((link) => (
+          <DropdownMenuItem key={link.TITLE} className='rounded-none'>
+            <a
+              href={link.URL}
+              className="w-full text-md font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              {link.TITLE}
+            </a>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   )

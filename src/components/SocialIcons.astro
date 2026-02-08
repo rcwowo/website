@@ -1,36 +1,39 @@
 ---
 import Link from '@/components/Link.astro'
 import { SOCIALS, type Socials } from '@/consts'
-import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
+import { buttonVariants } from './ui/button'
 
 interface Props {
   links?: Socials[]
   className?: string
-  small?: boolean
 }
 
 if (!Astro.props.links) {
   Astro.props.links = SOCIALS
 }
 
-const { links, className, small } = Astro.props
+const { links, className } = Astro.props
 ---
 
-<ul class={cn('not-prose flex flex-wrap gap-2', className)} role="list">
+<ul class={cn(`grid grid-cols-5`, className)} role="list">
   {
-    links.map((link) => {
+    links.map((link, index) => {
       return (
         <li>
           <Link
             href={link.URL}
             aria-label={link.TITLE}
             title={link.TITLE}
-            class={cn(buttonVariants({ variant: 'default', size: small ? 'sm' : 'icon' }), small ? 'w-8 gap-2' : 'gap-2')}
+            class={cn(
+              buttonVariants({ variant: 'outline' }),
+              'group inline-flex h-14 w-full items-center justify-center border-transparent',
+              index !== links.length - 1 && 'border-r-border',
+            )}
             external
           >
-            <Icon name={link.ICON} class="size-4 min-w-4 min-h-4" />
+            <Icon name={link.ICON} size={24} />
           </Link>
         </li>
       )

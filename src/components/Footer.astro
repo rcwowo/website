@@ -1,20 +1,16 @@
 ---
 import Container from '@/components/Container.astro'
-import SocialIcons from './SocialIcons.astro'
-import { SITE, FOOTER_LINKS } from '@/consts'
 ---
 
-<footer class="p-0 md:pb-4">
-  <Container class="p-4 border-0 border-t rounded-none md:rounded-xl md:border">
+<footer class="p-0 border-t">
+  <Container class="rounded-none p-4 border-0 border-l border-r">
     <div
-      class="flex flex-col items-center justify-center gap-y-2 sm:flex-row sm:justify-between"
+      class="flex flex-col items-center justify-center"
     >
-      <div class="flex items-center">
-        <p class="text-center text-sm text-muted-foreground">
-          <b>&copy; {new Date().getFullYear()} {SITE.TITLE}</b> - All rights reserved.
-        </p>
-      </div>
-      <SocialIcons links={FOOTER_LINKS} small />
+      <p class="text-center text-muted">
+          &copy;
+          {new Date().getFullYear()} All rights reserved.
+      </p>
     </div>
   </Container>
 </footer>

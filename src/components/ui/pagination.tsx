@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { type ButtonProps, buttonVariants } from '@/components/ui/button'
@@ -107,7 +107,7 @@ const PaginationEllipsis = ({
     className={cn('flex h-9 w-9 items-center justify-center', className)}
     {...props}
   >
-    <MoreHorizontal className="h-4 w-4" />
+    <X className="h-4 w-4" />
     <span className="sr-only">More pages</span>
   </span>
 )
@@ -131,43 +131,60 @@ const PaginationComponent: React.FC<PaginationProps> = ({
     return `${baseUrl}${page}`
   }
 
+  const hasPrev = currentPage > 1
+  const hasNext = currentPage < totalPages
+
   return (
-    <Pagination>
-      <PaginationContent className="flex-wrap">
-        <PaginationItem>
-          <PaginationPrevious
-            href={currentPage > 1 ? getPageUrl(currentPage - 1) : undefined}
-            isDisabled={currentPage === 1}
-          />
-        </PaginationItem>
-
-        {pages.map((page) => (
-          <PaginationItem key={page}>
-            <PaginationLink
-              href={getPageUrl(page)}
-              isActive={page === currentPage}
-            >
-              {page}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
-
-        {totalPages > 5 && (
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
+    <div className="flex items-center justify-between">
+      {/* Previous Page */}
+      <div className="flex h-16 w-14 items-center justify-center border-r">
+        {hasPrev ? (
+          <a
+            className="flex h-full w-full items-center justify-center text-muted transition-colors hover:text-primary"
+            href={getPageUrl(currentPage - 1)}
+            aria-label="Go to previous page"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </a>
+        ) : (
+          <X className="h-6 w-6 text-muted" />
         )}
+      </div>
 
-        <PaginationItem>
-          <PaginationNext
-            href={
-              currentPage < totalPages ? getPageUrl(currentPage + 1) : undefined
-            }
-            isDisabled={currentPage === totalPages}
-          />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
+      {/* Page Numbers */}
+      <div className="flex items-center justify-center gap-1 px-4">
+        {pages.map((page) => (
+          <a
+            key={page}
+            href={getPageUrl(page)}
+            aria-current={page === currentPage ? 'page' : undefined}
+            className={cn(
+              'flex h-9 w-9 items-center justify-center text-sm transition-colors',
+              page === currentPage
+                ? 'bg-primary text-primary-foreground'
+                : 'text-muted hover:text-primary',
+            )}
+          >
+            {page}
+          </a>
+        ))}
+      </div>
+
+      {/* Next Page */}
+      <div className="flex h-16 w-14 items-center justify-center border-l">
+        {hasNext ? (
+          <a
+            className="flex h-full w-full items-center justify-center text-muted transition-colors hover:text-primary"
+            href={getPageUrl(currentPage + 1)}
+            aria-label="Go to next page"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </a>
+        ) : (
+          <X className="h-6 w-6 text-muted" />
+        )}
+      </div>
+    </div>
   )
 }
 

@@ -37,7 +37,7 @@ function Status() {
 
   if (!status) {
     return (
-      <div className="h-min rounded-lg bg-background/50 p-2 shadow-md">
+      <div className="flex items-center justify-center h-min bg-background/50 p-2 shadow-md">
         <LoaderCircle className="animate-spin" />
       </div>
     )
@@ -47,7 +47,7 @@ function Status() {
 
   return (
     <div
-      className={`h-min rounded-lg px-8 py-2 shadow-md ${currentStatus.bgColor}`}
+      className={`h-min px-4 py-1 shadow-md ${currentStatus.bgColor}`}
     >
       <h1 className={`font-bold ${currentStatus.textColor}`}>
         { status !== "offline" && (

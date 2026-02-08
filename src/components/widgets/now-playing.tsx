@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Info } from 'lucide-react'
-import { Skeleton } from '../ui/skeleton'
+import { useState, useEffect, useRef } from 'react'
+import { Music } from 'lucide-react'
 import moment from 'moment'
 
 type Song = {
@@ -16,6 +15,9 @@ function NowPlaying() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
   const [lastPlayed, setLastPlayed] = useState<Song | null>(null)
   const [isError, setIsError] = useState<boolean>(false)
+  const [isOverflowing, setIsOverflowing] = useState<boolean>(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const textRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     const fetchNowPlaying = async () => {
@@ -34,53 +36,76 @@ function NowPlaying() {
     fetchNowPlaying()
   }, [])
 
-  // Account for errors i guess
-  if (isError) {
-    return (
-      <div className="flex flex-row gap-2 opacity-50 items-center justify-center">
-        <Info size={18} />
-        Music unavailable.
-      </div>
-    )
-  } else {
-    if (!lastPlayed) {
-      return (
-        <div className="flex flex-col p-4">
-          <div className="flex items-center gap-3 rounded-md ">
-            <Skeleton className="h-12 aspect-square rounded-lg" />
-            <div className="flex flex-col gap-1 w-full">
-              <Skeleton className="w-full h-6" />
-              <Skeleton className="w-full h-4" />
-            </div>
-          </div>
-        </div>
-      )
-    } else {
-      return (
-        <a href={lastPlayed.url} target="_blank" className='flex flex-col p-4 transition-colors rounded-lg hover:bg-primary/10'>
-          <div className="flex items-center gap-3 rounded-md ">
-            <img
-              src={lastPlayed.cover_image_url}
-              alt={lastPlayed.name}
-              className="h-12 w-12 rounded-lg"
-            />
-            <div className="flex flex-col leading-tight min-w-0">
-              <h3 className="text-md font-extrabold truncate">{lastPlayed.name}</h3>
-              <p className="text-xs font-semibold opacity-50 truncate">{lastPlayed.artist}</p>
-            </div>
-          </div>
-          <div className="flex justify-between text-sm mt-2">
-            { isPlaying == true && !lastPlayed.timestamp ? (
-              <p className="text-green-500 font-bold animate-pulse">•&nbsp;Now Playing</p>
-            ) : (
-              <p className="opacity-50">{lastPlayed.timestamp !== undefined ? moment(lastPlayed.timestamp*1000).fromNow() : 'Unknown time'}</p>
-            )}
-            <p className="opacity-30">via LastFM</p>
-          </div>
-        </a>
-      )
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (containerRef.current && textRef.current) {
+        const containerWidth = containerRef.current.offsetWidth
+        const textWidth = textRef.current.scrollWidth
+        setIsOverflowing(textWidth > containerWidth)
+      }
     }
-  }
+
+    checkOverflow()
+    window.addEventListener('resize', checkOverflow)
+    return () => window.removeEventListener('resize', checkOverflow)
+  }, [lastPlayed])
+
+  return (
+    <div className='flex items-center justify-between text-xs w-full gap-4'>
+      {/* Song Status or Timestamp */}
+      <div className='flex items-center gap-2 opacity-50 z-10'>
+        {isError ? (
+          <>
+            <Music size={13} />
+            <span>Music</span>
+          </>
+        ) : isPlaying && !lastPlayed?.timestamp ? (
+          <>
+            <Music size={13} className='text-green-500 animate-pulse' />
+            <span className='text-green-500 font-bold animate-pulse whitespace-nowrap hidden md:block'>Now Playing</span>
+          </>
+        ) : (
+          <>
+            <Music size={13} />
+            <span className='whitespace-nowrap'>
+              {lastPlayed?.timestamp !== undefined
+                ? moment(lastPlayed.timestamp * 1000).fromNow()
+                : 'Music'}
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* Song Info */}
+      <div ref={containerRef} className='absolute left-1/2 -translate-x-1/2 flex items-center justify-center overflow-hidden max-w-[60%]'>
+        {isError ? (
+          <span>??? - ???</span>
+        ) : isOverflowing ? (
+          <div className='relative flex overflow-x-hidden w-full'>
+            <div className='animate-marquee whitespace-nowrap'>
+              <a href={lastPlayed?.url ?? '#'} className='mx-2 font-medium'>
+                {lastPlayed?.name} - {lastPlayed?.artist}
+              </a>
+            </div>
+            <div className='animate-marquee2 whitespace-nowrap absolute top-0'>
+              <a href={lastPlayed?.url ?? '#'} className='mx-2 font-medium'>
+                {lastPlayed?.name} - {lastPlayed?.artist}
+              </a>
+            </div>
+          </div>
+        ) : (
+          <a href={lastPlayed?.url ?? '#'} className='font-medium truncate'>
+            {lastPlayed?.name} - {lastPlayed?.artist}
+          </a>
+        )}
+      </div>
+
+      {/* Via Platform */}
+      <div className='items-center opacity-50 z-10 hidden md:flex'>
+        <span className='whitespace-nowrap'>via LastFM</span>
+      </div>
+    </div>
+  )
 }
 
 export default NowPlaying
