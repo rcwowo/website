@@ -25,10 +25,10 @@ const { title, description, image } = Astro.props
   </head>
   <body>
     <div
-      class="box-border flex h-fit min-h-screen flex-col gap-y-6 font-sans antialiased"
+      class="box-border flex h-fit min-h-screen flex-col font-sans antialiased"
     >
       <Header />
-      <main transition:animate="fade" class="flex-grow">
+      <main class="flex flex-grow flex-col">
         <slot />
       </main>
       <Footer />

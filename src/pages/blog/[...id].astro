@@ -1,13 +1,13 @@
 ---
-import Container from '@/components/Container.astro'
+import Section from '@/components/Section.astro'
 import TableOfContents from '@/components/blog/TableOfContents.astro'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import Layout from '@/layouts/Layout.astro'
-import { formatDate, readingTime } from '@/lib/utils'
+import { formatDateUS } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import { type CollectionEntry, getCollection, render } from 'astro:content'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog'))
@@ -28,54 +28,97 @@ function getPostIndex(id: string): number {
   return posts.findIndex((post) => post.id === id)
 }
 
+function getPrevPost(id: string): Props | null {
+  const postIndex = getPostIndex(id)
+  return postIndex !== -1 && postIndex < posts.length - 1
+    ? posts[postIndex + 1]
+    : null
+}
+
+function getNextPost(id: string): Props | null {
+  const postIndex = getPostIndex(id)
+  return postIndex > 0 ? posts[postIndex - 1] : null
+}
+
+const currentPostId = Astro.params.id
+const prevPost = getPrevPost(currentPostId)
+const nextPost = getNextPost(currentPostId)
+
 const post = Astro.props
 const { Content, headings } = await render(post)
 ---
 
-<Layout title={post.data.title} description={post.data.description} image={post.data.image?.src ?? '/static/twitter-card.webp'}>
-  <main class="flex flex-col sm:px-6 lg:px-8 gap-y-6">
-    <Container class="flex flex-col p-6 gap-y-6">
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  image={post.data.image?.src ?? '/static/twitter-card.webp'}
+>
+  {/* Post Nav/ Info */}
+  <Section class="flex justify-between p-0">
+    {/* Previous Post */}
+    <div class="flex h-32 w-14 items-center justify-center border-r">
       {
-        post.data.image && (
-          <Image
-            src={post.data.image}
-            alt={post.data.title}
-            width={1200}
-            height={630}
-            class="object-cover rounded-lg"
-          />
+        prevPost ? (
+          <a
+            class="flex h-full w-full items-center justify-center text-muted transition-colors hover:text-primary"
+            href={`/blog/${prevPost.id}`}
+            aria-label={`Previous post: ${prevPost.data.title}`}
+          >
+            <ChevronLeft size={24} />
+          </a>
+        ) : (
+          <X size={24} className="text-muted" />
         )
       }
-  
-      <section class="flex flex-col text-center">
-        <div>
-          <h1 class="mb-2 text-4xl font-bold leading-tight sm:text-5xl">
-            {post.data.title}
-          </h1>
-  
-          <div
-            class="flex flex-wrap items-center justify-center mb-2 text-sm text-muted-foreground"
+    </div>
+    {/* Current Post Info */}
+    <div
+      class="relative flex flex-col items-center justify-center p-6 text-center"
+    >
+      <p class="absolute select-none text-6xl font-bold text-muted opacity-30">
+        {formatDateUS(post.data.date)}
+      </p>
+      <h1 class="relative z-10 text-lg">{post.data.title}</h1>
+    </div>
+    {/* Next Post */}
+    <div class="flex h-32 w-14 items-center justify-center border-l">
+      {
+        nextPost ? (
+          <a
+            class="flex h-full w-full items-center justify-center text-muted transition-colors hover:text-primary"
+            href={`/blog/${nextPost.id}`}
+            aria-label={`Next post: ${nextPost.data.title}`}
           >
-            <div class="flex items-center gap-2">
-              <Icon name="lucide:calendar" size="16" />
-              <span>{formatDate(post.data.date)}</span>
-              <Separator orientation="vertical" className="h-2" />
-              <Icon name="lucide:clock" size="16" />
-              <span>{readingTime(post.body!)}</span>
-            </div>
-          </div>
-        </div>
-  
-      </section>
-    </Container>
-    <Container class="flex flex-col gap-y-6 p-6">
-      {headings.length > 0 && <TableOfContents headings={headings} />}
-  
-      <article class="prose prose-invert max-w-none">
-        <Content />
-      </article>
-    </Container>
-  
+            <ChevronRight size={24} />
+          </a>
+        ) : (
+          <X size={24} className="text-muted" />
+        )
+      }
+    </div>
+  </Section>
+
+  {/* Post Image */}
+  {
+    post.data.image && (
+      <Section>
+        <Image
+          src={post.data.image}
+          alt={post.data.title}
+          width={1200}
+          height={630}
+          class="object-cover"
+        />
+      </Section>
+    )
+  }
+  <Section last>
+    {headings.length > 0 && <TableOfContents headings={headings} />}
+
+    <article class="prose prose-invert max-w-none">
+      <Content />
+    </article>
+
     <Button
       size="icon"
       className="group fixed bottom-8 right-8 z-50 hidden"
@@ -88,7 +131,7 @@ const { Content, headings } = await render(post)
         class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
       />
     </Button>
-  </main>
+  </Section>
 
   <script>
     document.addEventListener('astro:page-load', () => {

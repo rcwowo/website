@@ -18,10 +18,28 @@ export const SITE: Site = {
   DESCRIPTION:
     'Personal website of a guy that edits videos and occasionally dabbles in coding projects.',
   EMAIL: 'riley@rcw.lol',
-  NUM_POSTS_ON_HOMEPAGE: 7,
-  POSTS_PER_PAGE: 10,
+  NUM_POSTS_ON_HOMEPAGE: 10,
+  POSTS_PER_PAGE: 20,
   SITEURL: 'https://rcw.lol',
 }
+
+export const TAGLINES: string[] = [
+  'does he even do anything?',
+  'NOT a furry. stop asking or suggesting.',
+  'his videos arent even that good.',
+  'sometimes formerly known as ltwilson.',
+  'boat goes binted. - gigi murin',
+  'he should finish all his projects maybe.',
+  'i bet hes making something dumb right now.',
+  'code deez nuts lmao. that wasnt funny.',
+  'waiter! waiter! chicken tendies please!!',
+  'rawr x3 pounces on you!! uwu whats this?',
+  'surely hes up to something...',
+  'all of his code breaks. every single time.',
+  'a certified professional unprofessional.',
+  'yeah id let shiori novella do things to me lol.',
+  'bro get a fucking job. like holy shit.'
+]
 
 export const SOCIALS: Socials[] = [
   { TITLE: 'YouTube', ICON: 'lucide:youtube', URL: 'https://youtube.com/@rcwowo' },
@@ -31,7 +49,8 @@ export const SOCIALS: Socials[] = [
   { TITLE: 'GitLab', ICON: 'lucide:gitlab', URL: 'https://gitlab.com/rcw.lol' }
 ]
 
-export const FOOTER_LINKS: Socials[] = [
-  { TITLE: 'Source Code', URL: 'https://gitlab.com/rcw.lol/website', ICON: 'lucide:git-graph' },
-  { TITLE: 'RSS', URL: '/rss.xml', ICON: 'lucide:rss' }
+export const MENU_LINKS: Socials[] = [
+  { TITLE: 'Blog', URL: '/blog', ICON: 'lucide:rss' },
+  { TITLE: 'VOD Vault', URL: 'https://vods.rcw.lol', ICON: 'lucide:tv' },
+  { TITLE: 'Source', URL: 'https://gitlab.com/rcw.lol/website', ICON: 'lucide:gitlab' }
 ]

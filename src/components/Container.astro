@@ -9,4 +9,4 @@ interface Props {
 const { class: className, id } = Astro.props
 ---
 
-<div class={cn('mx-auto max-w-[50rem] border-white/25 border rounded-xl backdrop-blur-xl backdrop-saturate-150 px-4 bg-neutral-900/30', className)} id={id}><slot /></div>
+<div class={cn('mx-auto max-w-[50rem] px-4', className)} id={id}><slot /></div>
