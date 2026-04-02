@@ -39,7 +39,6 @@
     "@shikijs/transformers": "^1.29.2",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@vercel/analytics": "^1.5.0",
     "astro": "^5.10.0",
     "astro-embed": "^0.9.1",
     "astro-icon": "^1.1.5",
