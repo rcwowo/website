@@ -24,10 +24,14 @@ const { title, description, image = '/static/twitter-card.webp' } = Astro.props
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link rel="icon" type="image/png" href="/static/logo.png" />
 
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
-<meta name="theme-color" content="#121212" />
+<meta name="theme-color" content="#0b0a10" />
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />

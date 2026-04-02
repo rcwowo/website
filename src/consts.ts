@@ -18,8 +18,8 @@ export const SITE: Site = {
   DESCRIPTION:
     'Personal website of a guy that edits videos and occasionally dabbles in coding projects.',
   EMAIL: 'riley@rcw.lol',
-  NUM_POSTS_ON_HOMEPAGE: 10,
-  POSTS_PER_PAGE: 20,
+  NUM_POSTS_ON_HOMEPAGE: 5,
+  POSTS_PER_PAGE: 40,
   SITEURL: 'https://rcw.lol',
 }
 
@@ -38,7 +38,12 @@ export const TAGLINES: string[] = [
   'all of his code breaks. every single time.',
   'a certified professional unprofessional.',
   'yeah id let shiori novella do things to me lol.',
-  'bro get a fucking job. like holy shit.'
+  'bro get a fucking job. like holy shit.',
+  'does he actually watch vtubers or is it a bit?',
+  'no way this mf actually uses bluesky im crine',
+  'lowkey some furries are kinda cool',
+  'i am NOT a femboy and never will be!!!!',
+  'he might be a ginger but at least hes not bald'
 ]
 
 export const SOCIALS: Socials[] = [
@@ -50,7 +55,6 @@ export const SOCIALS: Socials[] = [
 ]
 
 export const MENU_LINKS: Socials[] = [
+  { TITLE: 'owoTV', URL: 'https://owo.rcw.lol', ICON: 'lucide:tv' },
   { TITLE: 'Blog', URL: '/blog', ICON: 'lucide:rss' },
-  { TITLE: 'VOD Vault', URL: 'https://vods.rcw.lol', ICON: 'lucide:tv' },
-  { TITLE: 'Source', URL: 'https://gitlab.com/rcw.lol/website', ICON: 'lucide:gitlab' }
 ]

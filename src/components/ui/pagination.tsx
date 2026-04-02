@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { type ButtonProps, buttonVariants } from '@/components/ui/button'
@@ -135,34 +135,33 @@ const PaginationComponent: React.FC<PaginationProps> = ({
   const hasNext = currentPage < totalPages
 
   return (
-    <div className="flex items-center justify-between">
-      {/* Previous Page */}
-      <div className="flex h-16 w-14 items-center justify-center border-r">
-        {hasPrev ? (
-          <a
-            className="flex h-full w-full items-center justify-center text-muted transition-colors hover:text-primary"
-            href={getPageUrl(currentPage - 1)}
-            aria-label="Go to previous page"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </a>
-        ) : (
-          <X className="h-6 w-6 text-muted" />
-        )}
-      </div>
+    <div className="flex items-center justify-between py-4">
+      {/* Previous */}
+      {hasPrev ? (
+        <a
+          className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-accent"
+          href={getPageUrl(currentPage - 1)}
+          aria-label="Go to previous page"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          <span>Prev</span>
+        </a>
+      ) : (
+        <span className="text-sm text-muted-foreground/20">Prev</span>
+      )}
 
       {/* Page Numbers */}
-      <div className="flex items-center justify-center gap-1 px-4">
+      <div className="flex items-center gap-1">
         {pages.map((page) => (
           <a
             key={page}
             href={getPageUrl(page)}
             aria-current={page === currentPage ? 'page' : undefined}
             className={cn(
-              'flex h-9 w-9 items-center justify-center text-sm transition-colors',
+              'flex h-8 w-8 items-center justify-center rounded-lg text-sm transition-colors duration-200',
               page === currentPage
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted hover:text-primary',
+                ? 'bg-accent text-accent-foreground font-medium'
+                : 'text-muted-foreground/50 hover:text-foreground hover:bg-secondary/50',
             )}
           >
             {page}
@@ -170,20 +169,19 @@ const PaginationComponent: React.FC<PaginationProps> = ({
         ))}
       </div>
 
-      {/* Next Page */}
-      <div className="flex h-16 w-14 items-center justify-center border-l">
-        {hasNext ? (
-          <a
-            className="flex h-full w-full items-center justify-center text-muted transition-colors hover:text-primary"
-            href={getPageUrl(currentPage + 1)}
-            aria-label="Go to next page"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </a>
-        ) : (
-          <X className="h-6 w-6 text-muted" />
-        )}
-      </div>
+      {/* Next */}
+      {hasNext ? (
+        <a
+          className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-accent"
+          href={getPageUrl(currentPage + 1)}
+          aria-label="Go to next page"
+        >
+          <span>Next</span>
+          <ChevronRight className="h-4 w-4" />
+        </a>
+      ) : (
+        <span className="text-sm text-muted-foreground/20">Next</span>
+      )}
     </div>
   )
 }
