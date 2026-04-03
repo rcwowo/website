@@ -1,6 +1,5 @@
 ---
 import BlogCard from '@/components/blog/BlogCard.astro'
-import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PaginationComponent from '@/components/ui/pagination'
 import Section from '@/components/Section.astro'
 import { SITE } from '@/consts'
@@ -35,38 +34,34 @@ const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
 ---
 
 <Layout title="Blog" description="Explore the inner workings of my mind through my blog posts.">
-  <Section class="flex items-center justify-center">
-    <Breadcrumbs
-      items={[
-        { label: 'Blog', href: '/blog', icon: 'lucide:archive' },
-        { label: `Page ${page.currentPage}`, icon: 'lucide:folder-open' },
-      ]}
-    />
-  </Section>
-  <Section>
-    <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+  <Section class="flex flex-col gap-10 pt-12" last={page.lastPage <= 1}>
+    <div class="flex items-baseline justify-between">
+      <h1 class="font-display text-3xl font-bold tracking-tight md:text-4xl">Writing</h1>
+      <span class="text-xs text-muted-foreground/40">Page {page.currentPage}</span>
+    </div>
+    <div class="flex min-h-[calc(100vh-22rem)] flex-col gap-y-10">
       {
         years.map((year) => (
-          <section class="flex flex-col gap-y-4">
-            <div class="font-semibold">{year}</div>
-            <ul class="not-prose flex flex-col gap-4">
+          <section class="flex flex-col">
+            <span class="text-xs font-medium tracking-widest text-muted-foreground/40 uppercase mb-3">{year}</span>
+            <div class="flex flex-col border-t border-border/40">
               {postsByYear[year].map((post) => (
-                <li>
-                  <BlogCard entry={post} />
-                </li>
+                <BlogCard entry={post} />
               ))}
-            </ul>
+            </div>
           </section>
         ))
       }
     </div>
   </Section>
-  <Section class="p-0" last>
-    <PaginationComponent
-      currentPage={page.currentPage}
-      totalPages={page.lastPage}
-      baseUrl="/blog/"
-      client:load
-    />
-  </Section>
+  {page.lastPage > 1 && (
+    <Section class="py-4" last>
+      <PaginationComponent
+        currentPage={page.currentPage}
+        totalPages={page.lastPage}
+        baseUrl="/blog/"
+        client:load
+      />
+    </Section>
+  )}
 </Layout>

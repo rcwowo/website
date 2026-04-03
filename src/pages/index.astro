@@ -1,71 +1,130 @@
 ---
-import BlogCard from '@/components/blog/BlogCard.astro'
 import Link from '@/components/Link.astro'
+import ProjectList from '@/components/ProjectList.astro'
 import Section from '@/components/Section.astro'
 import SocialIcons from '@/components/SocialIcons.astro'
-import { buttonVariants } from '@/components/ui/button'
-import NowPlaying from '@/components/widgets/now-playing'
-import Status from '@/components/widgets/status'
 import { SITE, TAGLINES } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { Icon } from 'astro-icon/components'
 import type { CollectionEntry } from 'astro:content'
 import { getCollection } from 'astro:content'
 
-const blog: CollectionEntry<'blog'>[] = (await getCollection('blog'))
+const recentPosts: CollectionEntry<'blog'>[] = (await getCollection('blog'))
   .filter((post: CollectionEntry<'blog'>) => !post.data.draft)
   .sort(
     (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
       b.data.date.valueOf() - a.data.date.valueOf(),
   )
   .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE)
+
+function formatShortDate(date: Date) {
+  return new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(date)
+}
 ---
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
-  <!-- About Box -->
-  <Section class="flex h-40 flex-row items-center justify-between">
-    <!-- Name & Tagline -->
-    <div class="flex flex-col gap-1">
-      <h1 class="text-3xl font-bold md:text-5xl">{SITE.TITLE}</h1>
-      <h2 class="text-sm opacity-50">
-        {TAGLINES[Math.floor(Math.random() * TAGLINES.length)]}
-      </h2>
-    </div>
-    <!-- Status & Pronouns (woke af) -->
-    <div class="flex h-full flex-col justify-between">
-      <Status client:load />
-      <div class="flex flex-col items-end justify-end">
-        <p>he/him</p>
-        <p class="text-xs opacity-50">video editor</p>
-        <p class="text-xs opacity-50">web developer</p>
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <!-- Subtle gradient orb -->
+    <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-full w-full rounded-full bg-accent/[0.04] blur-[120px]" aria-hidden="true"></div>
+
+    <div class="mx-auto max-w-[50rem] px-6 pt-28 pb-20 md:pt-36 md:pb-28">
+      <div class="flex flex-col items-center text-center">
+        <h1 class="hero-title font-display text-6xl font-extrabold tracking-tight md:text-8xl">
+          {SITE.TITLE}
+        </h1>
+        <p id="tagline" class="hero-tagline max-w-lg text-lg text-muted-foreground leading-relaxed">
+          {TAGLINES[0]}
+        </p>
+        <div class="hero-roles flex items-center gap-3 text-sm text-muted-foreground/50">
+          <span>video editor</span>
+          <span class="h-1 w-1 rounded-full bg-accent/40"></span>
+          <span>web developer</span>
+          <span class="h-1 w-1 rounded-full bg-accent/40"></span>
+          <span>he/him</span>
+        </div>
+        <div class="hero-socials pt-4">
+          <SocialIcons />
+        </div>
       </div>
     </div>
+  </section>
+
+  <!-- Projects -->
+  <Section class="flex flex-col gap-8">
+    <h2 class="projects-heading font-display text-2xl font-bold tracking-tight">Projects</h2>
+    <ProjectList />
   </Section>
-  <!-- Social Icons -->
-  <Section class="p-0">
-    <SocialIcons />
-  </Section>
-  <!-- Music Status -->
-  <Section class="px-6 py-3">
-    <NowPlaying client:load />
-  </Section>
-  <!-- Blog Posts -->
-  <Section class="flex flex-col gap-3" last>
-    <ul class="not-prose flex flex-col gap-y-3">
-      {
-        blog.map((post) => (
-          <li>
-            <BlogCard entry={post} />
-          </li>
-        ))
-      }
-    </ul>
-    <Link
-      href="/blog"
-      class={buttonVariants({ variant: 'outline', size: 'lg' }) + ' group'}
-    >
-      <Icon name="lucide:layout-list" size="16" />
-      View All
-    </Link>
+
+  <!-- Recent posts -->
+  <Section class="flex flex-col gap-6 pt-10 pb-20">
+    <div class="flex items-baseline justify-between">
+      <h2 class="writing-heading font-display text-2xl font-bold tracking-tight">Writing</h2>
+      <Link
+        href="/blog"
+        class="text-xs text-muted-foreground/50 transition-colors hover:text-accent"
+      >
+        View all &rarr;
+      </Link>
+    </div>
+    <div class="writing-list flex flex-col">
+      {recentPosts.map((post, i) => (
+        <a
+          href={`/${post.collection}/${post.id}`}
+          class="post-row group flex items-baseline justify-between gap-4 border-t border-border/40 py-4 transition-colors duration-200 hover:bg-secondary/20 -mx-3 px-3 last:border-b"
+          style={`animation-delay: ${i * 70 + 300}ms`}
+        >
+          <span class="text-sm font-medium text-foreground transition-colors duration-200 group-hover:text-accent truncate">
+            {post.data.title}
+          </span>
+          <span class="text-xs text-muted-foreground/40 shrink-0 tabular-nums">
+            {formatShortDate(post.data.date)}
+          </span>
+        </a>
+      ))}
+    </div>
   </Section>
 </Layout>
+
+<script is:inline define:vars={{ TAGLINES }}>
+  document.addEventListener('astro:page-load', () => {
+    const el = document.getElementById('tagline')
+    if (el) {
+      el.textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)]
+    }
+  })
+</script>
+
+<style>
+  .hero-title {
+    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hero-tagline {
+    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+  }
+  .hero-roles {
+    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+  }
+  .hero-socials {
+    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+  }
+  .projects-heading {
+    animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+  }
+  .writing-heading {
+    animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+  }
+  .post-row {
+    animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

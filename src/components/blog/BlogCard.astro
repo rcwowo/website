@@ -1,10 +1,7 @@
 ---
-import { Separator } from '@/components/ui/separator'
-import { formatDate, readingTime } from '@/lib/utils'
-import { Image } from 'astro:assets'
+import { formatDate } from '@/lib/utils'
 import type { CollectionEntry } from 'astro:content'
 import Link from '@/components/Link.astro'
-import { Icon } from 'astro-icon/components'
 
 type Props = {
   entry: CollectionEntry<'blog'>
@@ -15,42 +12,16 @@ const { entry } = Astro.props as {
 }
 
 const formattedDate = formatDate(entry.data.date)
-const readTime = readingTime(entry.body!)
 ---
 
-<div
-  class="not-prose border p-4 transition-colors duration-300 ease-in-out hover:bg-secondary/50"
+<Link
+  href={`/${entry.collection}/${entry.id}`}
+  class="group flex items-baseline justify-between gap-4 py-3 transition-colors duration-200 hover:bg-secondary/20 -mx-3 px-3 rounded-lg"
 >
-  <Link
-    href={`/${entry.collection}/${entry.id}`}
-    class="flex flex-col gap-4 sm:flex-row"
-  >
-    {
-      entry.data.image && (
-        <div class="sm:max-w-[100px]">
-          <Image
-            src={entry.data.image}
-            alt={entry.data.title}
-            width={1200}
-            height={630}
-            class="object-cover"
-          />
-        </div>
-      )
-    }
-    <div class="flex flex-col flex-grow justify-center min-w-0">
-      <h3 class="text-lg font-bold truncate">
-        {entry.data.title}
-      </h3>
-      <div
-        class="flex flex-wrap items-center gap-x-3 text-xs text-muted-foreground"
-      >
-        <Icon name="lucide:calendar" size="14" />
-        <span>{formattedDate}</span>
-        <Separator orientation="vertical" className="h-2" />
-        <Icon name="lucide:clock" size="14" />
-        <span>{readTime}</span>
-      </div>
-    </div>
-  </Link>
-</div>
+  <h3 class="text-sm font-medium text-foreground transition-colors duration-200 group-hover:text-accent truncate min-w-0">
+    {entry.data.title}
+  </h3>
+  <span class="text-xs text-muted-foreground/40 shrink-0 tabular-nums">
+    {formattedDate}
+  </span>
+</Link>

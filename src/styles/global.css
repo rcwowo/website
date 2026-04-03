@@ -12,22 +12,22 @@
 
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 98%;
-    --primary: 0 0% 85%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 315 37% 70%;
-    --accent-foreground: 0 0% 98%;
-    --additive: 112 50% 36%;
+    --background: 250 15% 4%;
+    --foreground: 45 10% 90%;
+    --primary: 45 10% 85%;
+    --primary-foreground: 250 15% 6%;
+    --secondary: 250 10% 9%;
+    --secondary-foreground: 45 10% 90%;
+    --muted: 250 10% 12%;
+    --muted-foreground: 250 5% 50%;
+    --accent: 330 80% 65%;
+    --accent-foreground: 45 10% 95%;
+    --additive: 152 56% 40%;
     --additive-foreground: 0 0% 9%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
+    --border: 250 10% 11%;
+    --ring: 330 80% 65%;
   }
 
   *,
@@ -150,6 +150,6 @@
   body {
     @apply absolute h-auto w-full overflow-x-hidden z-[-2] text-foreground;
 
-    background: linear-gradient(to bottom, #131313 0%, #000000 100%);
+    background: hsl(250 15% 4%);
   }
 }

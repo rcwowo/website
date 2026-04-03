@@ -8,9 +8,9 @@ My personal website and blog, made with Astro.
 
 ## About this repo.
 
-This is the source code for my website and blog, originally derived from the [astro-erudite](https://github.com/jktrn/astro-erudite) template. It has been pretty heavily modified to fit it's own aesthetic and for my own purposes.
+This is the source code for my website and blog, originally derived from the [astro-erudite](https://github.com/jktrn/astro-erudite) template. It has been pretty heavily modified to fit it's own aesthetic and for my own purposes, and is practically a completely different project at this point.
 
-With the **3.0.0** release of the website, I wanted tone down a lot of the "all over the place" aesthetic that the site had before, and instead wanted a simple slate where you can easily get to know me, and read any of the rare posts on the site. This update significantly changes the home page, and dials back a lot of the widgets that were scattered around beforehand.
+As of **4.0**, I toned down and minimalized the website significantly while still keeping a lot of the content that I want to include. I wanted to better highlight a lot of the projects that I'm working on instead of creating a landing page of widgets.
 
 ## How do I modify this?
 

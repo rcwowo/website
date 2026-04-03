@@ -1,18 +1,52 @@
 ---
 import Container from '@/components/Container.astro'
-import { SITE } from '@/consts'
+import { MENU_LINKS, SITE } from '@/consts'
 import MobileMenu from './ui/mobile-menu'
-import { Home } from 'lucide-react'
+import { Icon } from 'astro-icon/components'
 ---
 
-<header class="border-b" transition:persist>
-  <Container class="transition-all border-l border-r rounded-none p-0">
-    <div class="flex flex-wrap items-center justify-between">
-      <a href="/" class="flex justify-center items-center text-border hover:text-primary transition-colors h-14 w-14 border-r">
-        <Home size={20} />
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border/40" transition:persist>
+  <Container class="p-0">
+    <nav class="flex items-center justify-between h-16 px-6">
+      <!-- Logo -->
+      <a href="/" class="group flex items-center gap-3 transition-all duration-200">
+        <img
+          src="/static/logo-transparent.png"
+          alt={SITE.TITLE}
+          width="54"
+          height="32"
+          class="transition-all duration-300 group-hover:opacity-100 group-hover:scale-110 group-hover:-rotate-6 group-active:scale-90"
+        />
+        <!-- Cool hidden text -->
+        <span class="select-none font-bold text-xs -translate-x-2 translate-y-2 -rotate-3 transition-opacity opacity-0 group-hover:opacity-60">
+          rcw.lol
+        </span>
       </a>
-      <h1 class="text-lg text-accent">{SITE.TITLE}</h1>
-      <MobileMenu client:load transition:persist />
-    </div>
+
+      <!-- Desktop nav links -->
+      <div class="hidden md:flex items-center gap-1">
+        {MENU_LINKS.map((link) => {
+          const isExternal = link.URL.startsWith('http')
+          return (
+            <a
+              href={link.URL}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+              class="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground/70 transition-colors duration-200 hover:text-foreground hover:bg-secondary/50"
+            >
+              <Icon name={link.ICON} size={15} />
+              <span>{link.TITLE}</span>
+            </a>
+          )
+        })}
+      </div>
+
+      <!-- Mobile menu (hamburger, hidden on desktop) -->
+      <div class="md:hidden">
+        <MobileMenu client:load transition:persist />
+      </div>
+    </nav>
   </Container>
 </header>
+<!-- Spacer for fixed header -->
+<div class="h-16"></div>
