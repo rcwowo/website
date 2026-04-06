@@ -1,0 +1,77 @@
+---
+import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets'
+import { getCollection } from 'astro:content'
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => a.data.order - b.data.order)
+---
+
+<div class="projects-list flex flex-col">
+  {projects.map((project, i) => {
+    const isExternal = project.data.url.startsWith('http')
+    return (
+      <a
+        href={project.data.url}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
+        class="project-row group flex items-center gap-4 border-t border-border/40 py-4 transition-colors duration-200 hover:bg-secondary/20 -mx-3 px-3 last:border-b"
+        style={`animation-delay: ${i * 70}ms`}
+      >
+        {/* Icon */}
+        {project.data.icon ? (
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-secondary/60">
+            <Image
+              src={project.data.icon}
+              alt={project.data.name}
+              width={40}
+              height={40}
+              class="h-full w-full object-cover"
+            />
+          </div>
+        ) : (
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary/60 text-muted-foreground/40">
+            <Icon name="lucide:folder" size={18} />
+          </div>
+        )}
+
+        {/* Content */}
+        <div class="flex flex-grow flex-col min-w-0">
+          <div class="flex items-center gap-2.5">
+            <h3 class="font-display text-base font-bold text-foreground transition-colors duration-200 group-hover:text-accent truncate">
+              {project.data.name}
+            </h3>
+            <span class={`h-1.5 w-1.5 shrink-0 rounded-full ${project.data.status === 'active' ? 'bg-emerald-400' : project.data.status === 'wip' ? 'bg-amber-300' : 'bg-muted-foreground/40'}`} />
+          </div>
+          <p class="text-sm text-muted-foreground/60 leading-relaxed line-clamp-1">
+            {project.data.description}
+          </p>
+        </div>
+
+        {/* Arrow */}
+        <Icon
+          name={isExternal ? 'lucide:arrow-up-right' : 'lucide:arrow-right'}
+          size={16}
+          class="shrink-0 text-muted-foreground/20 transition-all duration-200 group-hover:text-accent group-hover:translate-x-0.5"
+        />
+      </a>
+    )
+  })}
+</div>
+
+<style>
+  .project-row {
+    animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

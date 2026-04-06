@@ -11,8 +11,8 @@ interface Props {
 const { class: className, id, last } = Astro.props
 ---
 
-<div class={cn(last ? 'flex flex-grow flex-col border-b-0' : 'border-b')} id={id}>
-  <Container class={cn('border-l border-r p-6', last && 'w-full flex-grow', className)}>
+<section class={cn(last && 'flex flex-grow flex-col')} id={id}>
+  <Container class={cn('px-6 py-8', last && 'w-full flex-grow', className)}>
     <slot />
   </Container>
-</div>
+</section>

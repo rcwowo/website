@@ -3,20 +3,22 @@ import Link from '@/components/Link.astro'
 import type { Heading } from './TableOfContents.astro'
 
 const { heading } = Astro.props
+const indent = heading.depth > 2
 ---
 
-<li
-  class="mr-2 list-inside px-6 py-1.5 text-sm text-foreground/60 list-none xl:p-0"
->
+<li>
   <Link
     href={'#' + heading.slug}
-    class="toc-link underline decoration-transparent underline-offset-[3px] transition-colors duration-200 hover:decoration-inherit"
+    class:list={[
+      'toc-link block rounded-md px-4 py-1.5 text-[13px] leading-snug text-muted-foreground/60 transition-colors duration-200 hover:text-foreground hover:bg-secondary/40',
+      indent && 'pl-8 text-xs',
+    ]}
   >
     {heading.text}
   </Link>
   {
     heading.subheadings.length > 0 && (
-      <ul class="translate-x-3 xl:ml-4 xl:mt-2 xl:translate-x-0 xl:space-y-2">
+      <ul>
         {heading.subheadings.map((subheading: Heading) => (
           <Astro.self heading={subheading} />
         ))}

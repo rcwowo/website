@@ -31,17 +31,17 @@ const MobileMenu = () => {
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
-          className="bg-transparent text-border hover:bg-transparent hover:text-primary border-l rounded-none h-14 w-14"
+          className="bg-transparent text-muted-foreground hover:bg-transparent hover:text-foreground h-10 w-10 rounded-lg"
           size="icon"
           title="Menu"
         >
-          <Menu className="h-6 w-6" />
+          <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-background rounded-none">
+      <DropdownMenuContent align="end" className="bg-secondary rounded-lg border-border/50">
         {MENU_LINKS.map((link) => (
-          <DropdownMenuItem key={link.TITLE} className='rounded-none'>
+          <DropdownMenuItem key={link.TITLE} className='rounded-md'>
             <a
               href={link.URL}
               className="w-full text-md font-medium"
