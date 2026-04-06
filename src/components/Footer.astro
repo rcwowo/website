@@ -1,15 +1,14 @@
 ---
 import Container from '@/components/Container.astro'
+import Status from '@/components/widgets/status'
 ---
 
-<footer class="p-0 border-t">
-  <Container class="rounded-none p-4 border-0 border-l border-r">
-    <div
-      class="flex flex-col items-center justify-center"
-    >
-      <p class="text-center text-muted">
-          &copy;
-          {new Date().getFullYear()} All rights reserved.
+<footer class="mt-auto border-t border-border/50">
+  <Container class="py-8 px-6">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <Status client:load />
+      <p class="text-sm text-muted-foreground">
+        &copy; {new Date().getFullYear()} All rights reserved.
       </p>
     </div>
   </Container>

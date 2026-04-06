@@ -1,13 +1,11 @@
 ---
 import Section from '@/components/Section.astro'
 import TableOfContents from '@/components/blog/TableOfContents.astro'
-import { Button } from '@/components/ui/button'
 import Layout from '@/layouts/Layout.astro'
-import { formatDateUS } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import { type CollectionEntry, getCollection, render } from 'astro:content'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog'))
@@ -53,65 +51,33 @@ const { Content, headings } = await render(post)
   description={post.data.description}
   image={post.data.image?.src ?? '/static/twitter-card.webp'}
 >
-  {/* Post Nav/ Info */}
-  <Section class="flex justify-between p-0">
-    {/* Previous Post */}
-    <div class="flex h-32 w-14 items-center justify-center border-r">
-      {
-        prevPost ? (
-          <a
-            class="flex h-full w-full items-center justify-center text-muted transition-colors hover:text-primary"
-            href={`/blog/${prevPost.id}`}
-            aria-label={`Previous post: ${prevPost.data.title}`}
-          >
-            <ChevronLeft size={24} />
-          </a>
-        ) : (
-          <X size={24} className="text-muted" />
-        )
-      }
-    </div>
-    {/* Current Post Info */}
-    <div
-      class="relative flex flex-col items-center justify-center p-6 text-center"
-    >
-      <p class="absolute select-none text-6xl font-bold text-muted opacity-30">
-        {formatDateUS(post.data.date)}
-      </p>
-      <h1 class="relative z-10 text-lg">{post.data.title}</h1>
-    </div>
-    {/* Next Post */}
-    <div class="flex h-32 w-14 items-center justify-center border-l">
-      {
-        nextPost ? (
-          <a
-            class="flex h-full w-full items-center justify-center text-muted transition-colors hover:text-primary"
-            href={`/blog/${nextPost.id}`}
-            aria-label={`Next post: ${nextPost.data.title}`}
-          >
-            <ChevronRight size={24} />
-          </a>
-        ) : (
-          <X size={24} className="text-muted" />
-        )
-      }
+  <!-- Post Header -->
+  <Section class="flex flex-col gap-4 pt-12 pb-6">
+    <a href="/blog" class="flex items-center gap-1.5 text-xs text-muted-foreground/50 transition-colors hover:text-accent w-fit">
+      <Icon name="lucide:arrow-left" size={14} />
+      Back to all posts
+    </a>
+    <div>
+      <h1 class="font-display text-3xl font-bold tracking-tight md:text-4xl">{post.data.title}</h1>
+      <p class="text-sm text-muted-foreground/50">{formatDate(post.data.date)}</p>
     </div>
   </Section>
 
-  {/* Post Image */}
+  <!-- Post Image -->
   {
     post.data.image && (
-      <Section>
+      <Section class="py-0">
         <Image
           src={post.data.image}
           alt={post.data.title}
           width={1200}
           height={630}
-          class="object-cover"
+          class="rounded-lg object-cover"
         />
       </Section>
     )
   }
+
   <Section last>
     {headings.length > 0 && <TableOfContents headings={headings} />}
 
@@ -119,40 +85,20 @@ const { Content, headings } = await render(post)
       <Content />
     </article>
 
-    <Button
-      size="icon"
-      className="group fixed bottom-8 right-8 z-50 hidden"
-      id="scroll-to-top"
-      title="Scroll to top"
-      aria-label="Scroll to top"
-    >
-      <Icon
-        name="lucide:arrow-up"
-        class="mx-auto size-4 transition-all group-hover:-translate-y-0.5"
-      />
-    </Button>
+    <!-- Post Navigation -->
+    <nav class="mt-12 flex flex-col gap-3 border-t border-border/40 pt-8 sm:flex-row sm:justify-between">
+      {prevPost ? (
+        <a href={`/blog/${prevPost.id}`} class="group flex flex-col gap-1 transition-colors">
+          <span class="text-xs text-muted-foreground/40">Previous</span>
+          <span class="text-sm text-muted-foreground transition-colors group-hover:text-accent">{prevPost.data.title}</span>
+        </a>
+      ) : <div />}
+      {nextPost ? (
+        <a href={`/blog/${nextPost.id}`} class="group flex flex-col gap-1 text-right transition-colors">
+          <span class="text-xs text-muted-foreground/40">Next</span>
+          <span class="text-sm text-muted-foreground transition-colors group-hover:text-accent">{nextPost.data.title}</span>
+        </a>
+      ) : <div />}
+    </nav>
   </Section>
-
-  <script>
-    document.addEventListener('astro:page-load', () => {
-      const scrollToTopButton = document.getElementById('scroll-to-top')
-      const footer = document.querySelector('footer')
-
-      if (scrollToTopButton && footer) {
-        scrollToTopButton.addEventListener('click', () => {
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        })
-
-        window.addEventListener('scroll', () => {
-          const footerRect = footer.getBoundingClientRect()
-          const isFooterVisible = footerRect.top <= window.innerHeight
-
-          scrollToTopButton.classList.toggle(
-            'hidden',
-            window.scrollY <= 300 || isFooterVisible,
-          )
-        })
-      }
-    })
-  </script>
 </Layout>
