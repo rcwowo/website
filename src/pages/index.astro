@@ -5,20 +5,6 @@ import Section from '@/components/Section.astro'
 import SocialIcons from '@/components/SocialIcons.astro'
 import { SITE, TAGLINES } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import type { CollectionEntry } from 'astro:content'
-import { getCollection } from 'astro:content'
-
-const recentPosts: CollectionEntry<'blog'>[] = (await getCollection('blog'))
-  .filter((post: CollectionEntry<'blog'>) => !post.data.draft)
-  .sort(
-    (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
-      b.data.date.valueOf() - a.data.date.valueOf(),
-  )
-  .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE)
-
-function formatShortDate(date: Date) {
-  return new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(date)
-}
 ---
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
@@ -50,39 +36,11 @@ function formatShortDate(date: Date) {
   </section>
 
   <!-- Projects -->
-  <Section class="flex flex-col gap-8">
+  <Section class="flex flex-col gap-8 pb-20">
     <h2 class="projects-heading font-display text-2xl font-bold tracking-tight">Projects</h2>
     <ProjectList />
   </Section>
 
-  <!-- Recent posts -->
-  <Section class="flex flex-col gap-6 pt-10 pb-20">
-    <div class="flex items-baseline justify-between">
-      <h2 class="writing-heading font-display text-2xl font-bold tracking-tight">Writing</h2>
-      <Link
-        href="/blog"
-        class="text-xs text-muted-foreground/50 transition-colors hover:text-accent"
-      >
-        View all &rarr;
-      </Link>
-    </div>
-    <div class="writing-list flex flex-col">
-      {recentPosts.map((post, i) => (
-        <a
-          href={`/${post.collection}/${post.id}`}
-          class="post-row group flex items-baseline justify-between gap-4 border-t border-border/40 py-4 transition-colors duration-200 hover:bg-secondary/20 -mx-3 px-3 last:border-b"
-          style={`animation-delay: ${i * 70 + 300}ms`}
-        >
-          <span class="text-sm font-medium text-foreground transition-colors duration-200 group-hover:text-accent truncate">
-            {post.data.title}
-          </span>
-          <span class="text-xs text-muted-foreground/40 shrink-0 tabular-nums">
-            {formatShortDate(post.data.date)}
-          </span>
-        </a>
-      ))}
-    </div>
-  </Section>
 </Layout>
 
 <script is:inline define:vars={{ TAGLINES }}>

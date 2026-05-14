@@ -56,7 +56,7 @@ export const SOCIALS: Socials[] = [
 
 export const MENU_LINKS: Socials[] = [
   { TITLE: 'owoTV', URL: 'https://owo.rcw.lol', ICON: 'lucide:tv' },
-  { TITLE: 'Blog', URL: '/blog', ICON: 'lucide:rss' },
+  { TITLE: 'Blog', URL: 'https://blog.rcw.lol', ICON: 'lucide:rss' },
 ]
 
 export const DISCORD_USER_ID: string = '232200842894114826'

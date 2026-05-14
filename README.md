@@ -2,13 +2,13 @@
 
 ![Showcase Card](public/static/twitter-card.webp)
 # My Website
-My personal website and blog, made with Astro.
+My personal website, made with Astro.
 
 </div>
 
 ## About this repo.
 
-This is the source code for my website and blog, originally derived from the [astro-erudite](https://github.com/jktrn/astro-erudite) template. It has been pretty heavily modified to fit it's own aesthetic and for my own purposes, and is practically a completely different project at this point.
+This is the source code for my website, originally derived from the [astro-erudite](https://github.com/jktrn/astro-erudite) template. It has been pretty heavily modified to fit it's own aesthetic and for my own purposes, and is practically a completely different project at this point.
 
 As of **4.0**, I toned down and minimalized the website significantly while still keeping a lot of the content that I want to include. I wanted to better highlight a lot of the projects that I'm working on instead of creating a landing page of widgets.
 

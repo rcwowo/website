@@ -19,7 +19,7 @@ import icon from 'astro-icon'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ltwilson.tv',
+  site: 'https://rcw.lol',
   integrations: [
     tailwind({
       applyBaseStyles: false,
