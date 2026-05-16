@@ -17,9 +17,10 @@ import Layout from '@/layouts/Layout.astro'
         <h1 class="hero-title font-display text-6xl font-extrabold tracking-tight md:text-8xl">
           {SITE.TITLE}
         </h1>
-        <p id="tagline" class="hero-tagline max-w-lg text-lg text-muted-foreground leading-relaxed">
-          {TAGLINES[0]}
-        </p>
+        <p
+          id="tagline"
+          class="hero-tagline max-w-lg min-h-[1.75rem] text-lg text-muted-foreground leading-relaxed"
+        ></p>
         <div class="hero-roles flex items-center gap-3 text-sm text-muted-foreground/50">
           <span>video editor</span>
           <span class="h-1 w-1 rounded-full bg-accent/40"></span>
@@ -45,9 +46,18 @@ import Layout from '@/layouts/Layout.astro'
 <script is:inline define:vars={{ TAGLINES }}>
   document.addEventListener('astro:page-load', () => {
     const el = document.getElementById('tagline')
-    if (el) {
-      el.textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)]
+    if (!el) return
+
+    el.textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)]
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.classList.add('tagline-visible')
+      return
     }
+
+    requestAnimationFrame(() => {
+      el.classList.add('tagline-visible')
+    })
   })
 </script>
 
@@ -56,7 +66,20 @@ import Layout from '@/layouts/Layout.astro'
     animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   .hero-tagline {
-    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .hero-tagline.tagline-visible {
+    animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-tagline.tagline-visible {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
   }
   .hero-roles {
     animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
@@ -84,4 +107,5 @@ import Layout from '@/layouts/Layout.astro'
       transform: translateY(0);
     }
   }
+
 </style>

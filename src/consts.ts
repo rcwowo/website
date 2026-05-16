@@ -39,7 +39,15 @@ export const TAGLINES: string[] = [
   'no way this mf actually uses bluesky im crine',
   'lowkey some furries are kinda cool',
   'i am NOT a femboy and never will be!!!!',
-  'he might be a ginger but at least hes not bald'
+  'he might be a ginger but at least hes not bald',
+  'i saw porter robinson on 9/11. i swear to god',
+  'why did ninajirachi wanna fuck her computer...?',
+  'praying on his downfall lol',
+  'im thinking miku miku oo ee oo',
+  'how many taglines did he write for this shit?',
+  'this mf likes pans im crineeee',
+  'its not like i like u... baka... (˶˃⤙˂˶)',
+  '(˶˃ ᵕ ˂˶) .ᐟ.ᐟ'
 ]
 
 export const SOCIALS: Socials[] = [
