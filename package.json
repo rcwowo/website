@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@ascorbic/airtable-loader": "^1.0.5",
-    "@astrojs/check": "^0.9.8",
+    "@astrojs/check": "^0.9.9",
     "@astrojs/markdown-remark": "^6.3.11",
     "@astrojs/mdx": "^4.3.14",
     "@astrojs/react": "^4.4.2",
@@ -28,7 +28,7 @@
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/tailwind": "^5.1.5",
     "@hbsnow/rehype-sectionize": "^1.0.7",
-    "@iconify-json/lucide": "^1.2.101",
+    "@iconify-json/lucide": "^1.2.108",
     "@iconify-json/mingcute": "^1.2.7",
     "@icons-pack/react-simple-icons": "^13.13.0",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -42,9 +42,9 @@
     "astro": "^5.18.1",
     "astro-embed": "^0.9.2",
     "astro-icon": "^1.1.5",
-    "baseline-browser-mapping": "^2.10.13",
+    "baseline-browser-mapping": "^2.10.30",
     "bootstrap-icons": "^1.13.1",
-    "caniuse-lite": "^1.0.30001784",
+    "caniuse-lite": "^1.0.30001792",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.441.0",
@@ -63,9 +63,9 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.13.0",
-    "prettier-plugin-astro-organize-imports": "^0.4.11",
+    "prettier-plugin-astro-organize-imports": "^0.4.12",
     "prettier-plugin-tailwindcss": "^0.5.14"
   },
   "prettier": {
