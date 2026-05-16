@@ -1,8 +1,10 @@
 ---
+import Link from '@/components/Link.astro'
 import ProjectList from '@/components/ProjectList.astro'
+import RecentPosts from '@/components/RecentPosts'
 import Section from '@/components/Section.astro'
 import SocialIcons from '@/components/SocialIcons.astro'
-import { SITE, TAGLINES } from '@/consts'
+import { BLOG_URL, SITE, TAGLINES } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 ---
 
@@ -36,9 +38,24 @@ import Layout from '@/layouts/Layout.astro'
   </section>
 
   <!-- Projects -->
-  <Section id="projects" class="flex flex-col gap-8 pb-20">
+  <Section id="projects" class="flex flex-col gap-8">
     <h2 class="projects-heading font-display text-2xl font-bold tracking-tight">Projects</h2>
     <ProjectList />
+  </Section>
+
+  <!-- Recent posts -->
+  <Section class="flex flex-col gap-6 pt-10 pb-20">
+    <div class="flex items-baseline justify-between">
+      <h2 class="writing-heading font-display text-2xl font-bold tracking-tight">Writing</h2>
+      <Link
+        href={BLOG_URL}
+        external
+        class="text-xs text-muted-foreground/50 transition-colors hover:text-accent"
+      >
+        View all &rarr;
+      </Link>
+    </div>
+    <RecentPosts client:load />
   </Section>
 
 </Layout>
