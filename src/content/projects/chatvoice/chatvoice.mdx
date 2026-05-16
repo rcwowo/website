@@ -1,8 +1,36 @@
 ---
 name: Chatvoice
 description: Give your chat a voice! Read Twitch chat messages aloud using your browser's built-in speech synthesis capabilities.
-url: "https://chatvoice.rcw.lol"
+url: 'https://chatvoice.rcw.lol'
 status: active
 order: 3
 icon: ./logo.png
 ---
+
+## About this project.
+
+This is a project that utilizes the browser's built-in speech synthesis capabilities to give people in your Twitch chat the ability to speak!
+
+During almost all of my streams, I used a utility called [Speechchat](https://speechchat.com) to read chat messages aloud so that I could focus on the game at hand instead of reading a moving chat box.
+
+Over time, it sort of became a staple of my streams. But I wanted more. I wanted the ability to assign each chatter their own unique voice so that you could easily distinguish which chatter was talking based on the voice that spoke it. That's where Chatvoice comes in.
+
+## What makes Chatvoice different?
+
+One of my biggest gripes with Speechchat was that it relied upon storing your data in Google Drive, meaning it was yet another service that you had to trust to handle your data correctly. Additionally, Speechchat had a "digital currency" called stars. You start with 10 stars, and you can easily earn an additional 10 more by just clicking a button. You could use a star to create a keyword filter, meaning that free users could only filter out up to 20 keywords unless they bought more stars, among a couple other things you could use stars on.
+
+Truthfully, I fully understand paywalling some features, and I'm not upset about it. Developers want to be paid for the time they spend working on a project, or on the upkeep costs of hosting it.
+
+But Chatvoice is different. I want the project to remain completely free and add a few features that don't exist in Speechchat. Notably:
+
+- No login/signup necessary, everything is handled within your browser itself. **YOU** own your data, and you can export/restore a backup at any point.
+- Assigning voices to different chatters to tell who is who.
+- Better handling for **both** big chats and small chats.
+
+## It still has some drawbacks.
+
+One of the biggest problems with *both* Chatvoice and Speechchat, is that they rely entirely on the voices provided by your browser's [Speech Synthesis API](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis).
+
+This means that the number of voices available to use differ depending on what browser you're using, or what voices are provided directly from your operating system. For example: if you were on Windows using my personal browser of choice, Zen Browser, it doesn't include any additional voices. So you're limited to the built-in text-to-speech voices provided by Windows itself. Whereas if you used a browser like Chrome or Edge, they include Google and Microsoft's respective cloud text-to-speech voices.
+
+And unfortunately, this means that the best browser to use for Chatvoice is actually **Microsoft Edge**. It includes the most robust set of voices across multiple different languages.

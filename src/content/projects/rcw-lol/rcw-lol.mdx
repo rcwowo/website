@@ -1,8 +1,46 @@
 ---
 name: rcw.lol
 description: This very website. Personal blog and portfolio built with Astro, React, and Tailwind.
-url: https://gitlab.com/rcw.lol/website
+url: https://rcw.lol
+repo: https://gitlab.com/rcw.lol/website
 status: active
 order: 1
 icon: ./logo.png
 ---
+
+## About this project.
+
+This is my personal landing page and website, originally derived from the [astro-erudite](https://github.com/jktrn/astro-erudite) template. It's been through many iterations, and has been modified so heavily that it's essentially a completely different project at this point.
+
+## The history of my website.
+
+Originally beginning as *ltwilson.tv*, the first few versions of the website acted just like a blog and wore a design identical to the template it was based on. At the time, I simply wanted a place where I could document things without relying on a Discord server. I even wrote a blog post about the frustration with documentation being hidden in Discord.
+
+Around a month or so later, I wanted to make the site more useful and added a **/vods** page. In it's early days, these were simply a collection of markdown files that contained all the relevant metadata and provided a quick way to browse my past livestreams. With the ability to find a VOD by year and month, by game, or just browsing in chronological order.
+
+Shortly thereafter, I migrated all of the markdown files into an integrated Airtable database and ran automations to trigger rebuilds of the site when VODs were added. Until eventually, I migrated the entire VOD archival project to it's own project, [owoTV](/projects/owotv). That way I could focus on my website being a hub for things specifically about *me*, and have owoTV as more of a "content focused" side of things.
+
+My website would get a few different coats of paint after the migration, from a design consisting of various widgets, to a "wireframe" design, to the minimal design you're looking at right now. It's been through a lot.
+
+## Where did the blog itself go?
+
+If I'm being completely honest, writing is hard. The easier that you can make it to *actually write things*, the better. And my website being a bundle of handwritten markdown files wasn't very fun to maintain. While I wrote a few blog posts in the years that the blog existed, it was just too much work.
+
+As such, I intend to migrate the blog to [blog.rcw.lol](https://blog.rcw.lol). This is instead hosted on [Leaflet](https://leaflet.pub) - a publishing service hosted on Bluesky's AtProtocol. The long and short of it, is that the built-in editor and easy publishing just makes it easier to maintain. As for me actually writing posts... that's to be determined.
+
+## I want to fork this.
+
+My website is completely open source and available under the MIT License. You can modify it to your heart's content. **HOWEVER**, I will not be providing support for forks of the project, as the license suggests, this project is as-is.
+
+That being said, if you still want to work on it - development is super easy. Follow these steps:
+
+```sh
+# Clone the repo
+git clone https://gitlab.com/rcw.lol/website
+
+# Install dependencies
+cd website && bun install
+
+# Run the test server
+bun dev
+```

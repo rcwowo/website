@@ -1,0 +1,33 @@
+---
+name: Wave Link Key Wrapper
+description: A Python script to add global hotkeys to Elgato's Wave Link software.
+repo: https://gitlab.com/rcw.lol/wave-link-key-wrapper
+status: archived
+order: 6
+icon: ./logo.png
+---
+
+## About this project.
+
+This is a unique project, as it was designed to fit my specific niche use case. Wave Link Key Wrapper was a Python script that allowed you to turn keys on your keyboard into volume controls for Elgato's Wave Link software. It also contained a simple popup UI that displayed the current volume level.
+
+The way it worked was fairly simple. Elgato leaves a websocket open on port `1824` that is intended for communication between the Wave Link software and the Stream Deck software. This project was essentially a "reverse engineering" of how the websocket server functioned so that we could use it to control the volumes of inputs or outputs.
+
+## A fairly short history.
+
+At the time, I had a Stream Deck, an Elgato Wave:3 microphone, and my keyboard, the Keychron V1 - which had a volume encoder in the top right corner. For the average person, the microphone and Stream Deck alone should be more than enough to accomplish what you need.
+
+But I found the experience to be pretty lacking. While I still controlled audio primarily through the Stream Deck, I wanted a few more things that the experience lacked:
+
+1. When you adjust the audio, you have to look away from the screen to see what the audio level you're changing is.
+2. Buttons don't really allow for small, granular controls as opposed to a fader or dial.
+3. When used for small controls, it takes FAR longer than I want just to reach a desired volume level.
+4. It relies on both Elgato's Wave Link and Stream Deck software functioning. Which it doesn't always do.
+
+And technically, back in November of 2022, Elgato actually released a product to solve these problems. The "Stream Deck+" was essentially an 8 button Stream Deck, but with an additional 4 dials that could be assigned to lots of different things. **But it costed around $200.**
+
+Thus, I came up with the idea of modifying my keyboard so that the volume encoder would press 3 unused keys, `F13` `F14` and `F15`. That way, I can write a script that will detect the "keypress" and raise or lower the volume accordingly. That's where this project came to life.
+
+## Why did it die?
+
+If I'm being completely honest, I ended up receiving the Elgato Stream Deck+ in all of it's dial-ly glory as a Christmas gift. As such, I didn't really need to use the project anymore. That being said, I left the source code up to help anyone who wanted to fork the project.

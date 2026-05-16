@@ -1,8 +1,59 @@
 ---
 name: owoTV
 description: Archive of past livestream VODs and highlights, automatically organized and searchable.
-url: https://owo.rcw.lol
+url: https://owo.rcw.lol'
+repo: https://gitlab.com/rcw.lol/vods
 status: active
 order: 2
 icon: ./logo.webp
 ---
+
+import { YouTube } from "astro-embed";
+
+## About this project.
+
+This is a project that originally derives from my own [website](/projects/rcw-lol) and serves as a fully functional VOD archival website for my Twitch streams. Complete with features like a chat replay, date or game category sorting, and keyword searching.
+
+The VOD archival project itself was intended to create a place where I could control and make the viewing of past livestreams much easier than YouTube or Twitch could ever offer.
+
+## The beginnings of owoTV.
+
+Originally, owoTV went by a completely different name, and was actually just a channel on YouTube.
+
+Back in 2024, when I ended streams on Twitch, I would immediately export them to a YouTube channel separate from my "Lt. Wilson" channel called the "Lt. Vault". It's only purpose was to be a place where both my viewers and I could access past streams. Which was especially useful to me back when I actually made YouTube videos.
+
+One of the VODs, specifically the one that contained the original stream for the video ["They keep sending me this..."](https://www.youtube.com/watch?v=2k45MBeTJyQ) was taken down, and I'm not joking when I say this, for violating YouTube's hate speech policy. You can see my full video where I talk about that here:
+
+<YouTube id="xtcRr5v32Ew" />
+
+But with the stream being taken down, I realized I wanted full control over where the VODs are archived, how they're presented, and potentially even adding more features beyond what YouTube could provide.
+
+## Becoming it's own project.
+
+This is where most of the overlap with my [website's project page](/projects/rcw-lol) lies. The project itself started when I added a **/vods** page to my personal website. Early on, it functioned identically to how blog posts were stored. VODs were simply markdown files that contained metadata necessary to display an embedded video and basic sorting of information.
+
+As time went on, my website went through numerous updates and redesigns, and the VOD archival project was no different. The markdown files became an Airtable database, and I had setup automations to automatically rebuild the website when a VOD was added. Features like chat replay were added, and eventually I decided that it would be best for it to become it's own project.
+
+This is when the project was detached from my website, and on June 24th of 2025, it became it's own separate thing called "vods.ltwilson.tv".
+
+The project would eventually be renamed to owoTV in late October of 2025 after [I dropped the "Lt. Wilson" branding entirely](https://www.youtube.com/watch?v=KI-jMtUyvkw).
+
+## I want to make my own.
+
+While I don't exactly have a full guide on how to create the *entire* system for yourself, this project is also available under the MIT License. You can modify it to your heart's content to make it work for you. As with most of my projects, these are as-is, and I don't provide support for forks.
+
+Regardless, you can do your best to set it up by doing the following:
+
+```sh
+# Clone the repo
+git clone https://gitlab.com/rcw.lol/vods
+
+# Install dependencies
+cd vod-archive && bun install
+
+# Setup the .env file (you'll have to provide your own keys and such)
+cp .env.example .env
+
+# Run the test server
+bun dev
+```

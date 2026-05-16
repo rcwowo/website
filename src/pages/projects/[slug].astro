@@ -1,0 +1,168 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import { projectSlugFromId } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+import { getCollection, render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects')
+  return projects.map((project) => ({
+    params: { slug: projectSlugFromId(project.id) },
+    props: { project },
+  }))
+}
+
+type ProjectEntry = CollectionEntry<'projects'>
+
+const { project } = Astro.props as { project: ProjectEntry }
+const { Content } = await render(project)
+
+const statusLabel =
+  project.data.status === 'active'
+    ? 'Active'
+    : project.data.status === 'wip'
+      ? 'In development'
+      : 'Archived'
+
+const statusDot =
+  project.data.status === 'active'
+    ? 'bg-emerald-400'
+    : project.data.status === 'wip'
+      ? 'bg-amber-300'
+      : 'bg-muted-foreground/40'
+
+const statusRevealWidth =
+  project.data.status === 'wip'
+    ? '10.75rem'
+    : project.data.status === 'archived'
+      ? '6.75rem'
+      : '5.25rem'
+---
+
+<Layout title={project.data.name} description={project.data.description}>
+  <div class="mx-auto max-w-[50rem] px-6 pb-24 pt-12">
+
+    <nav class="mb-6">
+      <a
+        href="/#projects"
+        class="inline-flex items-center gap-1.5 text-xs text-muted-foreground/50 transition-colors duration-200 hover:text-accent"
+      >
+        <Icon name="lucide:arrow-left" size={15} />
+        <span>Back home</span>
+      </a>
+    </nav>
+
+    <header
+      class="relative mb-10 flex flex-col gap-6 border-b border-border/40 pb-10 md:flex-row md:items-start md:gap-8"
+    >
+      <div class="relative shrink-0">
+        {
+          project.data.icon ? (
+            <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl bg-secondary/60 md:h-16 md:w-16">
+              <Image
+                src={project.data.icon}
+                alt=""
+                width={64}
+                height={64}
+                class="h-full w-full object-cover"
+              />
+            </div>
+          ) : (
+            <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-secondary/60 text-muted-foreground/40 md:h-16 md:w-16">
+              <Icon name="lucide:folder" size={22} />
+            </div>
+          )
+        }
+        <span
+          class="group/status absolute bottom-0 right-0 z-10 inline-flex translate-x-1/4 translate-y-1/4 cursor-default flex-row-reverse items-center overflow-hidden rounded-full border border-transparent bg-transparent shadow-none transition-[border-color,background-color,box-shadow] duration-300 ease-out hover:border-border hover:bg-background hover:shadow-md focus-visible:outline-none focus-visible:border-border focus-visible:bg-background focus-visible:shadow-md"
+          tabindex="0"
+          role="status"
+          aria-label={statusLabel}
+        >
+          <span class="relative m-0.5 grid h-5 w-5 shrink-0 place-items-center">
+            <span
+              class="col-start-1 row-start-1 h-5 w-5 rounded-full bg-background"
+              aria-hidden="true"
+            ></span>
+            <span
+              class={`col-start-1 row-start-1 h-3 w-3 rounded-full ring-[3px] ring-background ${statusDot}`}
+              aria-hidden="true"
+            ></span>
+          </span>
+          <span
+            class="max-w-0 overflow-hidden transition-[max-width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/status:max-w-[var(--status-reveal)] group-focus-visible/status:max-w-[var(--status-reveal)]"
+            style={`--status-reveal: ${statusRevealWidth}`}
+          >
+            <span
+              class="block w-max whitespace-nowrap py-1 pl-2 pr-1 text-xs font-medium text-foreground opacity-0 transition-opacity duration-200 ease-out group-hover/status:opacity-100 group-hover/status:delay-75 group-focus-visible/status:opacity-100 group-focus-visible/status:delay-75"
+            >
+              {statusLabel}
+            </span>
+          </span>
+        </span>
+      </div>
+
+      <div class="min-w-0 flex-1 space-y-2">
+        <h1
+          class="font-display text-3xl font-extrabold tracking-tight md:text-4xl"
+        >
+          {project.data.name}
+        </h1>
+        <p class="max-w-2xl text-base leading-relaxed text-muted-foreground/85">
+          {project.data.description}
+        </p>
+
+        <div class="flex flex-wrap gap-2 pt-2">
+          {
+            project.data.url ? (
+              <a
+                href={project.data.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-4 py-2 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50"
+              >
+                <Icon
+                  name="lucide:eye"
+                  size={16}
+                  class="text-muted-foreground"
+                />
+                View Project
+              </a>
+            ) : null
+          }
+          {
+            project.data.repo ? (
+              <a
+                href={project.data.repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-4 py-2 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50"
+              >
+                <Icon
+                  name="lucide:code-2"
+                  size={16}
+                  class="text-muted-foreground"
+                />
+                Repository
+              </a>
+            ) : null
+          }
+        </div>
+      </div>
+    </header>
+
+    <article
+      class="project-body prose prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-muted-foreground/90 prose-li:text-muted-foreground/90"
+    >
+      <Content />
+    </article>
+  </div>
+</Layout>
+
+<style>
+  .project-body > :global(*:first-child) {
+    margin-top: 0;
+  }
+</style>
