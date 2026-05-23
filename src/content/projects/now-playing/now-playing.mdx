@@ -1,10 +1,46 @@
 ---
 name: Now Playing
 description: A Twitch extension enabling Twitch broadcasters to easily display their currently playing, or previously played songs via a Twitch extension using Last.fm.
+url: https://dashboard.twitch.tv/extensions/y90tynour6oxojwd5ehwbm2rf2j8tt
 repo: https://gitlab.com/rcw.lol/extensions/now-playing
-status: wip
+status: active
 order: 4
 icon: ./logo.png
 ---
 
-This project is still in development. I'll get to writing this soon!
+## About this project.
+
+OwO's Now Playing is a Twitch extension that lets Twitch broadcasters easily display their currently playing, or previously played songs via Last.fm.
+
+## What exactly can it do?
+
+The extension can be used in one of three ways, depending on what position you activate the extension in.
+
+- Panel mode: this will display the widget alongside other panels like most Twitch extensions. It shows the currently playing song, as well as a scrollable list of your song history.
+- Component mode: this simply moves the widget to being located in the video player instead of being a panel. It does not include the features of the overlay mode.
+- Overlay mode: this is the full experience. It includes a customizable notification that is displayed on top of the video player when a new song is played. You can also view song history or change settings via a floating panel that can be accessed on the left side of the video player.
+
+The overlay mode is the preferred way to use the extension. It allows streamers to display playing music without being baked-in to the video feed, and viewers who don't wish to see the extension can simply disable it. Perfect for creators that make videos from their streams.
+
+## Why rely on Last.fm?
+
+Though I've been a critic of Last.fm's API in the past, I wanted the extension to be compatible with as many music players as possible. Even outside of music streaming itself, if you're using a service or player that can scrobble to Last.fm, it *should* be compatible with the extension.
+
+That way, we don't tie the extension to a streaming service like Spotify.
+
+## I want to fork this.
+
+Before you can start developing, you'll need to configure the extension in the [Twitch developer console](https://dev.twitch.tv/console). These instructions are available in the repository's [README](https://gitlab.com/rcw.lol/extensions/now-playing/-/blob/master/README.md?ref_type=heads).
+
+Otherwise, it's as simple as any other project.
+
+```sh
+# Clone the repo
+git clone https://gitlab.com/rcw.lol/extensions/now-playing
+
+# Install dependencies
+cd now-playing && bun install
+
+# Run the test server
+bun dev
+```
