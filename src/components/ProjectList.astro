@@ -10,7 +10,7 @@ const projects = (await getCollection('projects'))
 
 <div class="projects-list flex flex-col">
   {projects.map((project, i) => {
-    const href = `/projects/${projectSlugFromId(project.id)}`
+    const href = `/project/${projectSlugFromId(project.id)}`
     return (
       <a
         href={href}
