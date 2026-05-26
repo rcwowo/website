@@ -2,9 +2,11 @@
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
+import { isProjectIndexEntry } from '@/lib/projects'
 import { projectSlugFromId } from '@/lib/utils'
 
 const projects = (await getCollection('projects'))
+  .filter(isProjectIndexEntry)
   .sort((a, b) => a.data.order - b.data.order)
 ---
 

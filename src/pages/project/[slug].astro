@@ -1,5 +1,11 @@
 ---
 import Layout from '@/layouts/Layout.astro'
+import Container from '@/components/Container.astro'
+import {
+  getSubpagesForProject,
+  isProjectIndexEntry,
+  pageSlugFromId,
+} from '@/lib/projects'
 import { projectSlugFromId } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
@@ -7,8 +13,8 @@ import type { CollectionEntry } from 'astro:content'
 import { getCollection, render } from 'astro:content'
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects')
-  return projects.map((project) => ({
+  const entries = await getCollection('projects')
+  return entries.filter(isProjectIndexEntry).map((project) => ({
     params: { slug: projectSlugFromId(project.id) },
     props: { project },
   }))
@@ -18,6 +24,10 @@ type ProjectEntry = CollectionEntry<'projects'>
 
 const { project } = Astro.props as { project: ProjectEntry }
 const { Content } = await render(project)
+
+const projectSlug = projectSlugFromId(project.id)
+const allEntries = await getCollection('projects')
+const subpages = getSubpagesForProject(allEntries, projectSlug)
 
 const statusLabel =
   project.data.status === 'active'
@@ -41,9 +51,11 @@ const statusRevealWidth =
       : '5.25rem'
 ---
 
-<Layout title={project.data.name} description={project.data.description}>
-  <div class="mx-auto max-w-[50rem] px-6 pb-24 pt-12">
-
+<Layout
+  title={project.data.name!}
+  description={project.data.description!}
+>
+  <Container class="pb-24 pt-12">
     <nav class="mb-6">
       <a
         href="/"
@@ -158,7 +170,27 @@ const statusRevealWidth =
     >
       <Content />
     </article>
-  </div>
+
+    {
+      subpages.length > 0 ? (
+        <footer class="mt-14 border-t border-border/40 pt-8">
+          <ul class="flex flex-wrap gap-2">
+            {subpages.map((subpage) => (
+              <li>
+                <a
+                  href={`/project/${projectSlug}/${pageSlugFromId(subpage.id)}`}
+                  class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-3 py-1.5 text-sm font-medium text-foreground/90 transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50 hover:text-foreground"
+                >
+                  <Icon name="lucide:file-text" size={15} />
+                  {subpage.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </footer>
+      ) : null
+    }
+  </Container>
 </Layout>
 
 <style>

@@ -1,0 +1,118 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import Container from '@/components/Container.astro'
+import {
+  isProjectIndexEntry,
+  isProjectSubpageEntry,
+  pageSlugFromId,
+} from '@/lib/projects'
+import { projectSlugFromId } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { Image } from 'astro:assets'
+import type { CollectionEntry } from 'astro:content'
+import { getCollection, render } from 'astro:content'
+
+export async function getStaticPaths() {
+  const entries = await getCollection('projects')
+  const indexBySlug = new Map(
+    entries
+      .filter(isProjectIndexEntry)
+      .map((entry) => [projectSlugFromId(entry.id), entry]),
+  )
+
+  return entries.filter(isProjectSubpageEntry).map((subpage) => {
+    const slug = projectSlugFromId(subpage.id)
+    const page = pageSlugFromId(subpage.id)
+    const project = indexBySlug.get(slug)
+
+    if (!project) {
+      throw new Error(
+        `Subpage "${subpage.id}" has no matching index.mdx for project "${slug}".`,
+      )
+    }
+
+    return {
+      params: { slug, page },
+      props: { subpage, project },
+    }
+  })
+}
+
+type ProjectEntry = CollectionEntry<'projects'>
+
+const { subpage, project } = Astro.props as {
+  subpage: ProjectEntry
+  project: ProjectEntry
+}
+const { Content } = await render(subpage)
+const projectSlug = projectSlugFromId(project.id)
+---
+
+<Layout
+  title={subpage.data.title! + ' - ' + project.data.name!}
+  description={project.data.description!}
+>
+  <Container class="pb-24 pt-12">
+    <nav class="mb-6 flex flex-col gap-2">
+      <a
+        href={`/project/${projectSlug}`}
+        class="inline-flex items-center gap-1.5 text-xs text-muted-foreground/50 transition-colors duration-200 hover:text-accent"
+      >
+        <Icon name="lucide:arrow-left" size={15} />
+        <span>Back to {project.data.name}</span>
+      </a>
+    </nav>
+
+    <header
+      class="mb-10 flex flex-col gap-6 border-b border-border/40 pb-10 md:flex-row md:items-start md:gap-8"
+    >
+      <div class="shrink-0">
+        {
+          project.data.icon ? (
+            <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl bg-secondary/60 md:h-16 md:w-16">
+              <Image
+                src={project.data.icon}
+                alt=""
+                width={64}
+                height={64}
+                class="h-full w-full object-cover"
+              />
+            </div>
+          ) : (
+            <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-secondary/60 text-muted-foreground/40 md:h-16 md:w-16">
+              <Icon name="lucide:folder" size={22} />
+            </div>
+          )
+        }
+      </div>
+
+      <div class="min-w-0 flex-1">
+        <h1
+          class="font-display text-3xl font-extrabold tracking-tight md:text-4xl"
+        >
+          {subpage.data.title}
+        </h1>
+        <p class="text-base text-muted-foreground/85">
+          <a
+            href={`/project/${projectSlug}`}
+            class="transition-colors duration-200 hover:text-accent"
+          >
+            {project.data.name}
+          </a>
+        </p>
+      </div>
+    </header>
+
+    <article
+      class="project-body prose prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-muted-foreground/90 prose-li:text-muted-foreground/90"
+    >
+      <Content />
+    </article>
+  </Container>
+</Layout>
+
+<style>
+  .project-body > :global(*:first-child) {
+    margin-top: 0;
+  }
+</style>

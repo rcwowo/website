@@ -1,0 +1,71 @@
+---
+title: Privacy Policy
+order: 1
+---
+
+*Last updated: May 26, 2026*
+
+This privacy policy describes how **OwO's Now Playing** (the “Extension”), a Twitch extension developed by Riley Wilson (“I”, “me”, “developer”), handles information when you use it.
+
+## Summary
+
+**I do not store any information from your use of the Extension or my API, period.** No databases, logs of users, archives, or backups of request data on my side. I do not collect, store, or sell personally identifiable information-or any other user data-for the Extension or `https://np-api.rcw.lol`.
+
+The Extension shows music listening data that broadcasters have already made public through Last.fm. The only backend I operate is a stateless API proxy: it forwards requests and does not retain what passes through it.
+
+## What the Extension does
+
+The Extension lets Twitch broadcasters display their currently playing or recently played tracks (and related metadata such as artist and album art) on their channel. That information comes from [Last.fm](https://www.last.fm/) based on the broadcaster's Last.fm username, which they configure in the Extension.
+
+Viewers see whatever the broadcaster has chosen to share via Last.fm and Twitch. I do not receive Twitch login credentials, payment details, or other private account data through the Extension.
+
+## API requests (`https://np-api.rcw.lol`)
+
+To load listening data, the Extension may request:
+
+`https://np-api.rcw.lol`
+
+That service is a [Cloudflare Worker](https://workers.cloudflare.com/) used to forward authenticated requests to Last.fm's public API so the Extension can fetch scrobble/listening data for a given Last.fm username. The Worker is a pass-through proxy only: I DO NOT store request or response data anywhere.
+
+**What is sent in a request:** a Last.fm username. That username is information the broadcaster has already associated with their public Last.fm profile.
+
+**Cloudflare:** Traffic to the Worker is handled by Cloudflare's network. Cloudflare may process IP addresses for broad, country-level geolocation statistics and rate limiting on their infrastructure. I do not receive or store those IP addresses or geolocation results myself. For details on Cloudflare's practices, see [Cloudflare's Privacy Policy](https://www.cloudflare.com/privacypolicy/).
+
+## Third-party services
+
+| Service | Role |
+| --- | --- |
+| **Twitch** | Hosts and distributes the Extension. Twitch's own terms and privacy practices apply to use of Twitch and extensions on the platform. See [Twitch Privacy Notice](https://www.twitch.tv/p/legal/privacy-notice). |
+| **Last.fm** | Source of listening history and metadata, according to the broadcaster's Last.fm account and Last.fm's public API. See [Last.fm Privacy Policy](https://www.last.fm/legal/privacy). |
+| **Cloudflare** | Hosts `np-api.rcw.lol`; may use IP addresses for country-level metrics and rate limiting as described above. See [Cloudflare Privacy Policy](https://www.cloudflare.com/privacypolicy/). |
+
+I am not responsible for how those services handle data outside what this Extension triggers.
+
+## What I do not do
+
+- Store any information from the Extension or API (no exceptions for “analytics” or “debugging” on my infrastructure)
+- Sell or rent personal information
+- Maintain a database of viewer or streamer identities
+- Collect names, email addresses, or physical addresses through the Extension
+- Use the API proxy to track individuals across sites or services for advertising
+
+Extension settings (for example overlay preferences) are handled within the Extension and Twitch as designed; I do not operate a separate cloud account or settings backend.
+
+## Legal requests
+
+Because I do not store user data from the Extension or API, I generally have nothing to turn over in response to legal requests related to that usage. If I am legally compelled to act, I will comply only to the extent required and only with information I actually hold.
+
+## Children
+
+The Extension is intended for use on Twitch, which has its own age and eligibility rules. I do not collect or store any information from anyone through the Extension.
+
+## Changes
+
+I may update this policy from time to time. The “Last updated” date at the top will change when I do. Continued use of the Extension after changes means you accept the updated policy.
+
+## Contact
+
+Questions about this policy or the Extension:
+
+- Email: [riley@rcw.lol](mailto:riley@rcw.lol)
+- Project repository: [gitlab.com/rcw.lol/extensions/now-playing](https://gitlab.com/rcw.lol/extensions/now-playing)
