@@ -1,0 +1,79 @@
+---
+name: Peepochat
+description: A fully-featured Twitch chat client built entirely to be to be used in the browser.
+repo: https://gitlab.com/rcw.lol/peepochat
+status: wip
+order: 5
+icon: ./logo.png
+---
+
+## About this project.
+
+Peepochat is a feature-rich Twitch chat client that was built entirely to be used in the browser. Complete with customizable layouts, pings, message history, and support for all of the third-party emote services like BetterTTV, FrankerFaceZ, and 7TV.
+
+![A screenshot of the Peepochat web app.](https://i.rcw.lol/u/oIkaSo.png)
+
+## What can it do?
+
+As a Twitch chat client, you'll need to login to a Twitch account to start chatting. But once you've logged in, you can start to customize the app to fit your needs.
+
+Let me introduce some of the basic fundamentals.
+
+- **Channels and splits** - the sidebar is where you switch between either channels or splits. Splits are groups of multiple channels that can be arranged in any way you see fit. Have a tightly knit group of friends that you want to keep an eye on? You can keep them all in one split to get a view at all of them.
+- **Pings and notifications** - you're already going to keep the tab open, why not get properly notified when someone mentions your name or triggers keywords that you set? Maybe you want to get notifications for when one of the channels you're connected to goes live. You'll never miss a thing again!
+- **Completely local by design** - did I mention that all of this is completely client side? All of your settings and layouts are stored locally in your browser. The app includes the same backup and restore feature from [Chatvoice](/project/chatvoice) so that you can quickly get back to a configuration and **actually own your data**.
+
+And of course, all of these are entirely configurable to fit your preferences and needs. Don't need a copy message button? Disable it. Don't want live indicators for channels? Turn them off.
+
+I designed it to be a chat client I actually want to use.
+
+## Why pick the web?
+
+A lot of the philosophy behind my projects nowadays is described in [this blog post](https://blog.rcw.lol/3mnsysa2f2k25) I made. The long and short of it, is that I keep a few key focuses in mind before I even start designing or writing any code:
+
+- Actually solve a problem that I **personally** face.
+- Stay in the scope of what I can **actually accomplish**.
+- Remain **entirely** local.
+- Be completely **free of charge**.
+
+And I picked the web because it's the platform that I felt like I could actually solve my problem and accomplish with.
+
+I didn't want to create yet another Electron or Tauri app to take up valuable space on people's devices. The browser is already by far the most platform agnostic place to ship projects in the modern era. Peepochat, by design, is highly compatible by being able to run on Windows, macOS, Linux, ChromeOS, even mobile devices (though not recommended). You could probably run it on a fast food kiosk if you wanted to.
+
+## The history of Peepochat.
+
+Truthfully, I **don't** dislike using clients like [Chatterino](https://chatterino.com). In fact, I've used that app for well over 6 years at this point, and it's a fairly big inspiration in why I wanted to make my own client.
+
+Back in 2022, I wanted to experiment with the idea of a Twitch chat client, and what **I** would want that to look like. In that original draft, I happened to name the client "PeepoChat" after the [popular emote](https://7tv.app/emotes/01GEZX9N900003T6Y8KR7ZKS00).
+
+![A screenshot of the original design concept for PeepoChat.](https://i.rcw.lol/u/2xAVNc.png)
+
+But this was just a design mockup. It wasn't until a few months before I even started to work on [Chatvoice](/project/chatvoice) or this project. I had joked around in one of the chatrooms I was in about making my own Twitch chat client. I think there was a bug I was having with Chatterino at the time, truthfully I don't remember.
+
+But I started to work an early prototype that played into the concept of having a "Discord-like" sidebar instead of a tabbed system. I wanted something that was familiar enough that a new user could still pick it up and quickly understand how to use it, with the freedom of being something that I was capable of modifying to add the features I need.
+
+Over time, I eventually shifted my focus into creating [Chatvoice](/project/chatvoice) instead. Which, if you're unaware, is a project that gives each Twitch chatter their own text-to-speech voice based on voices you define.
+
+While it's primary focus is the text-to-speech functionality, there is also a big Twitch chat presence in the app. Chatvoice renders timestamps, emotes, paused scrolling, shows essential badges. And with it being fully released, I decided to fork off of the project and create Peepochat in the scaffolding that Chatvoice left.
+
+## I want help or contribute!
+
+If you want to support me financially, you should become an OwO+ member on my [Patreon](https://patreon.com/rcwowo)! Not only do you help keep these projects free for everyone, you also get some small benefits in return as well.
+
+If you want to help by contributing to or just making a fork of your own, the project is completely open-sourced! You'll need to create a **public client type** app via the [Twitch developer console](https://dev.twitch.tv/console) in order to get a client ID and setup OAuth redirect URLs.
+
+But it's as simple as any other project.
+
+```sh
+# Clone the repo
+git clone https://gitlab.com/rcw.lol/peepochat
+
+# Install dependencies
+cd now-playing && bun install
+
+# Setup environment variables
+cp .env.example .env
+
+# Run the test server
+bun dev
+```
