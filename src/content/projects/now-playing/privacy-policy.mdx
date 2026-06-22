@@ -3,13 +3,13 @@ title: Privacy Policy
 order: 1
 ---
 
-*Last updated: May 26, 2026*
+*Last updated: June 22, 2026*
 
 This privacy policy describes how **OwO's Now Playing** (the “Extension”), a Twitch extension developed by Riley Wilson (“I”, “me”, “developer”), handles information when you use it.
 
 ## Summary
 
-**I do not store any information from your use of the Extension or my API, period.** No databases, logs of users, archives, or backups of request data on my side. I do not collect, store, or sell personally identifiable information-or any other user data-for the Extension or `https://np-api.rcw.lol`.
+**I do not store any information from your use of the Extension or my API, period.** No databases, logs of users, archives, or backups of request data on my side. I do not collect, store, or sell personally identifiable information-or any other user data-for the Extension or `https://api.rcw.lol`.
 
 The Extension shows music listening data that broadcasters have already made public through Last.fm. The only backend I operate is a stateless API proxy: it forwards requests and does not retain what passes through it.
 
@@ -19,11 +19,11 @@ The Extension lets Twitch broadcasters display their currently playing or recent
 
 Viewers see whatever the broadcaster has chosen to share via Last.fm and Twitch. I do not receive Twitch login credentials, payment details, or other private account data through the Extension.
 
-## API requests (`https://np-api.rcw.lol`)
+## API requests (`https://api.rcw.lol`)
 
 To load listening data, the Extension may request:
 
-`https://np-api.rcw.lol`
+`https://api.rcw.lol/lastfm/playing?username=`
 
 That service is a [Cloudflare Worker](https://workers.cloudflare.com/) used to forward authenticated requests to Last.fm's public API so the Extension can fetch scrobble/listening data for a given Last.fm username. The Worker is a pass-through proxy only: I DO NOT store request or response data anywhere.
 
@@ -37,7 +37,7 @@ That service is a [Cloudflare Worker](https://workers.cloudflare.com/) used to f
 | --- | --- |
 | **Twitch** | Hosts and distributes the Extension. Twitch's own terms and privacy practices apply to use of Twitch and extensions on the platform. See [Twitch Privacy Notice](https://www.twitch.tv/p/legal/privacy-notice). |
 | **Last.fm** | Source of listening history and metadata, according to the broadcaster's Last.fm account and Last.fm's public API. See [Last.fm Privacy Policy](https://www.last.fm/legal/privacy). |
-| **Cloudflare** | Hosts `np-api.rcw.lol`; may use IP addresses for country-level metrics and rate limiting as described above. See [Cloudflare Privacy Policy](https://www.cloudflare.com/privacypolicy/). |
+| **Cloudflare** | Hosts `api.rcw.lol`; may use IP addresses for country-level metrics and rate limiting as described above. See [Cloudflare Privacy Policy](https://www.cloudflare.com/privacypolicy/). |
 
 I am not responsible for how those services handle data outside what this Extension triggers.
 
