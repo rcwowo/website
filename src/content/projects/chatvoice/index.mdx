@@ -2,7 +2,7 @@
 name: Chatvoice
 description: Give your chat a voice! Read Twitch chat messages aloud using your browser's built-in speech synthesis capabilities.
 url: 'https://chatvoice.rcw.lol'
-repo: 'https://gitlab.com/rcw.lol/chatvoice'
+repo: 'https://github.com/rcwowo/chatvoice'
 status: active
 order: 3
 icon: ./logo.png
@@ -35,3 +35,20 @@ One of the biggest problems with *both* Chatvoice and Speechchat, is that they r
 This means that the number of voices available to use differ depending on what browser you're using, or what voices are provided directly from your operating system. For example: if you were on Windows using my personal browser of choice, Zen Browser, it doesn't include any additional voices. So you're limited to the built-in text-to-speech voices provided by Windows itself. Whereas if you used a browser like Chrome or Edge, they include Google and Microsoft's respective cloud text-to-speech voices.
 
 And unfortunately, this means that the best browser to use for Chatvoice is actually **Microsoft Edge**. It includes the most robust set of voices across multiple different languages.
+
+## I want to help or contribute!
+
+Just like [Peepochat](/project/peepochat), if you to support the project financially, you should become an OwO+ member on my [Patreon](https://patreon.com/rcwowo)! Not only do you help keep these projects free for everyone, you also earn some small benefits in return as well.
+
+If you want to help by contributing to or just making a fork of your own, the project is completely open-sourced!
+
+```sh
+# Clone the repo
+git clone https://github.com/rcwowo/chatvoice
+
+# Install dependencies
+cd chatvoice && bun install
+
+# Run the test server
+bun dev
+```

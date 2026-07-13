@@ -22,7 +22,7 @@ That being said, if you still want to work on it - development is super easy. Fo
 
 ```sh
 # Clone the repo
-git clone https://gitlab.com/rcw.lol/website
+git clone https://github.com/rcwowo/website
 
 # Install dependencies
 cd website && bun install

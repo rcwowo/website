@@ -16,7 +16,7 @@ export type Socials = {
 export const SITE: Site = {
   TITLE: 'rcw.lol',
   DESCRIPTION:
-    'Personal website of a guy that edits videos and occasionally dabbles in coding projects.',
+    'Website and portfolio of Riley Wilson, a guy that edits videos and occasionally dabbles in coding projects. Often seen working on projects designed for streamers and viewers alike.',
   EMAIL: 'riley@rcw.lol',
   SITEURL: 'https://rcw.lol',
 }
@@ -59,13 +59,13 @@ export const SOCIALS: Socials[] = [
   { TITLE: 'Twitch', ICON: 'lucide:twitch', URL: 'https://twitch.tv/rcwowo' },
   { TITLE: 'Bluesky', ICON: 'mingcute:bluesky-social-line', URL: 'https://bsky.app/profile/rcw.lol' },
   { TITLE: 'Discord', ICON: 'mingcute:discord-line', URL: 'https://discord.gg/fJtyxttGpq' },
-  { TITLE: 'GitLab', ICON: 'lucide:gitlab', URL: 'https://gitlab.com/rcw.lol' },
+  { TITLE: 'GitLab', ICON: 'lucide:github', URL: 'https://github.com/rcwowo' },
   { TITLE: 'Contact', ICON: 'lucide:mail', URL: 'mailto:riley@rcw.lol' }
 ]
 
 // Global Menu Links
 export const MENU_LINKS: Socials[] = [
-  { TITLE: 'owoTV', URL: 'https://owo.rcw.lol', ICON: 'lucide:tv' },
+  { TITLE: 'owoTV', URL: 'https://tv.rcw.lol', ICON: 'lucide:tv' },
   { TITLE: 'Blog', URL: 'https://blog.rcw.lol', ICON: 'lucide:rss' },
 ]
 
