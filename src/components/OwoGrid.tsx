@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
 type Pt = { x: number; y: number }
-type Dust = { x: number; y: number; r: number; field: number; n: number }
+type Grain = { x: number; y: number; r: number; field: number; n: number; fade: number; dust: boolean }
 
 function mulberry32(seed: number) {
   let a = seed >>> 0
@@ -80,6 +80,47 @@ function clamp(v: number, min: number, max: number) {
   return Math.max(min, Math.min(max, v))
 }
 
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * t
+}
+
+function easeInOutCubic(t: number) {
+  const x = clamp(t, 0, 1)
+  return x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2
+}
+
+function easeInCubic(t: number) {
+  const x = clamp(t, 0, 1)
+  return x * x * x
+}
+
+function easeOutQuart(t: number) {
+  const x = 1 - clamp(t, 0, 1)
+  return 1 - x * x * x * x
+}
+
+function wrapAngle(d: number) {
+  if (d > Math.PI) return d - Math.PI * 2
+  if (d < -Math.PI) return d + Math.PI * 2
+  return d
+}
+
+function jitteredSpiral(turns: number, n: number, seed: number, amp: number) {
+  const rand = mulberry32(seed)
+  const pts: Pt[] = []
+  for (let i = 0; i < n; i++) {
+    const u = i / (n - 1)
+    const a = u * turns * Math.PI * 2
+    const rr = 0.14 + u * 0.86
+    const j = (rand() - 0.5) * 2 * amp
+    pts.push({
+      x: Math.cos(a) * (rr + j),
+      y: Math.sin(a) * (rr + j),
+    })
+  }
+  return pts
+}
+
 function hash2(x: number, y: number) {
   const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453
   return n - Math.floor(n)
@@ -109,11 +150,6 @@ export default function OwoGrid() {
     const sharpCtx = sharpContext
     const bloomCtx = bloomContext
 
-    const bgCanvas = document.createElement('canvas')
-    const bgContext = bgCanvas.getContext('2d', { alpha: true })
-    if (!bgContext) return
-    const bgCtx = bgContext
-
     const faceOuter: string[] = []
     const faceInner: string[] = []
     for (let i = 0; i < FACE_STEPS; i++) {
@@ -126,6 +162,8 @@ export default function OwoGrid() {
     const rightEye = jitteredRing(0, 0, 1, 70, 9001, 0.05)
     const leftPupil = jitteredRing(0, 0, 1, 28, 4242, 0.08)
     const rightPupil = jitteredRing(0, 0, 1, 26, 777, 0.09)
+    const leftSpiral = jitteredSpiral(2.15, 48, 2718, 0.04)
+    const rightSpiral = jitteredSpiral(2.05, 46, 1618, 0.045)
     const mouth = jitteredW(0, 0, 1, 1, 42, 31415, 0.035)
 
     let width = 0
@@ -137,7 +175,7 @@ export default function OwoGrid() {
     let rectLeft = 0
     let rectTop = 0
     let staticN = new Float32Array(0)
-    let dustCells: Dust[] = []
+    let grainCells: Grain[] = []
     let source: OffscreenCanvas | HTMLCanvasElement
     let sourceCtx: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D
     const srcScale = 2
@@ -165,25 +203,54 @@ export default function OwoGrid() {
       h: 0,
     }
 
-    let lookX = 0
-    let lookY = 0.48
+    let lookLX = 0
+    let lookLY = 0.48
+    let lookRX = 0
+    let lookRY = 0.48
     let headX = 0
     let headY = 0.48
-    let targetX = 0
-    let targetY = 0.48
+    let targetLX = 0
+    let targetLY = 0.48
+    let targetRX = 0
+    let targetRY = 0.48
     let blink = 0
     let blinkClosing = false
-    let nextBlink = 0
+    let nextBlink = Number.POSITIVE_INFINITY
     let nextSaccade = 0
     let lastPointer = 0
     let pointerActive = false
+    let pointerArmed = false
+    let pointerOriginX = NaN
+    let pointerOriginY = NaN
     let pointerX = 0
     let pointerY = 0
     let introUntil = 0
+    let wakeOpen = 0
+    let wakeOpenR = 0
+    let wakeStage = 0
+    let wakeHold = 0
+    let wakeFrom = 0
+    let wakeGoal = 0
+    let wakeDur = 1
+    let wakeT0 = 0
+    let startedAt = 0
+    let dizzyAmt = 0
+    let dizzyUntil = 0
+    let dizzyCoolUntil = 0
+    let dizzyRecover = 0
+    let recoverHold = 0
+    let pendingRX = 0
+    let pendingRY = 0
+    let pendingRAt = 0
+    let lastSpinAngle = NaN
+    let lastSpinAt = 0
+    let spinTurns = 0
+    let spinSign = 0
     let visible = true
     let inView = true
     let reduced = false
     let raf = 0
+    let fallback = 0
     let lastT = 0
 
     const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -212,27 +279,6 @@ export default function OwoGrid() {
       face.h = h
       face.cx = width * 0.5
       face.cy = height * 0.4
-    }
-
-    function renderBgStatic() {
-      bgCanvas.width = sharp.width
-      bgCanvas.height = sharp.height
-      bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      bgCtx.clearRect(0, 0, width, height)
-      for (let gy = 0; gy < rows; gy++) {
-        const fade = clamp(1 - (gy / rows - 0.46) / 0.48, 0, 1)
-        if (fade <= 0.03) continue
-        for (let gx = 0; gx < cols; gx++) {
-          const n = staticN[gy * cols + gx]
-          if (n > 0.88) continue
-          const alpha = (0.045 + n * 0.04) * fade
-          if (alpha < 0.02) continue
-          bgCtx.beginPath()
-          bgCtx.fillStyle = `hsla(265, 28%, ${42 + n * 24}%, ${alpha})`
-          bgCtx.arc((gx + 0.5) * cell, (gy + 0.5) * cell, cell * (0.12 + n * 0.09), 0, Math.PI * 2)
-          bgCtx.fill()
-        }
-      }
     }
 
     function resize() {
@@ -267,31 +313,84 @@ export default function OwoGrid() {
         }
       }
 
-      dustCells = []
+      grainCells = []
       for (let gy = 0; gy < rows; gy++) {
+        const fade = clamp(1 - (gy / rows - 0.46) / 0.48, 0, 1)
+        if (fade <= 0.03) continue
         for (let gx = 0; gx < cols; gx++) {
           const n = staticN[gy * cols + gx]
-          if (n <= 0.88) continue
-          dustCells.push({
+          const field = 0.045 + n * 0.04
+          const dust = n > 0.88
+          if (!dust && field * fade < 0.02) continue
+          grainCells.push({
             x: (gx + 0.5) * cell,
             y: (gy + 0.5) * cell,
             r: cell * (0.12 + n * 0.09),
-            field: 0.045 + n * 0.04,
+            field,
             n,
+            fade,
+            dust,
           })
         }
       }
 
-      renderBgStatic()
       measureFace()
       syncRect()
     }
 
-    function screenToLook(sx: number, sy: number) {
-      const x = sx - rectLeft
-      const y = sy - rectTop
-      targetX = clamp((x - face.cx) / (face.w * 0.42), -1.15, 1.15)
-      targetY = clamp((y - face.cy) / (face.h * 0.7), -1.15, 1.15)
+    function aimFromScreen(sx: number, sy: number) {
+      const midX = rectLeft + face.cx
+      const midY = rectTop + face.cy
+      const sharedX = clamp((sx - midX) / (face.w * 0.42), -1.15, 1.15)
+      const sharedY = clamp((sy - midY) / (face.h * 0.7), -1.15, 1.15)
+      const dist = Math.hypot(sx - midX, sy - midY)
+      const near = clamp(1 - dist / (face.w * 1.15), 0, 1)
+      const conv = 0.07 + near * 0.18
+      return {
+        lx: clamp(sharedX + conv, -1.15, 1.15),
+        ly: sharedY,
+        rx: clamp(sharedX - conv, -1.15, 1.15),
+        ry: sharedY,
+      }
+    }
+
+    function lookAtScreen(sx: number, sy: number) {
+      const aim = aimFromScreen(sx, sy)
+      targetLX = aim.lx
+      targetLY = aim.ly
+      if (pointerActive || dizzyRecover === 4) {
+        targetRX = aim.rx
+        targetRY = aim.ry
+        pendingRAt = 0
+      } else {
+        pendingRX = aim.rx
+        pendingRY = aim.ry
+        pendingRAt = performance.now() + 28 + Math.random() * 42
+      }
+    }
+
+    function setLogoLook() {
+      targetLX = -1
+      targetLY = 0.06
+      targetRX = 1
+      targetRY = 0.06
+      pendingRAt = 0
+    }
+
+    function snapLook() {
+      lookLX = targetLX
+      lookLY = targetLY
+      lookRX = targetRX
+      lookRY = targetRY
+    }
+
+    function beginWake(now: number, stage: number, from: number, to: number, dur: number) {
+      wakeStage = stage
+      wakeFrom = from
+      wakeGoal = to
+      wakeDur = dur
+      wakeT0 = now
+      wakeOpen = from
     }
 
     function pickIdleTarget() {
@@ -319,7 +418,7 @@ export default function OwoGrid() {
       }
 
       const pick = spots[Math.floor(Math.random() * spots.length)]
-      screenToLook(pick.x, pick.y)
+      lookAtScreen(pick.x, pick.y)
     }
 
     function scheduleBlink(now: number) {
@@ -349,7 +448,70 @@ export default function OwoGrid() {
       return out
     }
 
-    function drawFaceSource(open: number) {
+    function placeSpiral(unit: Pt[], cx: number, cy: number, r: number, rot: number) {
+      const c = Math.cos(rot)
+      const s = Math.sin(rot)
+      const out: Pt[] = []
+      for (const p of unit) {
+        out.push({
+          x: cx + (p.x * c - p.y * s) * r,
+          y: cy + (p.x * s + p.y * c) * r,
+        })
+      }
+      return out
+    }
+
+    function startDizzy(now: number) {
+      dizzyUntil = now + 3600
+      dizzyCoolUntil = now + 11000
+      dizzyRecover = 0
+      spinTurns = 0
+      spinSign = 0
+      lastSpinAngle = NaN
+      pointerActive = false
+    }
+
+    function noteSpin(now: number) {
+      if (reduced || wakeStage < 5 || now < dizzyCoolUntil || dizzyAmt > 0.2 || dizzyRecover > 0) return
+
+      const dx = pointerX - (rectLeft + face.cx)
+      const dy = pointerY - (rectTop + face.cy)
+      const dist = Math.hypot(dx, dy)
+      const maxDist = Math.max(face.w * 1.4, 260)
+      if (dist < face.w * 0.1 || dist > maxDist) {
+        lastSpinAngle = NaN
+        return
+      }
+
+      const angle = Math.atan2(dy, dx)
+      if (Number.isNaN(lastSpinAngle)) {
+        lastSpinAngle = angle
+        lastSpinAt = now
+        return
+      }
+
+      const d = wrapAngle(angle - lastSpinAngle)
+      lastSpinAngle = angle
+      const gap = now - lastSpinAt
+      lastSpinAt = now
+      if (gap > 420) {
+        spinTurns = 0
+        spinSign = 0
+        return
+      }
+
+      spinTurns *= Math.exp(-gap * 0.00065)
+      const sign = d < 0 ? -1 : 1
+      if (spinSign !== 0 && sign !== spinSign && Math.abs(d) > 0.14) {
+        spinTurns *= 0.2
+      }
+      if (Math.abs(d) > 0.08) spinSign = sign
+      spinTurns += d / (Math.PI * 2)
+
+      if (Math.abs(spinTurns) >= 2.7) startDizzy(now)
+    }
+
+    function drawFaceSource() {
       const ctx = sourceCtx
       const sw = source.width
       const sh = source.height
@@ -371,9 +533,12 @@ export default function OwoGrid() {
       const rightR = fw * 0.141
       const stroke = fw * 0.054
       const pupilR = fw * 0.045
-      const shiftX = reduced ? 0 : headX * fw * 0.022
+      const now = performance.now()
+      const dizz = reduced ? 0 : dizzyAmt
+      const avgLookX = (lookLX + lookRX) * 0.5
+      const shiftX = reduced ? 0 : headX * fw * 0.022 + dizz * Math.sin(now * 0.01) * fw * 0.012
       const shiftY = reduced ? 0 : headY * fh * 0.03
-      const turn = reduced ? 0 : headX * 0.05
+      const turn = reduced ? 0 : avgLookX * 0.05 + dizz * Math.sin(now * 0.013) * 0.07
 
       ctx.translate(face.cx + shiftX, face.cy + shiftY)
       ctx.rotate(turn)
@@ -383,23 +548,44 @@ export default function OwoGrid() {
 
       ctx.lineWidth = stroke
 
-      const eyeOpen = 0.12 + open * 0.88
-      strokeClosed(ctx, placeRing(leftEye, leftC.x, leftC.y, leftR, eyeOpen))
-      strokeClosed(ctx, placeRing(rightEye, rightC.x, rightC.y, rightR, eyeOpen))
+      const leftAmt = wakeOpen * (1 - blink)
+      const rightAmt = wakeOpenR * (1 - blink)
+      const leftEyeOpen = 0.07 + leftAmt * (0.93 - dizz * 0.14)
+      const rightEyeOpen = 0.07 + rightAmt * (0.93 - dizz * 0.14)
+      strokeClosed(ctx, placeRing(leftEye, leftC.x, leftC.y, leftR, leftEyeOpen))
+      strokeClosed(ctx, placeRing(rightEye, rightC.x, rightC.y, rightR, rightEyeOpen))
 
-      if (open > 0.28) {
-        const restLX = -leftR * 0.36
-        const restRX = rightR * 0.36
-        const restY = leftR * 0.05
-        const trackX = lookX * leftR * 0.42
-        const trackY = lookY * leftR * 0.38 * eyeOpen
-        const t = pointerActive || performance.now() < introUntil ? 0.88 : 0.55
-        const lx = restLX * (1 - t) + trackX
-        const rx = restRX * (1 - t) + trackX
-        const ly = restY * (1 - t) + trackY
-        const ry = restY * (1 - t) + trackY
+      let lx = lookLX * leftR * 0.48
+      let ly = lookLY * leftR * 0.38 * leftEyeOpen
+      let rx = lookRX * rightR * 0.48
+      let ry = lookRY * rightR * 0.38 * rightEyeOpen
 
+      if (dizz > 0.08) {
+        const spin = now * 0.0088 * (0.5 + dizz)
+        const rad = leftR * (0.16 + dizz * 0.2)
+        lx = Math.cos(spin) * rad
+        ly = Math.sin(spin) * rad * leftEyeOpen
+        rx = Math.cos(-spin + 0.85) * rad
+        ry = Math.sin(-spin + 0.85) * rad * rightEyeOpen
+      }
+
+      if (dizz > 0.28 && leftAmt > 0.22) {
+        const rot = now * 0.013
+        const sr = pupilR * (1.2 + dizz * 0.28)
+        ctx.lineWidth = stroke * 0.4
+        strokeOpen(ctx, placeSpiral(leftSpiral, leftC.x + lx, leftC.y + ly, sr, rot))
+        ctx.lineWidth = stroke
+      } else if (leftAmt > 0.28) {
         fillClosed(ctx, placeRing(leftPupil, leftC.x + lx, leftC.y + ly, pupilR, 1))
+      }
+
+      if (dizz > 0.28 && rightAmt > 0.22) {
+        const rot = now * 0.013
+        const sr = pupilR * (1.2 + dizz * 0.28)
+        ctx.lineWidth = stroke * 0.4
+        strokeOpen(ctx, placeSpiral(rightSpiral, rightC.x + rx, rightC.y + ry, sr * 0.96, -rot + 0.7))
+        ctx.lineWidth = stroke
+      } else if (rightAmt > 0.28) {
         fillClosed(ctx, placeRing(rightPupil, rightC.x + rx, rightC.y + ry, pupilR * 0.96, 1))
       }
 
@@ -408,7 +594,7 @@ export default function OwoGrid() {
     }
 
     function paintDots() {
-      drawFaceSource(1 - blink)
+      drawFaceSource()
 
       const img = sourceCtx.getImageData(0, 0, source.width, source.height)
       const data = img.data
@@ -416,7 +602,22 @@ export default function OwoGrid() {
 
       sharpCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
       sharpCtx.clearRect(0, 0, width, height)
-      sharpCtx.drawImage(bgCanvas, 0, 0, width, height)
+
+      for (const g of grainCells) {
+        const flicker = reduced
+          ? 1
+          : 1 +
+            0.34 * Math.sin(time * 2.4 + g.n * 18.7 + g.x * 0.04) +
+            0.16 * Math.sin(time * 1.35 + g.n * 9.4 + g.y * 0.03)
+        const extra = g.dust ? 0.058 : 0
+        const alpha = (g.field * flicker + extra) * g.fade
+        if (alpha < 0.018) continue
+        const radius = g.r * (0.72 + 0.28 * clamp(flicker, 0.45, 1.55))
+        sharpCtx.beginPath()
+        sharpCtx.fillStyle = `hsla(265, 28%, ${42 + g.n * 24}%, ${alpha})`
+        sharpCtx.arc(g.x, g.y, radius, 0, Math.PI * 2)
+        sharpCtx.fill()
+      }
 
       for (let gy = 0; gy < rows; gy++) {
         const fade = clamp(1 - (gy / rows - 0.48) / 0.46, 0, 1)
@@ -458,66 +659,185 @@ export default function OwoGrid() {
         }
       }
 
-      for (const d of dustCells) {
-        const gy = Math.floor(d.y / cell)
-        const fade = clamp(1 - (gy / rows - 0.46) / 0.48, 0, 1)
-        if (fade <= 0.03) continue
-        const shimmer = reduced ? 1 : 0.72 + 0.28 * Math.sin(time * 1.35 + d.n * 9.4)
-        const alpha = (d.field + 0.08 * shimmer) * fade
-        if (alpha < 0.02) continue
-        sharpCtx.beginPath()
-        sharpCtx.fillStyle = `hsla(265, 28%, ${42 + d.n * 24}%, ${alpha})`
-        sharpCtx.arc(d.x, d.y, d.r, 0, Math.PI * 2)
-        sharpCtx.fill()
-      }
-
       bloomCtx.setTransform(1, 0, 0, 1, 0, 0)
       bloomCtx.clearRect(0, 0, bloom.width, bloom.height)
       bloomCtx.drawImage(sharp, 0, 0, sharp.width, sharp.height, 0, 0, bloom.width, bloom.height)
     }
 
-    function startLoop() {
-      if (reduced || !visible || !inView || raf) return
-      lastT = 0
+    function wrapOnScreen() {
+      const r = wrap.getBoundingClientRect()
+      return r.width > 1 && r.height > 1 && r.bottom > 8 && r.top < window.innerHeight - 8
+    }
+
+    function clearSchedule() {
+      if (raf) cancelAnimationFrame(raf)
+      if (fallback) window.clearTimeout(fallback)
+      raf = 0
+      fallback = 0
+    }
+
+    function schedule() {
       raf = requestAnimationFrame(step)
+      fallback = window.setTimeout(() => {
+        fallback = 0
+        if (!raf) return
+        cancelAnimationFrame(raf)
+        raf = 0
+        step(performance.now())
+      }, 28)
+    }
+
+    function startLoop() {
+      if (reduced || !visible || !inView || raf || fallback) return
+      lastT = 0
+      schedule()
     }
 
     function stopLoop() {
-      if (raf) cancelAnimationFrame(raf)
-      raf = 0
+      clearSchedule()
     }
 
     function step(now: number) {
+      if (fallback) {
+        window.clearTimeout(fallback)
+        fallback = 0
+      }
+      raf = 0
       const dt = lastT ? clamp((now - lastT) / 1000, 0.001, 0.034) : 0.016
       lastT = now
+
+      if (!reduced && wakeStage < 5) {
+        if (wakeStage === 0) {
+          if (now - startedAt > 580) beginWake(now, 1, 0, 0.52, 720)
+        } else if (wakeStage === 1) {
+          const u = easeInOutCubic((now - wakeT0) / wakeDur)
+          wakeOpen = lerp(wakeFrom, wakeGoal, u)
+          if (now - wakeT0 >= wakeDur) {
+            wakeOpen = wakeGoal
+            wakeStage = 2
+            wakeHold = now
+          }
+        } else if (wakeStage === 2) {
+          if (now - wakeHold > 170) beginWake(now, 3, wakeOpen, 0.12, 280)
+        } else if (wakeStage === 3) {
+          const u = easeInCubic((now - wakeT0) / wakeDur)
+          wakeOpen = lerp(wakeFrom, wakeGoal, u)
+          if (now - wakeT0 >= wakeDur) {
+            wakeOpen = wakeGoal
+            beginWake(now, 4, wakeOpen, 1, 700)
+          }
+        } else if (wakeStage === 4) {
+          const u = easeOutQuart((now - wakeT0) / wakeDur)
+          wakeOpen = lerp(wakeFrom, wakeGoal, u)
+          if (now - wakeT0 >= wakeDur) {
+            wakeOpen = 1
+            wakeStage = 5
+            wakeOpenR = 1
+            scheduleBlink(now + 400 + Math.random() * 800)
+            nextSaccade = now + 720
+            introUntil = now + 180
+          }
+        }
+      }
+
+      if (wakeStage < 5) {
+        wakeOpenR += (wakeOpen - wakeOpenR) * (1 - Math.exp(-dt * 7.2))
+      } else if (dizzyRecover === 0) {
+        wakeOpenR += (wakeOpen - wakeOpenR) * (1 - Math.exp(-dt * 18))
+      }
 
       if (pointerActive && now - lastPointer > 2200) {
         pointerActive = false
         nextSaccade = now + 400
       }
 
-      if (pointerActive) {
-        screenToLook(pointerX, pointerY)
-      } else if (!reduced && now > introUntil && now > nextSaccade) {
-        if (Math.random() < 0.28) {
-          targetX = 0
-          targetY = 0
-        } else {
-          pickIdleTarget()
-        }
-        nextSaccade = now + 900 + Math.random() * 2600
+      if (now >= dizzyUntil && dizzyAmt > 0.45 && dizzyRecover === 0) {
+        dizzyRecover = 1
+        blinkClosing = false
+        nextBlink = Number.POSITIVE_INFINITY
       }
 
-      const dist = Math.hypot(targetX - lookX, targetY - lookY)
-      const eyeK = 1 - Math.exp(-dt * (dist > 0.4 ? 16 : 7))
-      lookX += (targetX - lookX) * eyeK
-      lookY += (targetY - lookY) * eyeK
+      if (dizzyRecover === 0 && now < dizzyUntil) {
+        dizzyAmt += (1 - dizzyAmt) * (1 - Math.exp(-dt * 5))
+      }
 
-      const headK = 1 - Math.exp(-dt * (dist > 0.4 ? 7 : 3.4))
-      headX += (targetX - headX) * headK
-      headY += (targetY - headY) * headK
+      if (dizzyRecover === 1) {
+        blink = clamp(blink + dt * 7.2, 0, 1)
+        if (blink >= 1) {
+          blink = 1
+          dizzyAmt = 0
+          dizzyRecover = 2
+          recoverHold = now
+          lookLX = -0.35 + Math.random() * 0.3
+          lookLY = 0.15 + Math.random() * 0.25
+          lookRX = 0.2 + Math.random() * 0.45
+          lookRY = -0.1 + Math.random() * 0.35
+          targetLX = lookLX
+          targetLY = lookLY
+          targetRX = lookRX
+          targetRY = lookRY
+        }
+      } else if (dizzyRecover === 2) {
+        if (now - recoverHold > 100) dizzyRecover = 3
+      } else if (dizzyRecover === 3) {
+        blink = clamp(blink - dt * 5.2, 0, 1)
+        if (blink <= 0) {
+          blink = 0
+          dizzyRecover = 4
+          recoverHold = now
+          if (pointerArmed && now - lastPointer < 2800) lookAtScreen(pointerX, pointerY)
+          else lookAtScreen(rectLeft + face.cx, rectTop + face.cy + face.h * 0.18)
+          scheduleBlink(now + 700)
+        }
+      } else if (dizzyRecover === 4) {
+        if (now - recoverHold > 680) {
+          dizzyRecover = 0
+          nextSaccade = now + 900
+        }
+      }
 
-      if (!reduced) {
+      if (pendingRAt && now >= pendingRAt) {
+        targetRX = pendingRX
+        targetRY = pendingRY
+        pendingRAt = 0
+      }
+
+      if (dizzyRecover === 0 && pointerActive && dizzyAmt < 0.2) {
+        lookAtScreen(pointerX, pointerY)
+      } else if (
+        dizzyRecover === 0 &&
+        !reduced &&
+        dizzyAmt < 0.15 &&
+        now > introUntil &&
+        now > nextSaccade
+      ) {
+        if (Math.random() < 0.48) {
+          setLogoLook()
+          nextSaccade = now + 2400 + Math.random() * 2800
+        } else {
+          pickIdleTarget()
+          nextSaccade = now + 900 + Math.random() * 2600
+        }
+      }
+
+      const lDist = Math.hypot(targetLX - lookLX, targetLY - lookLY)
+      const rDist = Math.hypot(targetRX - lookRX, targetRY - lookRY)
+      const orientSlow = dizzyRecover === 4 ? 0.55 : 1
+      const lK = 1 - Math.exp(-dt * (lDist > 0.4 ? 15 : 6.4) * orientSlow)
+      const rK = 1 - Math.exp(-dt * (rDist > 0.4 ? 12.5 : 5.4) * orientSlow)
+      lookLX += (targetLX - lookLX) * lK
+      lookLY += (targetLY - lookLY) * lK
+      lookRX += (targetRX - lookRX) * rK
+      lookRY += (targetRY - lookRY) * rK
+
+      const avgTX = (targetLX + targetRX) * 0.5
+      const avgTY = (targetLY + targetRY) * 0.5
+      const headDist = Math.hypot(avgTX - headX, avgTY - headY)
+      const headK = 1 - Math.exp(-dt * (headDist > 0.4 ? 7 : 3.4))
+      headX += (avgTX - headX) * headK
+      headY += (avgTY - headY) * headK
+
+      if (!reduced && wakeStage >= 5 && dizzyRecover === 0) {
         if (now > nextBlink && blink === 0 && !blinkClosing) {
           blinkClosing = true
         }
@@ -535,9 +855,9 @@ export default function OwoGrid() {
       paintDots()
 
       if (!reduced && visible && inView) {
-        raf = requestAnimationFrame(step)
+        schedule()
       } else {
-        raf = 0
+        clearSchedule()
       }
     }
 
@@ -545,9 +865,23 @@ export default function OwoGrid() {
       if (e.pointerType === 'touch') return
       pointerX = e.clientX
       pointerY = e.clientY
-      lastPointer = performance.now()
-      pointerActive = true
-      introUntil = 0
+      if (!pointerArmed) {
+        if (Number.isNaN(pointerOriginX)) {
+          pointerOriginX = pointerX
+          pointerOriginY = pointerY
+          return
+        }
+        if (Math.hypot(pointerX - pointerOriginX, pointerY - pointerOriginY) < 8) return
+        pointerArmed = true
+      }
+      const now = performance.now()
+      lastPointer = now
+      if (wakeStage < 4) beginWake(now, 4, wakeOpen, 1, 500)
+      if (dizzyRecover === 0 && dizzyAmt < 0.35) {
+        pointerActive = true
+        introUntil = 0
+      }
+      noteSpin(now)
     }
 
     function onVisibility() {
@@ -561,12 +895,15 @@ export default function OwoGrid() {
       if (reduced) {
         stopLoop()
         blink = 0
-        lookX = 0
-        lookY = 0
+        wakeOpen = 1
+        wakeOpenR = 1
+        wakeStage = 5
+        setLogoLook()
+        snapLook()
         headX = 0
         headY = 0
-        targetX = 0
-        targetY = 0
+        dizzyAmt = 0
+        dizzyRecover = 0
         paintDots()
       } else if (visible && inView) {
         startLoop()
@@ -578,7 +915,7 @@ export default function OwoGrid() {
     }
 
     function onIntersect(entries: IntersectionObserverEntry[]) {
-      inView = entries[0].isIntersecting
+      inView = entries[0].isIntersecting || wrapOnScreen()
       if (inView) {
         syncRect()
         if (!reduced) paintDots()
@@ -590,7 +927,14 @@ export default function OwoGrid() {
 
     const ro = new ResizeObserver(() => {
       resize()
-      if (reduced) paintDots()
+      if (reduced) {
+        paintDots()
+        return
+      }
+      if (visible && wrapOnScreen()) {
+        inView = true
+        startLoop()
+      }
     })
     ro.observe(wrap)
 
@@ -598,26 +942,35 @@ export default function OwoGrid() {
     io.observe(wrap)
 
     resize()
-    scheduleBlink(performance.now() + 800)
-    nextSaccade = performance.now() + 1400
-    introUntil = reduced ? 0 : performance.now() + 1100
+    startedAt = performance.now()
+    nextSaccade = performance.now() + 2800
+    introUntil = reduced ? 0 : performance.now() + 2400
 
     let introTimer = 0
     if (!reduced) {
+      const startAim = aimFromScreen(rectLeft + face.cx, rectTop + face.cy + face.h * 0.28)
+      targetLX = startAim.lx
+      targetLY = startAim.ly
+      targetRX = startAim.rx
+      targetRY = startAim.ry
+      snapLook()
       introTimer = window.setTimeout(() => {
-        if (!pointerActive) {
-          targetX = 0
-          targetY = -0.16
+        if (!pointerActive && wakeStage >= 4) {
+          lookAtScreen(rectLeft + face.cx, rectTop + face.cy - face.h * 0.18)
         }
-      }, 420)
+      }, 1480)
     } else {
-      lookX = 0
-      lookY = 0
+      wakeOpen = 1
+      wakeOpenR = 1
+      wakeStage = 5
+      setLogoLook()
+      snapLook()
       headX = 0
       headY = 0
     }
 
     paintDots()
+    inView = wrapOnScreen()
 
     window.addEventListener('pointermove', onPointer, { passive: true })
     window.addEventListener('pointerdown', onPointer, { passive: true })
@@ -625,10 +978,10 @@ export default function OwoGrid() {
     document.addEventListener('visibilitychange', onVisibility)
     reduceMq.addEventListener('change', onReduceChange)
 
-    if (!reduced) raf = requestAnimationFrame(step)
+    if (!reduced) schedule()
 
     return () => {
-      if (raf) cancelAnimationFrame(raf)
+      clearSchedule()
       if (introTimer) window.clearTimeout(introTimer)
       ro.disconnect()
       io.disconnect()
