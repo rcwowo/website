@@ -1,5 +1,6 @@
 ---
 import Link from '@/components/Link.astro'
+import OwoGrid from '@/components/OwoGrid'
 import ProjectList from '@/components/ProjectList.astro'
 import RecentPosts from '@/components/RecentPosts'
 import Section from '@/components/Section.astro'
@@ -11,19 +12,19 @@ import Layout from '@/layouts/Layout.astro'
 <Layout title="Home" description={SITE.DESCRIPTION}>
   <!-- Hero -->
   <section class="relative overflow-hidden">
-    <!-- Subtle gradient orb -->
-    <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 h-full w-full rounded-full bg-accent/[0.04] blur-[120px]" aria-hidden="true"></div>
+    <OwoGrid client:load />
+    <div class="hero-veil pointer-events-none absolute inset-0 z-[1]" aria-hidden="true"></div>
 
-    <div class="mx-auto w-full max-w-[50rem] px-6 pt-28 pb-20 md:pt-36 md:pb-28">
-      <div class="flex flex-col items-center text-center">
-        <h1 class="hero-title font-display text-6xl font-extrabold tracking-tight md:text-8xl">
+    <div class="relative z-10 mx-auto flex min-h-[30rem] w-full max-w-[50rem] flex-col justify-end px-6 pt-24 pb-10 md:min-h-[32rem] md:pt-28 md:pb-10">
+      <div class="hero-copy flex flex-col items-start text-left">
+        <h1 class="hero-title font-display text-5xl font-extrabold tracking-tight md:text-7xl">
           {SITE.TITLE}
         </h1>
         <p
           id="tagline"
           class="hero-tagline max-w-lg min-h-[1.75rem] text-lg text-muted-foreground leading-relaxed"
         ></p>
-        <div class="hero-roles flex items-center gap-3 text-sm text-muted-foreground/50">
+        <div class="hero-roles flex items-center gap-3 text-sm text-muted-foreground/70">
           <span>video editor</span>
           <span class="h-1 w-1 rounded-full bg-accent/40"></span>
           <span>web developer</span>
@@ -79,9 +80,47 @@ import Layout from '@/layouts/Layout.astro'
 </script>
 
 <style>
+  .hero-veil {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 32%,
+      hsl(250 15% 4% / 0.4) 52%,
+      hsl(250 15% 4% / 0.82) 74%,
+      hsl(250 15% 4%) 100%
+    );
+  }
+
+  .hero-copy {
+    position: relative;
+  }
+
+  .hero-copy::before {
+    content: '';
+    position: absolute;
+    inset: -2rem -2.5rem -1.5rem -1.25rem;
+    background: radial-gradient(
+      ellipse 90% 85% at 12% 70%,
+      hsl(250 15% 4% / 0.58) 0%,
+      hsl(250 15% 4% / 0.2) 48%,
+      transparent 74%
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+
   .hero-title {
     animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    text-shadow:
+      0 0 18px hsl(250 15% 4% / 0.9),
+      0 2px 28px hsl(250 15% 4% / 0.7);
   }
+  .hero-tagline,
+  .hero-roles,
+  .hero-socials {
+    text-shadow: 0 0 16px hsl(250 15% 4% / 0.85);
+  }
+
   .hero-tagline {
     opacity: 0;
     transform: translateY(10px);
