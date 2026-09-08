@@ -1,0 +1,62 @@
+---
+interface Props {
+  status?: 'active' | 'wip' | 'archived'
+  interactive?: boolean
+}
+
+const { status, interactive = false } = Astro.props
+
+const visible = status === 'active' || status === 'wip'
+const label = status === 'wip' ? 'In development' : 'Active'
+const dotClass = status === 'active' ? 'bg-emerald-400' : 'bg-amber-300'
+const revealWidth = status === 'wip' ? '10.75rem' : '5.25rem'
+---
+
+{
+  visible &&
+    (interactive ? (
+      <span
+        class="group/status z-10 inline-flex shrink-0 cursor-default flex-row items-center overflow-hidden rounded-full border border-border bg-background shadow-md transition-[border-color,background-color,box-shadow] duration-300 ease-out focus-visible:outline-none md:absolute md:bottom-0 md:right-0 md:translate-x-1/4 md:translate-y-1/4 md:flex-row-reverse md:border-transparent md:bg-transparent md:shadow-none md:hover:border-border md:hover:bg-background md:hover:shadow-md md:focus-visible:border-border md:focus-visible:bg-background md:focus-visible:shadow-md"
+        tabindex="0"
+        role="status"
+        aria-label={label}
+      >
+        <span class="relative m-0.5 grid h-5 w-5 shrink-0 place-items-center">
+          <span
+            class="col-start-1 row-start-1 h-5 w-5 rounded-full bg-background"
+            aria-hidden="true"
+          />
+          <span
+            class:list={[
+              'col-start-1 row-start-1 h-3 w-3 rounded-full ring-[3px] ring-background',
+              dotClass,
+            ]}
+            aria-hidden="true"
+          />
+        </span>
+        <span
+          class="max-w-[var(--status-reveal)] overflow-hidden transition-[max-width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] md:max-w-0 md:group-hover/status:max-w-[var(--status-reveal)] md:group-focus-visible/status:max-w-[var(--status-reveal)]"
+          style={`--status-reveal: ${revealWidth}`}
+        >
+          <span class="block w-max whitespace-nowrap py-1 pl-1.5 pr-2.5 text-xs font-medium text-foreground opacity-100 transition-opacity duration-200 ease-out md:pl-2 md:pr-1 md:opacity-0 md:group-hover/status:opacity-100 md:group-hover/status:delay-75 md:group-focus-visible/status:opacity-100 md:group-focus-visible/status:delay-75">
+            {label}
+          </span>
+        </span>
+      </span>
+    ) : (
+      <span
+        class="absolute bottom-0 right-0 z-10 translate-x-1/4 translate-y-1/4"
+        aria-hidden="true"
+      >
+        <span class="relative grid h-4 w-4 place-items-center">
+          <span class="col-start-1 row-start-1 h-4 w-4 rounded-full bg-background" />
+          <span
+            class:list={[
+              'col-start-1 row-start-1 h-2.5 w-2.5 rounded-full ring-2 ring-background',
+              dotClass,
+            ]}
+          />
+        </span>
+      </span>
+    ))
+}
