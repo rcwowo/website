@@ -172,7 +172,6 @@
 }
 
 .owo-grid-bloom {
-  filter: blur(26px);
   opacity: 0.7;
   mix-blend-mode: screen;
   mask-image: linear-gradient(
@@ -191,4 +190,14 @@
     black 76%,
     transparent 100%
   );
+}
+
+.owo-grid-stage {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+.owo-grid-stage .owo-grid-bloom {
+  mask-image: none;
+  -webkit-mask-image: none;
 }

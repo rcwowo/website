@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 
 type Pt = { x: number; y: number }
+type Dot = { x: number; y: number; r: number }
 type Grain = { x: number; y: number; r: number; field: number; n: number; fade: number; dust: boolean }
 
 function mulberry32(seed: number) {
@@ -128,9 +129,18 @@ function hash2(x: number, y: number) {
 
 const FACE_ASPECT = 465 / 203
 const FACE_STEPS = 16
-const BLOOM_SCALE = 0.5
+const BLOOM_SCALE = 0.32
+const MAX_RENDER_W = 1440
+const MAX_RENDER_H = 900
+const MAX_COLS = 144
+const MAX_ROWS = 90
+const STAGE_CELL = 10
+const STAGE_FACE_H = 460
+const STAGE_FACE_W = STAGE_FACE_H * FACE_ASPECT
 
-export default function OwoGrid() {
+type OwoGridMode = 'hero' | 'stage'
+
+export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const sharpRef = useRef<HTMLCanvasElement>(null)
   const bloomRef = useRef<HTMLCanvasElement>(null)
@@ -168,6 +178,8 @@ export default function OwoGrid() {
 
     let width = 0
     let height = 0
+    let displayW = 1
+    let displayH = 1
     let cell = 12
     let cols = 0
     let rows = 0
@@ -179,6 +191,14 @@ export default function OwoGrid() {
     let source: OffscreenCanvas | HTMLCanvasElement
     let sourceCtx: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D
     const srcScale = 2
+    const grain = document.createElement('canvas')
+    const grainContext = grain.getContext('2d', { alpha: true })
+    if (!grainContext) return
+    const grainCtx = grainContext
+    const outerBuckets: Dot[][] = Array.from({ length: FACE_STEPS }, () => [])
+    const innerBuckets: Dot[][] = Array.from({ length: FACE_STEPS }, () => [])
+    const outerLen = new Uint16Array(FACE_STEPS)
+    const innerLen = new Uint16Array(FACE_STEPS)
 
     try {
       source = new OffscreenCanvas(1, 1)
@@ -195,6 +215,8 @@ export default function OwoGrid() {
     }
 
     if (!sourceCtx) return
+
+    const stage = mode === 'stage'
 
     const face = {
       cx: 0,
@@ -266,7 +288,28 @@ export default function OwoGrid() {
       rectTop = r.top
     }
 
+    function stageScale() {
+      return Math.min((width * 0.7) / STAGE_FACE_W, (height * 0.7) / STAGE_FACE_H)
+    }
+
+    function screenToSimX(sx: number) {
+      return (sx - rectLeft) * (width / displayW)
+    }
+
+    function screenToSimY(sy: number) {
+      return (sy - rectTop) * (height / displayH)
+    }
+
     function measureFace() {
+      if (stage) {
+        const scale = stageScale()
+        face.w = STAGE_FACE_W * scale
+        face.h = STAGE_FACE_H * scale
+        face.cx = width * 0.5
+        face.cy = height * 0.5
+        return
+      }
+
       const maxW = width * 0.96
       const maxH = height * 0.9
       let w = maxW
@@ -283,24 +326,43 @@ export default function OwoGrid() {
 
     function resize() {
       const rect = wrap.getBoundingClientRect()
-      width = Math.max(1, rect.width)
-      height = Math.max(1, rect.height)
-      dpr = Math.min(2, window.devicePixelRatio || 1)
-      cell = width < 640 ? 12 : 10
-      cols = Math.max(8, Math.round(width / cell))
-      rows = Math.max(8, Math.round(height / cell))
-      cell = width / cols
+      displayW = Math.max(1, rect.width)
+      displayH = Math.max(1, rect.height)
+      const cap = Math.min(1, MAX_RENDER_W / displayW, MAX_RENDER_H / displayH)
+      width = displayW * cap
+      height = displayH * cap
+      dpr = Math.min(1.5, window.devicePixelRatio || 1)
+      if (stage) {
+        cell = Math.max(0.5, STAGE_CELL * stageScale())
+        cols = Math.max(8, Math.ceil(width / cell))
+        rows = Math.max(8, Math.ceil(height / cell))
+      } else {
+        cell = width < 640 ? 12 : 10
+        cols = Math.max(8, Math.round(width / cell))
+        rows = Math.max(8, Math.round(height / cell))
+        cell = width / cols
+      }
+      if (cols > MAX_COLS) {
+        cols = MAX_COLS
+        cell = width / cols
+        rows = Math.max(8, Math.ceil(height / cell))
+      }
+      if (rows > MAX_ROWS) {
+        rows = MAX_ROWS
+        cell = height / rows
+        cols = Math.max(8, Math.ceil(width / cell))
+      }
 
       sharp.width = Math.floor(width * dpr)
       sharp.height = Math.floor(height * dpr)
-      sharp.style.width = `${width}px`
-      sharp.style.height = `${height}px`
+      sharp.style.width = `${displayW}px`
+      sharp.style.height = `${displayH}px`
       sharpCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
       bloom.width = Math.max(1, Math.ceil(sharp.width * BLOOM_SCALE))
       bloom.height = Math.max(1, Math.ceil(sharp.height * BLOOM_SCALE))
-      bloom.style.width = `${width}px`
-      bloom.style.height = `${height}px`
+      bloom.style.width = `${displayW}px`
+      bloom.style.height = `${displayH}px`
       bloomCtx.setTransform(1, 0, 0, 1, 0, 0)
 
       source.width = cols * srcScale
@@ -315,7 +377,7 @@ export default function OwoGrid() {
 
       grainCells = []
       for (let gy = 0; gy < rows; gy++) {
-        const fade = clamp(1 - (gy / rows - 0.46) / 0.48, 0, 1)
+        const fade = stage ? 1 : clamp(1 - (gy / rows - 0.46) / 0.48, 0, 1)
         if (fade <= 0.03) continue
         for (let gx = 0; gx < cols; gx++) {
           const n = staticN[gy * cols + gx]
@@ -334,16 +396,28 @@ export default function OwoGrid() {
         }
       }
 
+      grain.width = Math.max(1, Math.floor(width * dpr))
+      grain.height = Math.max(1, Math.floor(height * dpr))
+      grainCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      grainCtx.clearRect(0, 0, width, height)
+      for (const g of grainCells) {
+        const extra = g.dust ? 0.058 : 0
+        const alpha = (g.field + extra) * g.fade
+        if (alpha < 0.018) continue
+        grainCtx.beginPath()
+        grainCtx.fillStyle = `hsla(265, 28%, ${42 + g.n * 24}%, ${alpha})`
+        grainCtx.arc(g.x, g.y, g.r, 0, Math.PI * 2)
+        grainCtx.fill()
+      }
+
       measureFace()
       syncRect()
     }
 
-    function aimFromScreen(sx: number, sy: number) {
-      const midX = rectLeft + face.cx
-      const midY = rectTop + face.cy
-      const sharedX = clamp((sx - midX) / (face.w * 0.42), -1.15, 1.15)
-      const sharedY = clamp((sy - midY) / (face.h * 0.7), -1.15, 1.15)
-      const dist = Math.hypot(sx - midX, sy - midY)
+    function aimFromLocal(x: number, y: number) {
+      const sharedX = clamp((x - face.cx) / (face.w * 0.42), -1.15, 1.15)
+      const sharedY = clamp((y - face.cy) / (face.h * 0.7), -1.15, 1.15)
+      const dist = Math.hypot(x - face.cx, y - face.cy)
       const near = clamp(1 - dist / (face.w * 1.15), 0, 1)
       const conv = 0.07 + near * 0.18
       return {
@@ -354,8 +428,8 @@ export default function OwoGrid() {
       }
     }
 
-    function lookAtScreen(sx: number, sy: number) {
-      const aim = aimFromScreen(sx, sy)
+    function lookAtLocal(x: number, y: number) {
+      const aim = aimFromLocal(x, y)
       targetLX = aim.lx
       targetLY = aim.ly
       if (pointerActive || dizzyRecover === 4) {
@@ -367,6 +441,10 @@ export default function OwoGrid() {
         pendingRY = aim.ry
         pendingRAt = performance.now() + 28 + Math.random() * 42
       }
+    }
+
+    function lookAtScreen(sx: number, sy: number) {
+      lookAtLocal(screenToSimX(sx), screenToSimY(sy))
     }
 
     function setLogoLook() {
@@ -394,6 +472,24 @@ export default function OwoGrid() {
     }
 
     function pickIdleTarget() {
+      if (stage) {
+        if (Math.random() < 0.45) {
+          lookAtScreen(
+            window.innerWidth * (0.14 + Math.random() * 0.72),
+            window.innerHeight * (0.16 + Math.random() * 0.66),
+          )
+          return
+        }
+        const spots: Pt[] = [
+          { x: face.cx, y: face.cy + face.h * 0.22 },
+          { x: face.cx - face.w * 0.28, y: face.cy - face.h * 0.12 },
+          { x: face.cx + face.w * 0.28, y: face.cy - face.h * 0.12 },
+        ]
+        const pick = spots[Math.floor(Math.random() * spots.length)]
+        lookAtLocal(pick.x, pick.y)
+        return
+      }
+
       const spots: Pt[] = [
         { x: window.innerWidth * 0.5, y: window.innerHeight * 0.22 },
         { x: window.innerWidth * 0.18, y: window.innerHeight * 0.3 },
@@ -474,10 +570,12 @@ export default function OwoGrid() {
     function noteSpin(now: number) {
       if (reduced || wakeStage < 5 || now < dizzyCoolUntil || dizzyAmt > 0.2 || dizzyRecover > 0) return
 
-      const dx = pointerX - (rectLeft + face.cx)
-      const dy = pointerY - (rectTop + face.cy)
+      const localX = screenToSimX(pointerX)
+      const localY = screenToSimY(pointerY)
+      const dx = localX - face.cx
+      const dy = localY - face.cy
       const dist = Math.hypot(dx, dy)
-      const maxDist = Math.max(face.w * 1.4, 260)
+      const maxDist = Math.max(face.w * 1.4, 260 * (width / displayW))
       if (dist < face.w * 0.1 || dist > maxDist) {
         lastSpinAngle = NaN
         return
@@ -593,6 +691,36 @@ export default function OwoGrid() {
       strokeOpen(ctx, placeW(mouth, fw * 0.006, fh * 0.02, fw * 0.22, fh * 0.4))
     }
 
+    function addDot(buckets: Dot[][], counts: Uint16Array, idx: number, x: number, y: number, r: number) {
+      const bucket = buckets[idx]
+      const i = counts[idx]
+      if (i < bucket.length) {
+        const d = bucket[i]
+        d.x = x
+        d.y = y
+        d.r = r
+      } else {
+        bucket.push({ x, y, r })
+      }
+      counts[idx] = i + 1
+    }
+
+    function fillDots(buckets: Dot[][], counts: Uint16Array, colors: string[]) {
+      for (let i = 0; i < FACE_STEPS; i++) {
+        const n = counts[i]
+        if (!n) continue
+        const bucket = buckets[i]
+        sharpCtx.fillStyle = colors[i]
+        sharpCtx.beginPath()
+        for (let j = 0; j < n; j++) {
+          const d = bucket[j]
+          sharpCtx.moveTo(d.x + d.r, d.y)
+          sharpCtx.arc(d.x, d.y, d.r, 0, Math.PI * 2)
+        }
+        sharpCtx.fill()
+      }
+    }
+
     function paintDots() {
       drawFaceSource()
 
@@ -602,25 +730,13 @@ export default function OwoGrid() {
 
       sharpCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
       sharpCtx.clearRect(0, 0, width, height)
+      sharpCtx.drawImage(grain, 0, 0, width, height)
 
-      for (const g of grainCells) {
-        const flicker = reduced
-          ? 1
-          : 1 +
-            0.34 * Math.sin(time * 2.4 + g.n * 18.7 + g.x * 0.04) +
-            0.16 * Math.sin(time * 1.35 + g.n * 9.4 + g.y * 0.03)
-        const extra = g.dust ? 0.058 : 0
-        const alpha = (g.field * flicker + extra) * g.fade
-        if (alpha < 0.018) continue
-        const radius = g.r * (0.72 + 0.28 * clamp(flicker, 0.45, 1.55))
-        sharpCtx.beginPath()
-        sharpCtx.fillStyle = `hsla(265, 28%, ${42 + g.n * 24}%, ${alpha})`
-        sharpCtx.arc(g.x, g.y, radius, 0, Math.PI * 2)
-        sharpCtx.fill()
-      }
+      outerLen.fill(0)
+      innerLen.fill(0)
 
       for (let gy = 0; gy < rows; gy++) {
-        const fade = clamp(1 - (gy / rows - 0.48) / 0.46, 0, 1)
+        const fade = stage ? 1 : clamp(1 - (gy / rows - 0.48) / 0.46, 0, 1)
         if (fade <= 0.02) continue
 
         for (let gx = 0; gx < cols; gx++) {
@@ -645,23 +761,21 @@ export default function OwoGrid() {
           const radius = cell * (0.22 + intensity * 0.2)
           const idx = intensity >= 1 ? FACE_STEPS - 1 : Math.floor(intensity * FACE_STEPS)
 
-          sharpCtx.beginPath()
-          sharpCtx.fillStyle = faceOuter[idx]
-          sharpCtx.arc(x, y, radius, 0, Math.PI * 2)
-          sharpCtx.fill()
-
+          addDot(outerBuckets, outerLen, idx, x, y, radius)
           if (intensity > 0.35) {
-            sharpCtx.beginPath()
-            sharpCtx.fillStyle = faceInner[idx]
-            sharpCtx.arc(x, y, radius * 0.45, 0, Math.PI * 2)
-            sharpCtx.fill()
+            addDot(innerBuckets, innerLen, idx, x, y, radius * 0.45)
           }
         }
       }
 
+      fillDots(outerBuckets, outerLen, faceOuter)
+      fillDots(innerBuckets, innerLen, faceInner)
+
       bloomCtx.setTransform(1, 0, 0, 1, 0, 0)
       bloomCtx.clearRect(0, 0, bloom.width, bloom.height)
+      bloomCtx.filter = 'blur(8px)'
       bloomCtx.drawImage(sharp, 0, 0, sharp.width, sharp.height, 0, 0, bloom.width, bloom.height)
+      bloomCtx.filter = 'none'
     }
 
     function wrapOnScreen() {
@@ -786,7 +900,7 @@ export default function OwoGrid() {
           dizzyRecover = 4
           recoverHold = now
           if (pointerArmed && now - lastPointer < 2800) lookAtScreen(pointerX, pointerY)
-          else lookAtScreen(rectLeft + face.cx, rectTop + face.cy + face.h * 0.18)
+          else lookAtLocal(face.cx, face.cy + face.h * 0.18)
           scheduleBlink(now + 700)
         }
       } else if (dizzyRecover === 4) {
@@ -811,7 +925,7 @@ export default function OwoGrid() {
         now > introUntil &&
         now > nextSaccade
       ) {
-        if (Math.random() < 0.48) {
+        if (!stage && Math.random() < 0.48) {
           setLogoLook()
           nextSaccade = now + 2400 + Math.random() * 2800
         } else {
@@ -948,7 +1062,7 @@ export default function OwoGrid() {
 
     let introTimer = 0
     if (!reduced) {
-      const startAim = aimFromScreen(rectLeft + face.cx, rectTop + face.cy + face.h * 0.28)
+      const startAim = aimFromLocal(face.cx, face.cy + face.h * 0.28)
       targetLX = startAim.lx
       targetLY = startAim.ly
       targetRX = startAim.rx
@@ -956,7 +1070,7 @@ export default function OwoGrid() {
       snapLook()
       introTimer = window.setTimeout(() => {
         if (!pointerActive && wakeStage >= 4) {
-          lookAtScreen(rectLeft + face.cx, rectTop + face.cy - face.h * 0.18)
+          lookAtLocal(face.cx, face.cy - face.h * 0.18)
         }
       }, 1480)
     } else {
@@ -991,12 +1105,16 @@ export default function OwoGrid() {
       document.removeEventListener('visibilitychange', onVisibility)
       reduceMq.removeEventListener('change', onReduceChange)
     }
-  }, [])
+  }, [mode])
 
   return (
     <div
       ref={wrapRef}
-      className="owo-grid pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      className={
+        mode === 'stage'
+          ? 'owo-grid owo-grid-stage pointer-events-none absolute inset-0 z-0 overflow-hidden'
+          : 'owo-grid pointer-events-none absolute inset-0 z-0 overflow-hidden'
+      }
       aria-hidden="true"
     >
       <canvas ref={sharpRef} className="owo-grid-sharp absolute inset-0 size-full" />
