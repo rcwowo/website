@@ -58,8 +58,7 @@ export const SOCIALS: Socials[] = [
   { TITLE: 'YouTube', ICON: 'lucide:youtube', URL: 'https://youtube.com/@rcwowo' },
   { TITLE: 'Twitch', ICON: 'lucide:twitch', URL: 'https://twitch.tv/rcwowo' },
   { TITLE: 'Bluesky', ICON: 'mingcute:bluesky-social-line', URL: 'https://bsky.app/profile/rcw.lol' },
-  { TITLE: 'Discord', ICON: 'mingcute:discord-line', URL: 'https://discord.gg/fJtyxttGpq' },
-  { TITLE: 'GitLab', ICON: 'lucide:github', URL: 'https://github.com/rcwowo' },
+  { TITLE: 'GitHub', ICON: 'lucide:github', URL: 'https://github.com/rcwowo' },
   { TITLE: 'Contact', ICON: 'lucide:mail', URL: 'mailto:riley@rcw.lol' }
 ]
 
