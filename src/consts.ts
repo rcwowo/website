@@ -55,8 +55,8 @@ export const TAGLINES: string[] = [
 
 // Social Links
 export const SOCIALS: Socials[] = [
-  { TITLE: 'YouTube', ICON: 'lucide:youtube', URL: 'https://youtube.com/@rcwowo' },
-  { TITLE: 'Twitch', ICON: 'lucide:twitch', URL: 'https://twitch.tv/rcwowo' },
+  { TITLE: 'YouTube', ICON: 'lucide:youtube', URL: 'https://youtube.com/@rcwlol' },
+  { TITLE: 'Twitch', ICON: 'lucide:twitch', URL: 'https://twitch.tv/rcwlol' },
   { TITLE: 'Bluesky', ICON: 'mingcute:bluesky-social-line', URL: 'https://bsky.app/profile/rcw.lol' },
   { TITLE: 'GitHub', ICON: 'lucide:github', URL: 'https://github.com/rcwowo' },
   { TITLE: 'Contact', ICON: 'lucide:mail', URL: 'mailto:riley@rcw.lol' }
