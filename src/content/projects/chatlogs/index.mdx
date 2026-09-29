@@ -1,0 +1,46 @@
+---
+name: Chatlogs
+description: An attractive frontend for viewing Twitch chatlogs via rustlog-compatible APIs.
+url: 'https://logs.rcw.lol'
+repo: 'https://github.com/rcwowo/chatlogs'
+status: active
+order: 3
+icon: ./logo.png
+---
+
+## About this project.
+
+This project is an intuitive and attractive frontend for browsing Twitch chatlogs. By utilizing a set of publicly accessible [rustlog](https://github.com/boring-nick/rustlog) instances, it takes a lot of the UI philsophies that appear in [Peepochat](https://chat.rcw.lol) such as the tag-based filtering system, user cards, and the overall design to provide a familiar yet powerful experience.
+
+![A screenshot of the chatlogs interface.](https://i.rcw.lol/u/AE5SNC.png)
+
+The project has a few features that make it a powerful tool for analyzing chatlogs, such as the bookmarks feature that allows you to pin specific channels that you are often checking to the sidebar. As I previously mentioned, it also includes a tag-based filtering system where you can use multiple tags such as `from:username` `has:link` or `role:mod` to pinpoint a message, as well as a system to jump to the context of a specific message.
+
+In addition to chatlogs, you can also switch over to the "Profile" tab, which displays as much publicly accessible data about Twitch account as possible, like top chatters, emotes, account creation date, and other various statistics. The vast majority of this information is powered by [IVR's API](https://api.ivr.fi/v2/docs).
+
+## Keep this in mind!
+
+It's important to note that the project itself is purely a client facing interface for viewing these logs; it itself does not store any chatlogs. By default, the app includes my own instance for myself and friends, as well as the following popular providers:
+
+- IVR ([logs.ivr.fi](https://logs.ivr.fi))
+- Logxx ([logxx.dev](https://logxx.dev))
+- Spanix ([logs.spanix.team](https://logs.spanix.team))
+
+If you want to opt-out of logs for your channel, you should reach out to one of the instances listed. An up-to-date list of providers are available in the settings.
+
+## I want to help or contribute!
+
+If you to help support the project financially, you should become an OwO+ member on my [Patreon](https://patreon.com/rcwowo)! Not only do you help keep these projects free for everyone, you also earn some small benefits in return as well.
+
+If you want to help by contributing to or just making a fork of your own, the project is completely open-sourced!
+
+```sh
+# Clone the repo
+git clone https://github.com/rcwowo/chatlogs
+
+# Install dependencies
+cd chatlogs && bun install
+
+# Run the test server
+bun dev
+```
