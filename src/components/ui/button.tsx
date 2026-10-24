@@ -4,13 +4,13 @@ import { type VariantProps, cva } from 'class-variance-authority'
 import * as React from 'react'
 
 const buttonVariants = cva(
-  'inline-flex items-center gap-2 justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center gap-2 justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/70',
         destructive:
-          'bg-destructive text-destructive-foreground over:bg-destructive/50',
+          'bg-destructive text-destructive-foreground hover:bg-destructive/50',
         outline: 'border border-input hover:bg-secondary/50',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
@@ -32,7 +32,8 @@ const buttonVariants = cva(
 )
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }
