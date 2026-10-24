@@ -1,7 +1,9 @@
 <div align="center">
 
 ![Showcase Card](public/static/twitter-card.webp)
+
 # My Website
+
 My personal website, made with Astro.
 
 </div>

@@ -2,7 +2,15 @@ import { useEffect, useRef } from 'react'
 
 type Pt = { x: number; y: number }
 type Dot = { x: number; y: number; r: number }
-type Grain = { x: number; y: number; r: number; field: number; n: number; fade: number; dust: boolean }
+type Grain = {
+  x: number
+  y: number
+  r: number
+  field: number
+  n: number
+  fade: number
+  dust: boolean
+}
 
 function mulberry32(seed: number) {
   let a = seed >>> 0
@@ -15,7 +23,14 @@ function mulberry32(seed: number) {
   }
 }
 
-function jitteredRing(cx: number, cy: number, r: number, n: number, seed: number, amp: number) {
+function jitteredRing(
+  cx: number,
+  cy: number,
+  r: number,
+  n: number,
+  seed: number,
+  amp: number,
+) {
   const rand = mulberry32(seed)
   const pts: Pt[] = []
   for (let i = 0; i < n; i++) {
@@ -30,7 +45,15 @@ function jitteredRing(cx: number, cy: number, r: number, n: number, seed: number
   return pts
 }
 
-function jitteredW(cx: number, cy: number, w: number, h: number, n: number, seed: number, amp: number) {
+function jitteredW(
+  cx: number,
+  cy: number,
+  w: number,
+  h: number,
+  n: number,
+  seed: number,
+  amp: number,
+) {
   const rand = mulberry32(seed)
   const pts: Pt[] = []
   for (let i = 0; i <= n; i++) {
@@ -51,7 +74,10 @@ function jitteredW(cx: number, cy: number, w: number, h: number, n: number, seed
   return pts
 }
 
-function strokeClosed(ctx: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D, pts: Pt[]) {
+function strokeClosed(
+  ctx: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+  pts: Pt[],
+) {
   if (pts.length === 0) return
   ctx.beginPath()
   ctx.moveTo(pts[0].x, pts[0].y)
@@ -60,7 +86,10 @@ function strokeClosed(ctx: OffscreenCanvasRenderingContext2D | CanvasRenderingCo
   ctx.stroke()
 }
 
-function fillClosed(ctx: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D, pts: Pt[]) {
+function fillClosed(
+  ctx: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+  pts: Pt[],
+) {
   if (pts.length === 0) return
   ctx.beginPath()
   ctx.moveTo(pts[0].x, pts[0].y)
@@ -69,7 +98,10 @@ function fillClosed(ctx: OffscreenCanvasRenderingContext2D | CanvasRenderingCont
   ctx.fill()
 }
 
-function strokeOpen(ctx: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D, pts: Pt[]) {
+function strokeOpen(
+  ctx: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D,
+  pts: Pt[],
+) {
   if (pts.length === 0) return
   ctx.beginPath()
   ctx.moveTo(pts[0].x, pts[0].y)
@@ -164,7 +196,9 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
     const faceInner: string[] = []
     for (let i = 0; i < FACE_STEPS; i++) {
       const inten = (i + 0.5) / FACE_STEPS
-      faceOuter.push(`hsla(330, 72%, ${70 + inten * 18}%, ${0.38 + inten * 0.55})`)
+      faceOuter.push(
+        `hsla(330, 72%, ${70 + inten * 18}%, ${0.38 + inten * 0.55})`,
+      )
       faceInner.push(`hsla(330, 30%, 94%, ${0.28 + inten * 0.4})`)
     }
 
@@ -289,7 +323,10 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
     }
 
     function stageScale() {
-      return Math.min((width * 0.7) / STAGE_FACE_W, (height * 0.7) / STAGE_FACE_H)
+      return Math.min(
+        (width * 0.7) / STAGE_FACE_W,
+        (height * 0.7) / STAGE_FACE_H,
+      )
     }
 
     function screenToSimX(sx: number) {
@@ -462,7 +499,13 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
       lookRY = targetRY
     }
 
-    function beginWake(now: number, stage: number, from: number, to: number, dur: number) {
+    function beginWake(
+      now: number,
+      stage: number,
+      from: number,
+      to: number,
+      dur: number,
+    ) {
       wakeStage = stage
       wakeFrom = from
       wakeGoal = to
@@ -522,7 +565,13 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
       if (Math.random() < 0.18) nextBlink = now + 180
     }
 
-    function placeRing(unit: Pt[], cx: number, cy: number, r: number, sy: number) {
+    function placeRing(
+      unit: Pt[],
+      cx: number,
+      cy: number,
+      r: number,
+      sy: number,
+    ) {
       const out: Pt[] = []
       for (const p of unit) {
         out.push({
@@ -544,7 +593,13 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
       return out
     }
 
-    function placeSpiral(unit: Pt[], cx: number, cy: number, r: number, rot: number) {
+    function placeSpiral(
+      unit: Pt[],
+      cx: number,
+      cy: number,
+      r: number,
+      rot: number,
+    ) {
       const c = Math.cos(rot)
       const s = Math.sin(rot)
       const out: Pt[] = []
@@ -568,7 +623,14 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
     }
 
     function noteSpin(now: number) {
-      if (reduced || wakeStage < 5 || now < dizzyCoolUntil || dizzyAmt > 0.2 || dizzyRecover > 0) return
+      if (
+        reduced ||
+        wakeStage < 5 ||
+        now < dizzyCoolUntil ||
+        dizzyAmt > 0.2 ||
+        dizzyRecover > 0
+      )
+        return
 
       const localX = screenToSimX(pointerX)
       const localY = screenToSimY(pointerY)
@@ -634,9 +696,13 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
       const now = performance.now()
       const dizz = reduced ? 0 : dizzyAmt
       const avgLookX = (lookLX + lookRX) * 0.5
-      const shiftX = reduced ? 0 : headX * fw * 0.022 + dizz * Math.sin(now * 0.01) * fw * 0.012
+      const shiftX = reduced
+        ? 0
+        : headX * fw * 0.022 + dizz * Math.sin(now * 0.01) * fw * 0.012
       const shiftY = reduced ? 0 : headY * fh * 0.03
-      const turn = reduced ? 0 : avgLookX * 0.05 + dizz * Math.sin(now * 0.013) * 0.07
+      const turn = reduced
+        ? 0
+        : avgLookX * 0.05 + dizz * Math.sin(now * 0.013) * 0.07
 
       ctx.translate(face.cx + shiftX, face.cy + shiftY)
       ctx.rotate(turn)
@@ -650,8 +716,14 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
       const rightAmt = wakeOpenR * (1 - blink)
       const leftEyeOpen = 0.07 + leftAmt * (0.93 - dizz * 0.14)
       const rightEyeOpen = 0.07 + rightAmt * (0.93 - dizz * 0.14)
-      strokeClosed(ctx, placeRing(leftEye, leftC.x, leftC.y, leftR, leftEyeOpen))
-      strokeClosed(ctx, placeRing(rightEye, rightC.x, rightC.y, rightR, rightEyeOpen))
+      strokeClosed(
+        ctx,
+        placeRing(leftEye, leftC.x, leftC.y, leftR, leftEyeOpen),
+      )
+      strokeClosed(
+        ctx,
+        placeRing(rightEye, rightC.x, rightC.y, rightR, rightEyeOpen),
+      )
 
       let lx = lookLX * leftR * 0.48
       let ly = lookLY * leftR * 0.38 * leftEyeOpen
@@ -671,27 +743,52 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
         const rot = now * 0.013
         const sr = pupilR * (1.2 + dizz * 0.28)
         ctx.lineWidth = stroke * 0.4
-        strokeOpen(ctx, placeSpiral(leftSpiral, leftC.x + lx, leftC.y + ly, sr, rot))
+        strokeOpen(
+          ctx,
+          placeSpiral(leftSpiral, leftC.x + lx, leftC.y + ly, sr, rot),
+        )
         ctx.lineWidth = stroke
       } else if (leftAmt > 0.28) {
-        fillClosed(ctx, placeRing(leftPupil, leftC.x + lx, leftC.y + ly, pupilR, 1))
+        fillClosed(
+          ctx,
+          placeRing(leftPupil, leftC.x + lx, leftC.y + ly, pupilR, 1),
+        )
       }
 
       if (dizz > 0.28 && rightAmt > 0.22) {
         const rot = now * 0.013
         const sr = pupilR * (1.2 + dizz * 0.28)
         ctx.lineWidth = stroke * 0.4
-        strokeOpen(ctx, placeSpiral(rightSpiral, rightC.x + rx, rightC.y + ry, sr * 0.96, -rot + 0.7))
+        strokeOpen(
+          ctx,
+          placeSpiral(
+            rightSpiral,
+            rightC.x + rx,
+            rightC.y + ry,
+            sr * 0.96,
+            -rot + 0.7,
+          ),
+        )
         ctx.lineWidth = stroke
       } else if (rightAmt > 0.28) {
-        fillClosed(ctx, placeRing(rightPupil, rightC.x + rx, rightC.y + ry, pupilR * 0.96, 1))
+        fillClosed(
+          ctx,
+          placeRing(rightPupil, rightC.x + rx, rightC.y + ry, pupilR * 0.96, 1),
+        )
       }
 
       ctx.lineWidth = stroke * 0.94
       strokeOpen(ctx, placeW(mouth, fw * 0.006, fh * 0.02, fw * 0.22, fh * 0.4))
     }
 
-    function addDot(buckets: Dot[][], counts: Uint16Array, idx: number, x: number, y: number, r: number) {
+    function addDot(
+      buckets: Dot[][],
+      counts: Uint16Array,
+      idx: number,
+      x: number,
+      y: number,
+      r: number,
+    ) {
       const bucket = buckets[idx]
       const i = counts[idx]
       if (i < bucket.length) {
@@ -752,14 +849,17 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
           const cover = sum / (255 * srcScale * srcScale)
           if (cover < 0.04) continue
 
-          const flicker = reduced ? 1 : 0.95 + 0.05 * Math.sin(time * 2.4 + gx * 0.63 + gy * 1.07)
+          const flicker = reduced
+            ? 1
+            : 0.95 + 0.05 * Math.sin(time * 2.4 + gx * 0.63 + gy * 1.07)
           const intensity = cover * fade * flicker
           if (intensity < 0.05) continue
 
           const x = (gx + 0.5) * cell
           const y = (gy + 0.5) * cell
           const radius = cell * (0.22 + intensity * 0.2)
-          const idx = intensity >= 1 ? FACE_STEPS - 1 : Math.floor(intensity * FACE_STEPS)
+          const idx =
+            intensity >= 1 ? FACE_STEPS - 1 : Math.floor(intensity * FACE_STEPS)
 
           addDot(outerBuckets, outerLen, idx, x, y, radius)
           if (intensity > 0.35) {
@@ -774,13 +874,28 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
       bloomCtx.setTransform(1, 0, 0, 1, 0, 0)
       bloomCtx.clearRect(0, 0, bloom.width, bloom.height)
       bloomCtx.filter = 'blur(8px)'
-      bloomCtx.drawImage(sharp, 0, 0, sharp.width, sharp.height, 0, 0, bloom.width, bloom.height)
+      bloomCtx.drawImage(
+        sharp,
+        0,
+        0,
+        sharp.width,
+        sharp.height,
+        0,
+        0,
+        bloom.width,
+        bloom.height,
+      )
       bloomCtx.filter = 'none'
     }
 
     function wrapOnScreen() {
       const r = wrap.getBoundingClientRect()
-      return r.width > 1 && r.height > 1 && r.bottom > 8 && r.top < window.innerHeight - 8
+      return (
+        r.width > 1 &&
+        r.height > 1 &&
+        r.bottom > 8 &&
+        r.top < window.innerHeight - 8
+      )
     }
 
     function clearSchedule() {
@@ -899,7 +1014,8 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
           blink = 0
           dizzyRecover = 4
           recoverHold = now
-          if (pointerArmed && now - lastPointer < 2800) lookAtScreen(pointerX, pointerY)
+          if (pointerArmed && now - lastPointer < 2800)
+            lookAtScreen(pointerX, pointerY)
           else lookAtLocal(face.cx, face.cy + face.h * 0.18)
           scheduleBlink(now + 700)
         }
@@ -985,7 +1101,10 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
           pointerOriginY = pointerY
           return
         }
-        if (Math.hypot(pointerX - pointerOriginX, pointerY - pointerOriginY) < 8) return
+        if (
+          Math.hypot(pointerX - pointerOriginX, pointerY - pointerOriginY) < 8
+        )
+          return
         pointerArmed = true
       }
       const now = performance.now()
@@ -1117,8 +1236,14 @@ export default function OwoGrid({ mode = 'hero' }: { mode?: OwoGridMode }) {
       }
       aria-hidden="true"
     >
-      <canvas ref={sharpRef} className="owo-grid-sharp absolute inset-0 size-full" />
-      <canvas ref={bloomRef} className="owo-grid-bloom absolute inset-0 size-full" />
+      <canvas
+        ref={sharpRef}
+        className="owo-grid-sharp absolute inset-0 size-full"
+      />
+      <canvas
+        ref={bloomRef}
+        className="owo-grid-bloom absolute inset-0 size-full"
+      />
     </div>
   )
 }

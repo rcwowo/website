@@ -31,7 +31,7 @@ const MobileMenu = () => {
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DropdownMenuTrigger asChild>
         <Button
-          className="bg-transparent text-muted-foreground hover:bg-transparent hover:text-foreground h-10 w-10 rounded-lg"
+          className="text-muted-foreground hover:text-foreground h-10 w-10 rounded-lg bg-transparent hover:bg-transparent"
           size="icon"
           title="Menu"
         >
@@ -39,12 +39,15 @@ const MobileMenu = () => {
           <span className="sr-only">Toggle menu</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-secondary rounded-lg border-border/50">
+      <DropdownMenuContent
+        align="end"
+        className="bg-secondary border-border/50 rounded-lg"
+      >
         {MENU_LINKS.map((link) => (
-          <DropdownMenuItem key={link.TITLE} className='rounded-md'>
+          <DropdownMenuItem key={link.TITLE} className="rounded-md">
             <a
               href={link.URL}
-              className="w-full text-md font-medium"
+              className="text-md w-full font-medium"
               onClick={() => setIsOpen(false)}
             >
               {link.TITLE}

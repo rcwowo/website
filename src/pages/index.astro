@@ -13,7 +13,10 @@ import Layout from '@/layouts/Layout.astro'
   <!-- Hero -->
   <section class="relative overflow-hidden">
     <OwoGrid client:load />
-    <div class="hero-veil pointer-events-none absolute inset-0 z-[1]" aria-hidden="true"></div>
+    <div
+      class="hero-veil pointer-events-none absolute inset-0 z-[1]"
+      aria-hidden="true"
+    ></div>
 
     <div class="relative z-10 mx-auto flex min-h-[30rem] w-full max-w-[50rem] flex-col justify-end px-6 pt-24 pb-10 md:min-h-[32rem] md:pt-28 md:pb-10">
       <div class="hero-copy flex flex-col items-start text-left">
@@ -40,14 +43,18 @@ import Layout from '@/layouts/Layout.astro'
 
   <!-- Projects -->
   <Section id="projects" class="flex flex-col gap-8">
-    <h2 class="projects-heading font-display text-2xl font-bold tracking-tight">Projects</h2>
+    <h2 class="projects-heading font-display text-2xl font-bold tracking-tight">
+      Projects
+    </h2>
     <ProjectList />
   </Section>
 
   <!-- Recent posts -->
   <Section class="flex flex-col gap-6 pt-10 pb-20">
     <div class="flex items-baseline justify-between">
-      <h2 class="writing-heading font-display text-2xl font-bold tracking-tight">Writing</h2>
+      <h2 class="writing-heading font-display text-2xl font-bold tracking-tight">
+        Writing
+      </h2>
       <Link
         href={BLOG_URL}
         external
@@ -58,7 +65,6 @@ import Layout from '@/layouts/Layout.astro'
     </div>
     <RecentPosts client:load />
   </Section>
-
 </Layout>
 
 <script is:inline define:vars={{ TAGLINES }}>
@@ -163,5 +169,4 @@ import Layout from '@/layouts/Layout.astro'
       transform: translateY(0);
     }
   }
-
 </style>

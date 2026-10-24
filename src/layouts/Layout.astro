@@ -23,9 +23,7 @@ const { title, description, image } = Astro.props
     />
   </head>
   <body>
-    <div
-      class="box-border flex h-fit min-h-screen flex-col font-sans antialiased"
-    >
+    <div class="box-border flex h-fit min-h-screen flex-col font-sans antialiased">
       <Header />
       <main class="flex flex-grow flex-col">
         <slot />
@@ -33,6 +31,10 @@ const { title, description, image } = Astro.props
       <Footer />
     </div>
     <!-- have to use this for twitter embeds -->
-    <script is:inline async src="https://platform.twitter.com/widgets.js"></script>
+    <script
+      is:inline
+      async
+      src="https://platform.twitter.com/widgets.js"
+    ></script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 ---
-import Layout from '@/layouts/Layout.astro'
 import Container from '@/components/Container.astro'
+import ProjectStatus from '@/components/ProjectStatus.astro'
+import Layout from '@/layouts/Layout.astro'
 import {
   getSubpagesForProject,
   isProjectIndexEntry,
@@ -9,7 +10,6 @@ import {
 import { projectSlugFromId } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
-import ProjectStatus from '@/components/ProjectStatus.astro'
 import type { CollectionEntry } from 'astro:content'
 import { getCollection, render } from 'astro:content'
 
@@ -29,42 +29,32 @@ const { Content } = await render(project)
 const projectSlug = projectSlugFromId(project.id)
 const allEntries = await getCollection('projects')
 const subpages = getSubpagesForProject(allEntries, projectSlug)
-
 ---
 
-<Layout
-  title={project.data.name!}
-  description={project.data.description!}
->
+<Layout title={project.data.name!} description={project.data.description!}>
   <Container class="pb-24 pt-12">
-    <header
-      class="relative mb-10 flex flex-col gap-6 border-b border-border/40 pb-10 md:flex-row md:items-start md:gap-8"
-    >
+    <header class="relative mb-10 flex flex-col gap-6 border-b border-border/40 pb-10 md:flex-row md:items-start md:gap-8">
       <div class="relative flex w-full items-end justify-between md:block md:w-auto">
-        {
-          project.data.icon ? (
-            <div class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary/60 md:h-16 md:w-16">
-              <Image
-                src={project.data.icon}
-                alt=""
-                width={64}
-                height={64}
-                class="h-full w-full object-cover"
-              />
-            </div>
-          ) : (
-            <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-secondary/60 text-muted-foreground/40 md:h-16 md:w-16">
-              <Icon name="lucide:folder" size={22} />
-            </div>
-          )
-        }
+        {project.data.icon ? (
+          <div class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary/60 md:h-16 md:w-16">
+            <Image
+              src={project.data.icon}
+              alt=""
+              width={64}
+              height={64}
+              class="h-full w-full object-cover"
+            />
+          </div>
+        ) : (
+          <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-secondary/60 text-muted-foreground/40 md:h-16 md:w-16">
+            <Icon name="lucide:folder" size={22} />
+          </div>
+        )}
         <ProjectStatus status={project.data.status} interactive />
       </div>
 
       <div class="min-w-0 flex-1 space-y-2">
-        <h1
-          class="font-display text-3xl font-extrabold tracking-tight md:text-4xl"
-        >
+        <h1 class="font-display text-3xl font-extrabold tracking-tight md:text-4xl">
           {project.data.name}
         </h1>
         <p class="max-w-2xl text-base leading-relaxed text-muted-foreground/85">
@@ -72,69 +62,57 @@ const subpages = getSubpagesForProject(allEntries, projectSlug)
         </p>
 
         <div class="flex flex-wrap gap-2 pt-2">
-          {
-            project.data.url ? (
-              <a
-                href={project.data.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-4 py-2 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50"
-              >
-                <Icon
-                  name="lucide:eye"
-                  size={16}
-                  class="text-muted-foreground"
-                />
-                View Project
-              </a>
-            ) : null
-          }
-          {
-            project.data.repo ? (
-              <a
-                href={project.data.repo}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-4 py-2 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50"
-              >
-                <Icon
-                  name="lucide:code-2"
-                  size={16}
-                  class="text-muted-foreground"
-                />
-                Repository
-              </a>
-            ) : null
-          }
+          {project.data.url ? (
+            <a
+              href={project.data.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-4 py-2 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50"
+            >
+              <Icon name="lucide:eye" size={16} class="text-muted-foreground" />
+              View Project
+            </a>
+          ) : null}
+          {project.data.repo ? (
+            <a
+              href={project.data.repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-4 py-2 text-sm font-medium text-foreground transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50"
+            >
+              <Icon
+                name="lucide:code-2"
+                size={16}
+                class="text-muted-foreground"
+              />
+              Repository
+            </a>
+          ) : null}
         </div>
       </div>
     </header>
 
-    <article
-      class="project-body prose prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-muted-foreground/90 prose-li:text-muted-foreground/90"
-    >
+    <article class="project-body prose prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-p:text-muted-foreground/90 prose-li:text-muted-foreground/90">
       <Content />
     </article>
 
-    {
-      subpages.length > 0 ? (
-        <footer class="mt-14 border-t border-border/40 pt-8">
-          <ul class="flex flex-wrap gap-2">
-            {subpages.map((subpage) => (
-              <li>
-                <a
-                  href={`/project/${projectSlug}/${pageSlugFromId(subpage.id)}`}
-                  class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-3 py-1.5 text-sm font-medium text-foreground/90 transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50 hover:text-foreground"
-                >
-                  <Icon name="lucide:file-text" size={15} />
-                  {subpage.data.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </footer>
-      ) : null
-    }
+    {subpages.length > 0 ? (
+      <footer class="mt-14 border-t border-border/40 pt-8">
+        <ul class="flex flex-wrap gap-2">
+          {subpages.map((subpage) => (
+            <li>
+              <a
+                href={`/project/${projectSlug}/${pageSlugFromId(subpage.id)}`}
+                class="inline-flex items-center gap-2 rounded-lg border border-border/50 bg-secondary/25 px-3 py-1.5 text-sm font-medium text-foreground/90 transition-colors duration-200 hover:border-accent/40 hover:bg-secondary/50 hover:text-foreground"
+              >
+                <Icon name="lucide:file-text" size={15} />
+                {subpage.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </footer>
+    ) : null}
   </Container>
 </Layout>
 

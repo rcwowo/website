@@ -67,11 +67,11 @@ function Status() {
 
   if (!data) {
     return (
-      <div className="flex items-center gap-3 text-sm text-muted-foreground/50">
-        <div className="h-9 w-9 rounded-full bg-muted animate-pulse shrink-0" />
+      <div className="text-muted-foreground/50 flex items-center gap-3 text-sm">
+        <div className="bg-muted h-9 w-9 shrink-0 animate-pulse rounded-full" />
         <div className="flex flex-col gap-1">
-          <div className="h-3 w-20 rounded bg-muted animate-pulse" />
-          <div className="h-2.5 w-14 rounded bg-muted animate-pulse" />
+          <div className="bg-muted h-3 w-20 animate-pulse rounded" />
+          <div className="bg-muted h-2.5 w-14 animate-pulse rounded" />
         </div>
       </div>
     )
@@ -84,14 +84,20 @@ function Status() {
   const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.webp?size=64`
 
   // Non-Spotify activities (type !== 2) take priority
-  const customActivity = data.activities.find((a) => a.type !== 2 && a.type !== 4)
+  const customActivity = data.activities.find(
+    (a) => a.type !== 2 && a.type !== 4,
+  )
   const spotify = data.listening_to_spotify ? data.spotify : null
 
-  const activity = customActivity || (spotify ? {
-    name: spotify.song,
-    detail: `by ${spotify.artist}`,
-    type: 'spotify' as const,
-  } : null)
+  const activity =
+    customActivity ||
+    (spotify
+      ? {
+          name: spotify.song,
+          detail: `by ${spotify.artist}`,
+          type: 'spotify' as const,
+        }
+      : null)
 
   return (
     <div className="flex items-center gap-3 text-sm">
@@ -105,30 +111,49 @@ function Status() {
           className="h-9 w-9 rounded-full"
         />
         <span
-          className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${config.dotColor} ${status !== 'offline' ? 'animate-pulse' : ''}`}
+          className={`border-background absolute -right-0.5 -bottom-0.5 h-3 w-3 rounded-full border-2 ${config.dotColor} ${status !== 'offline' ? 'animate-pulse' : ''}`}
         />
       </div>
 
       {/* Name + activity */}
-      <div className="flex flex-col gap-0.5 min-w-0">
-        <span className="text-foreground/80 font-medium truncate">{displayName}</span>
+      <div className="flex min-w-0 flex-col gap-0.5">
+        <span className="text-foreground/80 truncate font-medium">
+          {displayName}
+        </span>
 
         {/* Activity line */}
         {activity && status !== 'offline' ? (
-          <span className="text-xs text-muted-foreground/60 truncate">
+          <span className="text-muted-foreground/60 truncate text-xs">
             {'type' in activity && activity.type === 'spotify' ? (
-              <>Listening to <span className="text-muted-foreground">{activity.name}</span> {activity.detail}</>
+              <>
+                Listening to{' '}
+                <span className="text-muted-foreground">{activity.name}</span>{' '}
+                {activity.detail}
+              </>
             ) : (
               <>
-                {(activity as LanyardActivity).details
-                  ? <>{(activity as LanyardActivity).details} &mdash; <span className="text-muted-foreground">{(activity as LanyardActivity).name}</span></>
-                  : <>{(activity as LanyardActivity).name}{(activity as LanyardActivity).state && <> &mdash; {(activity as LanyardActivity).state}</>}</>
-                }
+                {(activity as LanyardActivity).details ? (
+                  <>
+                    {(activity as LanyardActivity).details} &mdash;{' '}
+                    <span className="text-muted-foreground">
+                      {(activity as LanyardActivity).name}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    {(activity as LanyardActivity).name}
+                    {(activity as LanyardActivity).state && (
+                      <> &mdash; {(activity as LanyardActivity).state}</>
+                    )}
+                  </>
+                )}
               </>
             )}
           </span>
         ) : (
-          <span className="text-xs text-muted-foreground/50">{config.text}</span>
+          <span className="text-muted-foreground/50 text-xs">
+            {config.text}
+          </span>
         )}
       </div>
     </div>

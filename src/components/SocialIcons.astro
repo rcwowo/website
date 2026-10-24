@@ -18,24 +18,22 @@ const { links, className } = Astro.props
 ---
 
 <ul class={cn(`flex flex-wrap gap-2`, className)} role="list">
-  {
-    links.map((link) => {
-      return (
-        <li>
-          <Link
-            href={link.URL}
-            aria-label={link.TITLE}
-            title={link.TITLE}
-            class={cn(
-              buttonVariants({ variant: 'outline' }),
-              'group inline-flex h-11 w-11 p-3 items-center justify-center rounded-lg border-border/50 text-muted-foreground transition-all duration-200 hover:text-accent hover:border-accent/30 hover:bg-accent/5',
-            )}
-            external
-          >
-            <Icon name={link.ICON} size={20} />
-          </Link>
-        </li>
-      )
-    })
-  }
+  {links.map((link) => {
+    return (
+      <li>
+        <Link
+          href={link.URL}
+          aria-label={link.TITLE}
+          title={link.TITLE}
+          class={cn(
+            buttonVariants({ variant: 'outline' }),
+            'group inline-flex h-11 w-11 p-3 items-center justify-center rounded-lg border-border/50 text-muted-foreground transition-all duration-200 hover:text-accent hover:border-accent/30 hover:bg-accent/5',
+          )}
+          external
+        >
+          <Icon name={link.ICON} size={20} />
+        </Link>
+      </li>
+    )
+  })}
 </ul>

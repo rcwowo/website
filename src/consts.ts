@@ -7,8 +7,8 @@ export type Site = {
 }
 
 export type Socials = {
-  TITLE: string,
-  ICON: string,
+  TITLE: string
+  ICON: string
   URL: string
 }
 
@@ -50,16 +50,24 @@ export const TAGLINES: string[] = [
   'how many taglines did he write for this shit?',
   'this mf likes pans im crineeee',
   'its not like i like u... baka... (˶˃⤙˂˶)',
-  '(˶˃ ᵕ ˂˶) .ᐟ.ᐟ'
+  '(˶˃ ᵕ ˂˶) .ᐟ.ᐟ',
 ]
 
 // Social Links
 export const SOCIALS: Socials[] = [
-  { TITLE: 'YouTube', ICON: 'lucide:youtube', URL: 'https://youtube.com/@rcwlol' },
+  {
+    TITLE: 'YouTube',
+    ICON: 'lucide:youtube',
+    URL: 'https://youtube.com/@rcwlol',
+  },
   { TITLE: 'Twitch', ICON: 'lucide:twitch', URL: 'https://twitch.tv/rcwlol' },
-  { TITLE: 'Bluesky', ICON: 'mingcute:bluesky-social-line', URL: 'https://bsky.app/profile/rcw.lol' },
+  {
+    TITLE: 'Bluesky',
+    ICON: 'mingcute:bluesky-social-line',
+    URL: 'https://bsky.app/profile/rcw.lol',
+  },
   { TITLE: 'GitHub', ICON: 'lucide:github', URL: 'https://github.com/rcwowo' },
-  { TITLE: 'Contact', ICON: 'lucide:mail', URL: 'mailto:riley@rcw.lol' }
+  { TITLE: 'Contact', ICON: 'lucide:mail', URL: 'mailto:riley@rcw.lol' },
 ]
 
 // Global Menu Links
@@ -73,7 +81,8 @@ export const DISCORD_USER_ID: string = '232200842894114826'
 
 // Leaflet Blog Integration
 export const BLOG_URL = 'https://blog.rcw.lol'
-export const BLOG_PUBLICATION_URI = 'at://did:plc:siwlk4jbqorvg5iytyxgsz4z/site.standard.publication/3m63i53un522d'
+export const BLOG_PUBLICATION_URI =
+  'at://did:plc:siwlk4jbqorvg5iytyxgsz4z/site.standard.publication/3m63i53un522d'
 export const BLOG_AUTHOR_DID = 'did:plc:siwlk4jbqorvg5iytyxgsz4z'
 export const BLOG_PDS = 'https://lionsmane.us-east.host.bsky.network'
 export const NUM_POSTS_ON_HOMEPAGE = 5

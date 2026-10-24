@@ -2,11 +2,13 @@
 import { cn } from '@/lib/utils'
 
 interface Props {
-  class?: string,
+  class?: string
   id?: string
 }
 
 const { class: className, id } = Astro.props
 ---
 
-<div class={cn('mx-auto w-full max-w-[50rem] px-6', className)} id={id}><slot /></div>
+<div class={cn('mx-auto w-full max-w-[50rem] px-6', className)} id={id}>
+  <slot />
+</div>

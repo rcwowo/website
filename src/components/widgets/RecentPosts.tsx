@@ -12,11 +12,11 @@ function formatShortDate(date: Date) {
 function PostSkeleton({ index }: { index: number }) {
   return (
     <div
-      className="post-row flex items-baseline justify-between gap-4 border-t border-border/40 py-4 -mx-3 px-3 last:border-b"
+      className="post-row border-border/40 -mx-3 flex items-baseline justify-between gap-4 border-t px-3 py-4 last:border-b"
       style={{ animationDelay: `${index * 70 + 300}ms` }}
     >
-      <div className="h-4 flex-1 max-w-[70%] rounded bg-muted animate-pulse" />
-      <div className="h-3 w-14 rounded bg-muted animate-pulse shrink-0" />
+      <div className="bg-muted h-4 max-w-[70%] flex-1 animate-pulse rounded" />
+      <div className="bg-muted h-3 w-14 shrink-0 animate-pulse rounded" />
     </div>
   )
 }
@@ -25,13 +25,13 @@ function PostRow({ post, index }: { post: BlogPost; index: number }) {
   return (
     <a
       href={post.url}
-      className="post-row group flex items-baseline justify-between gap-4 border-t border-border/40 py-4 transition-colors duration-200 hover:bg-secondary/20 -mx-3 px-3 last:border-b"
+      className="post-row group border-border/40 hover:bg-secondary/20 -mx-3 flex items-baseline justify-between gap-4 border-t px-3 py-4 transition-colors duration-200 last:border-b"
       style={{ animationDelay: `${index * 70 + 300}ms` }}
     >
-      <span className="text-sm font-medium text-foreground transition-colors duration-200 group-hover:text-accent truncate">
+      <span className="text-foreground group-hover:text-accent truncate text-sm font-medium transition-colors duration-200">
         {post.title}
       </span>
-      <span className="text-xs text-muted-foreground/40 shrink-0 tabular-nums">
+      <span className="text-muted-foreground/40 shrink-0 text-xs tabular-nums">
         {formatShortDate(post.date)}
       </span>
     </a>
