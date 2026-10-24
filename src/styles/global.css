@@ -1,6 +1,56 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
+
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-additive: hsl(var(--additive));
+  --color-additive-foreground: hsl(var(--additive-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --animate-marquee: marquee 15s linear infinite;
+  --animate-marquee2: marquee2 15s linear infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes marquee2 {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+}
 
 @font-face {
   font-family: 'Roboto Mono';
@@ -27,7 +77,10 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 250 10% 11%;
+    --input: 250 10% 11%;
     --ring: 330 80% 65%;
+    --popover: 250 10% 9%;
+    --popover-foreground: 45 10% 90%;
   }
 
   *,
@@ -47,13 +100,13 @@
 
   .disable-transitions,
   .disable-transitions * {
-    @apply !transition-none;
+    @apply transition-none!;
   }
 }
 
 @layer components {
   article {
-    @apply prose-headings:scroll-mt-20 prose-headings:break-words prose-p:break-words prose-a:!decoration-muted-foreground prose-a:underline-offset-[3px] prose-a:transition-colors hover:prose-a:!decoration-foreground prose-pre:!px-0 prose-img:mx-auto;
+    @apply prose-headings:scroll-mt-20 prose-headings:break-words prose-p:break-words prose-a:decoration-muted-foreground! prose-a:underline-offset-[3px] prose-a:transition-colors prose-a:hover:decoration-foreground! prose-pre:px-0! prose-img:mx-auto;
 
     .katex-display {
       @apply overflow-x-auto overflow-y-hidden py-4;
@@ -73,7 +126,7 @@
 
     /* Inline code */
     :not(pre) > code {
-      @apply relative rounded bg-muted/50 px-[0.3rem] py-[0.2rem] font-mono text-sm font-medium;
+      @apply bg-muted/50 relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-medium;
     }
 
     /* Code blocks */
@@ -82,7 +135,7 @@
 
       /* Code block titles */
       [data-rehype-pretty-code-title] {
-        @apply break-words rounded-t-xl border-x border-t px-4 py-2 text-sm font-medium text-foreground;
+        @apply text-foreground rounded-t-xl border-x border-t px-4 py-2 text-sm font-medium break-words;
 
         /* Remove top margin from code block if a title is present */
         & + pre {
@@ -92,7 +145,7 @@
 
       /* Code block styles */
       pre {
-        @apply static max-h-[600px] overflow-auto rounded-xl border bg-secondary/20 py-4 text-sm leading-loose;
+        @apply bg-secondary/20 static max-h-[600px] overflow-auto rounded-xl border py-4 text-sm leading-loose;
 
         /* Code block content */
         > code {
@@ -104,7 +157,7 @@
             > [data-line]::before {
               counter-increment: line;
               content: counter(line);
-              @apply mr-4 inline-block w-4 text-right text-muted-foreground;
+              @apply text-muted-foreground mr-4 inline-block w-4 text-right;
             }
           }
 
@@ -135,7 +188,7 @@
 
           /* Copy button */
           > button:has(> span) {
-            @apply right-0.5 top-[3px] m-0 size-8 rounded-md bg-background p-1 backdrop-blur-none transition-all;
+            @apply bg-background top-[3px] right-0.5 m-0 size-8 rounded-md p-1 backdrop-blur-none transition-all;
           }
         }
       }
@@ -148,7 +201,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply absolute h-auto w-full overflow-x-hidden z-[-2] text-foreground;
+    @apply text-foreground absolute z-[-2] h-auto w-full overflow-x-hidden;
 
     background: hsl(250 15% 4%);
   }

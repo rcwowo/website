@@ -32,9 +32,7 @@ export function isProjectIndexEntry(
 export function isProjectSubpageEntry(
   entry: ProjectEntry,
 ): entry is ProjectSubpageEntry {
-  return (
-    Boolean(entry.data.title?.trim()) && !entry.data.name?.trim()
-  )
+  return Boolean(entry.data.title?.trim()) && !entry.data.name?.trim()
 }
 
 export function getSubpagesForProject(

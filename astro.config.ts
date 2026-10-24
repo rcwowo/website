@@ -1,8 +1,8 @@
-import { rehypeHeadingIds } from '@astrojs/markdown-remark'
+import { rehypeHeadingIds, unified } from '@astrojs/markdown-remark'
 import mdx from '@astrojs/mdx'
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
-import tailwind from '@astrojs/tailwind'
+import tailwindcss from '@tailwindcss/vite'
 import { transformerCopyButton } from '@rehype-pretty/transformers'
 import {
   transformerMetaHighlight,
@@ -20,42 +20,40 @@ import icon from 'astro-icon'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://rcw.lol',
-  integrations: [
-    tailwind({
-      applyBaseStyles: false,
-    }),
-    sitemap(),
-    mdx(),
-    react(),
-    icon(),
-  ],
+  integrations: [sitemap(), mdx(), react(), icon()],
   markdown: {
     syntaxHighlight: false,
-    rehypePlugins: [
-      rehypeHeadingIds,
-      rehypeKatex,
-      // @ts-ignore
-      sectionize,
-      [
-        rehypePrettyCode,
-        {
-          theme: {
-            light: 'github-light-high-contrast',
-            dark: 'github-dark-high-contrast',
+    processor: unified({
+      rehypePlugins: [
+        rehypeHeadingIds,
+        rehypeKatex,
+        // @ts-ignore
+        sectionize,
+        [
+          rehypePrettyCode,
+          {
+            theme: {
+              light: 'github-light-high-contrast',
+              dark: 'github-dark-high-contrast',
+            },
+            transformers: [
+              transformerNotationDiff(),
+              transformerMetaHighlight(),
+              transformerCopyButton({
+                visibility: 'hover',
+                feedbackDuration: 1000,
+              }),
+            ],
           },
-          transformers: [
-            transformerNotationDiff(),
-            transformerMetaHighlight(),
-            transformerCopyButton({
-              visibility: 'hover',
-              feedbackDuration: 1000,
-            }),
-          ],
-        },
+        ],
       ],
-    ],
-    remarkPlugins: [remarkToc, remarkMath, remarkEmoji],
+      remarkPlugins: [remarkToc, remarkMath, remarkEmoji],
+    }),
   },
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  compressHTML: true,
   server: {
     port: 1234,
     host: true,
